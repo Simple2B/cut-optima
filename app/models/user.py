@@ -29,12 +29,9 @@ class User(db.Model, UserMixin, ModelMixin):
         self.password_hash = generate_password_hash(password)
 
     @classmethod
-    def authenticate(cls, user_id, password):
+    def authenticate(cls, email, password):
         user = cls.query.filter(
-            db.or_(
-                func.lower(cls.username) == func.lower(user_id),
-                func.lower(cls.email) == func.lower(user_id),
-            )
+            func.lower(cls.email) == func.lower(email)
         ).first()
         if user is not None and check_password_hash(user.password, password):
             return user

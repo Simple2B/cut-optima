@@ -15,7 +15,7 @@ def test_auth_pages(client):
 
 
 def test_register(client):
-    # passwords do not match
+    # register with invalid passwords
     response = client.post(
         "/register",
         data=dict(
@@ -72,15 +72,28 @@ def test_login_and_logout(client):
     # Access to logout view before login should fail.
     response = logout(client)
     assert b"Please log in to access this page." in response.data
-    register("sam")
-    response = login(client, "sam")
+
+    response = register(client, USERNAME, EMAIL, PASSWORD)
+    assert b"Please visit your email address to verify it" in response.data
+
+    # login not activated user
+    response = login(client, EMAIL, PASSWORD)
+    assert b"Cannot login in. Please confirm your email." in response.data
+
+    # login activated user
+    user: User = User.query.filter(User.email == EMAIL).first()
+    user.activated = True
+    user.save()
+    response = login(client, EMAIL, PASSWORD)
     assert b"Login successful." in response.data
-    # Should successfully logout the currently logged in user.
+
+    response = login(client, EMAIL, PASSWORD)
+    assert b"You are already logged in." in response.data
+
+    # # Should successfully logout the currently logged in user.
     response = logout(client)
     assert b"You were logged out." in response.data
-    # Incorrect login credentials should fail.
-    response = login(client, "sam", "wrongpassword")
-    assert b"Wrong user ID or password." in response.data
-    # Correct credentials should login
-    response = login(client, "sam")
-    assert b"Login successful." in response.data
+
+    # # Incorrect login credentials should fail.
+    response = login(client, EMAIL, "wrongpassword")
+    assert b"Wrong email or password." in response.data
