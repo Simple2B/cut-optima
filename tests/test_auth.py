@@ -1,23 +1,8 @@
-import pytest
-
-from app import db, create_app
+from typing import List
 from tests.utils import register, login, logout
+from app.models import User
 
-
-@pytest.fixture
-def client():
-    app = create_app(environment="testing")
-    app.config["TESTING"] = True
-
-    with app.test_client() as client:
-        app_ctx = app.app_context()
-        app_ctx.push()
-        db.drop_all()
-        db.create_all()
-        yield client
-        db.session.remove()
-        db.drop_all()
-        app_ctx.pop()
+from .constants import EMAIL, PASSWORD, USERNAME
 
 
 def test_auth_pages(client):
@@ -30,17 +15,57 @@ def test_auth_pages(client):
 
 
 def test_register(client):
+    # passwords do not match
     response = client.post(
         "/register",
         data=dict(
-            username="sam",
-            email="sam@test.com",
-            password="password",
-            password_confirmation="password",
+            username=USERNAME,
+            email=EMAIL,
+            password=PASSWORD,
+            password_confirmation="123",
         ),
         follow_redirects=True,
     )
-    assert b"Registration successful. You are logged in." in response.data
+    assert b"Password do not match." in response.data
+    assert b"The given data was invalid." in response.data
+
+    # register with valid data
+    response = client.post(
+        "/register",
+        data=dict(
+            username=USERNAME,
+            email=EMAIL,
+            password=PASSWORD,
+            password_confirmation=PASSWORD,
+        ),
+        follow_redirects=True,
+    )
+    assert b"Please visit your email address to verify it" in response.data
+
+    user: User = User.query.filter(User.email == EMAIL).first()
+    assert user
+    assert user.email == EMAIL
+    assert user.username == USERNAME
+    assert user.confirmation_token
+    assert not user.activated
+
+    # register with used email
+    response = client.post(
+        "/register",
+        data=dict(
+            username=USERNAME,
+            email=EMAIL,
+            password=PASSWORD,
+            password_confirmation=PASSWORD,
+        ),
+        follow_redirects=True,
+    )
+    assert b"The given data was invalid." in response.data
+    assert b"This email is already registered." in response.data
+
+    users: List[User] = User.query.filter(User.email == EMAIL).all()
+    assert users
+    assert len(users) == 1
 
 
 def test_login_and_logout(client):

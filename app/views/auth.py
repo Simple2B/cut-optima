@@ -1,3 +1,5 @@
+from uuid import uuid4
+
 from flask import Blueprint, render_template, url_for, redirect, flash, request
 from flask_login import login_user, logout_user, login_required
 
@@ -15,10 +17,10 @@ def register():
             username=form.username.data,
             email=form.email.data,
             password=form.password.data,
+            confirmation_token=str(uuid4()),
         )
         user.save()
-        login_user(user)
-        flash("Registration successful. You are logged in.", "success")
+        flash("Please visit your email address to verify it", "success")
         return redirect(url_for("main.index"))
     elif form.is_submitted():
         flash("The given data was invalid.", "danger")
