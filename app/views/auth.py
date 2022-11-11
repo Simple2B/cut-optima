@@ -3,9 +3,10 @@ from uuid import uuid4
 from flask import Blueprint, render_template, url_for, redirect, flash, request
 from flask_login import login_user, logout_user, login_required, current_user
 
-from app.models import User
-from app.forms import LoginForm, RegistrationForm
+from app.models import User, PasswordRecovery
+from app.forms import LoginForm, RegistrationForm, ForgotPassword
 from app.logger import log
+from config import BaseConfig as conf
 
 auth_blueprint = Blueprint("auth", __name__)
 
@@ -60,3 +61,89 @@ def logout():
     logout_user()
     flash("You were logged out.", "info")
     return redirect(url_for("main.index"))
+
+
+@auth_blueprint.route("/forgot_password", methods=["GET", "POST"])
+def forgot_password():
+    if current_user.is_authenticated:
+        log(log.INFO, "User [%s] in logged in", current_user)
+        return redirect(url_for("main.index"))
+
+    form = ForgotPassword()
+    if form.validate_on_submit():
+        email = form.email.data
+
+        # edit previous recovery request
+        user = User.query.filter(User.email == email).first()
+        if not user.password_recovery:
+            user.password_recovery = PasswordRecovery(created_by=user)
+
+        recovery_code = str(uuid4())
+        user.password_recovery.recovery_code = recovery_code
+
+        log(log.INFO, "Create recovery request [%s]", user)
+        user.save()
+
+        url = f'http://{conf.DOMAIN}{url_for("auth.password_recovery", recovery_code=recovery_code)}'
+
+        # mail_controller = MailController()
+        # mail_controller.send_password_recovery_mail(email, url)
+
+        flash("We sent a password reset URL to your email")
+
+    return render_template("auth/forgot_password.html", form=form)
+
+
+@auth_blueprint.route("/password_recovery/<recovery_code>", methods=["GET", "POST"])
+def password_recovery(recovery_code):
+    if current_user.is_authenticated:
+        return redirect(url_for("/.index"))
+
+    raise NotImplementedError
+    # message = error = None
+    # recovery_request = PasswordRecovery.query.filter(
+    #     PasswordRecovery.recovery_code == recovery_code
+    # ).first()
+    # if not recovery_request:
+    #     log(log.INFO, "Password recovery request does not exists [%s]", recovery_code)
+    #     error = "Password recovery request does not exists"
+    #     return render_template(
+    #         "etc/message_page.html",
+    #         error=error,
+    #     )
+    # elif recovery_request:
+    #     period = recovery_request.created_at - datetime.now()
+    #     period = period.total_seconds() / 60 * -1  # in minutes
+
+    #     if period > 20:
+    #         log(
+    #             log.INFO,
+    #             "Password recovery link is expired [%s]",
+    #             recovery_request.email,
+    #         )
+
+    #         error = "Password recovery link is expired"
+    #         return render_template(
+    #             "etc/message_page.html",
+    #             error=error,
+    #         )
+
+    # form = ChangePasswordForm()
+
+    # if form.validate_on_submit():
+    #     if not recovery_request:
+    #         return redirect(url_for("/auth.login"))
+    #     log(log.INFO, "Change password [%s]", recovery_request.email)
+    #     user = User.query.filter(User.email == recovery_request.email).first()
+    #     user.password = form.password.data
+    #     user.save()
+    #     recovery_request.delete()
+    #     return redirect(url_for("/auth.login"))
+
+    # return render_template(
+    #     "auth/reset_password.html",
+    #     form=form,
+    #     recovery_code=recovery_code,
+    #     message=message,
+    #     error=error,
+    # )

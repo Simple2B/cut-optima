@@ -20,6 +20,8 @@ class User(db.Model, UserMixin, ModelMixin):
     activated = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.now)
 
+    password_recovery = db.relationship("PasswordRecovery", uselist=False)
+
     @hybrid_property
     def password(self):
         return self.password_hash
@@ -30,9 +32,7 @@ class User(db.Model, UserMixin, ModelMixin):
 
     @classmethod
     def authenticate(cls, email, password):
-        user = cls.query.filter(
-            func.lower(cls.email) == func.lower(email)
-        ).first()
+        user = cls.query.filter(func.lower(cls.email) == func.lower(email)).first()
         if user is not None and check_password_hash(user.password, password):
             return user
 

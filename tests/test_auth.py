@@ -12,6 +12,8 @@ def test_auth_pages(client):
     assert response.status_code == 200
     response = client.get("/logout")
     assert response.status_code == 302
+    response = client.get("/forgot_password")
+    assert response.status_code == 200
 
 
 def test_register(client):
@@ -97,3 +99,30 @@ def test_login_and_logout(client):
     # # Incorrect login credentials should fail.
     response = login(client, EMAIL, "wrongpassword")
     assert b"Wrong email or password." in response.data
+
+
+def test_password_recovery(client):
+    response = client.post(
+        "/forgot_password",
+        data=dict(
+            email=EMAIL,
+        ),
+        follow_redirects=True,
+    )
+    assert b"Email not found" in response.data
+
+    response = register(client, USERNAME, EMAIL, PASSWORD)
+    assert b"Please visit your email address to verify it" in response.data
+
+    response = client.post(
+        "/forgot_password",
+        data=dict(
+            email=EMAIL,
+        ),
+        follow_redirects=True,
+    )
+    assert b"We sent a password reset URL to your email" in response.data
+
+    user: User = User.query.filter(User.email == EMAIL).first()
+    assert user.password_recovery
+    assert user.password_recovery.recovery_code

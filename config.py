@@ -11,6 +11,7 @@ class BaseConfig(object):
     SECRET_KEY = os.environ.get(
         "SECRET_KEY", "Ensure you set a secret key, this is important!"
     )
+    DOMAIN = os.environ.get("DOMAIN", "localhost:4070")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     WTF_CSRF_ENABLED = False
 
