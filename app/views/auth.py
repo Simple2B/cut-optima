@@ -116,10 +116,10 @@ def password_recovery(reset_password_uid):
     if form.validate_on_submit():
         log(log.INFO, "Change password [%s]", user)
         user.password = form.password.data
+        user.activated = True
         user.reset_password_uid = ""
         user.save()
         login_user(user)
-        flash("Password has been changed.", "success")
         flash("Login successful.", "success")
         return redirect(url_for("main.index"))
 

@@ -69,16 +69,21 @@ def test_login_email_confirming_logout(client):
     response = login(client, EMAIL, PASSWORD)
     assert b"Wrong email or password" in response.data
 
-    # confirm email
+    # activation user
     user: User = User.query.filter(User.email == EMAIL).first()
-    user.activated = True
-    user.password = PASSWORD
-    user.save()
-    # response = client.post(
-    #     "/confirm_email/" + user.confirmation_token,
-    #     follow_redirects=True,
-    # )
-    # assert b"Email confirmed." in response.data
+    response = client.post(
+        "/password_recovery/" + user.reset_password_uid,
+        data=dict(
+            password=PASSWORD,
+            confirm_password=PASSWORD,
+        ),
+        follow_redirects=True,
+    )
+    assert b"Login successful." in response.data
+
+    # Should successfully logout the currently logged in user.
+    response = logout(client)
+    assert b"You were logged out." in response.data
 
     # login activated user
     response = login(client, EMAIL, PASSWORD)
@@ -87,7 +92,7 @@ def test_login_email_confirming_logout(client):
     response = login(client, EMAIL, PASSWORD)
     assert b"You are already logged in." in response.data
 
-    # # Should successfully logout the currently logged in user.
+    # Should successfully logout the currently logged in user.
     response = logout(client)
     assert b"You were logged out." in response.data
 
@@ -146,5 +151,4 @@ def test_password_recovery(client):
         ),
         follow_redirects=True,
     )
-    assert b"Password has been changed" in response.data
     assert b"Login successful." in response.data
