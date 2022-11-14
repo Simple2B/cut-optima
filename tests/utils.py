@@ -1,11 +1,9 @@
-def register(client, username, email, password):
+def register(client, username, email):
     return client.post(
         "/register",
         data=dict(
             username=username,
             email=email,
-            password=password,
-            password_confirmation=password,
         ),
         follow_redirects=True,
     )

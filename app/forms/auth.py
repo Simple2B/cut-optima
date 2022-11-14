@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, ValidationError, EmailField
-from wtforms.validators import DataRequired, Length, EqualTo
+from wtforms.validators import DataRequired, Length, EqualTo, Email
 
 from app.models import User
 
@@ -13,15 +13,7 @@ class LoginForm(FlaskForm):
 
 class RegistrationForm(FlaskForm):
     username = StringField("Username", validators=[DataRequired(), Length(2, 30)])
-    email = EmailField("Email Address", validators=[DataRequired()])
-    password = PasswordField("Password", validators=[DataRequired(), Length(6, 30)])
-    password_confirmation = PasswordField(
-        "Confirm Password",
-        validators=[
-            DataRequired(),
-            EqualTo("password", message="Password do not match."),
-        ],
-    )
+    email = EmailField("Email Address", validators=[DataRequired(), Email()])
     submit = SubmitField("Register")
 
     def validate_username(form, field):
@@ -45,3 +37,15 @@ class ForgotPassword(FlaskForm):
         user = User.query.filter_by(email=email.data).first()
         if not user:
             raise ValidationError("Email not found")
+
+
+class ChangePasswordForm(FlaskForm):
+    password = PasswordField(
+        "Password",
+        [DataRequired(), EqualTo("confirm_password", message="Passwords must match")],
+        render_kw={"placeholder": "Password"},
+    )
+    confirm_password = PasswordField(
+        "Repeat Password", render_kw={"placeholder": "Repeat Password"}
+    )
+    submit = SubmitField("Change password")

@@ -20,15 +20,9 @@ def test_register(client):
     # register with invalid passwords
     response = client.post(
         "/register",
-        data=dict(
-            username=USERNAME,
-            email=EMAIL,
-            password=PASSWORD,
-            password_confirmation="123",
-        ),
+        data=dict(username=USERNAME, email="EMAIL"),
         follow_redirects=True,
     )
-    assert b"Password do not match." in response.data
     assert b"The given data was invalid." in response.data
 
     # register with valid data
@@ -37,29 +31,22 @@ def test_register(client):
         data=dict(
             username=USERNAME,
             email=EMAIL,
-            password=PASSWORD,
-            password_confirmation=PASSWORD,
         ),
         follow_redirects=True,
     )
-    assert b"Please visit your email address to verify it" in response.data
+    assert b"Please visit your email address to set you password" in response.data
 
     user: User = User.query.filter(User.email == EMAIL).first()
     assert user
     assert user.email == EMAIL
     assert user.username == USERNAME
-    assert user.confirmation_token
+    assert user.reset_password_uid
     assert not user.activated
 
     # register with used email
     response = client.post(
         "/register",
-        data=dict(
-            username=USERNAME,
-            email=EMAIL,
-            password=PASSWORD,
-            password_confirmation=PASSWORD,
-        ),
+        data=dict(username=USERNAME, email=EMAIL),
         follow_redirects=True,
     )
     assert b"The given data was invalid." in response.data
@@ -70,7 +57,7 @@ def test_register(client):
     assert len(users) == 1
 
 
-def test_login_and_logout(client):
+def test_login_email_confirming_logout(client):
     # Access to logout view before login should fail.
     response = logout(client)
     assert b"Please log in to access this page." in response.data
@@ -82,10 +69,15 @@ def test_login_and_logout(client):
     response = login(client, EMAIL, PASSWORD)
     assert b"Cannot login in. Please confirm your email." in response.data
 
-    # login activated user
+    # confirm email
     user: User = User.query.filter(User.email == EMAIL).first()
-    user.activated = True
-    user.save()
+    response = client.post(
+        "/confirm_email/" + user.confirmation_token,
+        follow_redirects=True,
+    )
+    assert b"Email confirmed." in response.data
+
+    # login activated user
     response = login(client, EMAIL, PASSWORD)
     assert b"Login successful." in response.data
 
@@ -124,5 +116,33 @@ def test_password_recovery(client):
     assert b"We sent a password reset URL to your email" in response.data
 
     user: User = User.query.filter(User.email == EMAIL).first()
+    user.activated = True
+    user.save()
     assert user.password_recovery
     assert user.password_recovery.recovery_code
+
+    new_password = "new_password"
+    # passwords do not match
+    response = client.post(
+        "/password_recovery/" + user.password_recovery.recovery_code,
+        data=dict(
+            password=new_password,
+            confirm_password=new_password + "123",
+        ),
+        follow_redirects=True,
+    )
+    assert b"Passwords must match" in response.data
+
+    # passwords match
+    response = client.post(
+        "/password_recovery/" + user.password_recovery.recovery_code,
+        data=dict(
+            password=new_password,
+            confirm_password=new_password,
+        ),
+        follow_redirects=True,
+    )
+    assert b"Password has been changed" in response.data
+
+    response = login(client, EMAIL, new_password)
+    assert b"Login successful." in response.data
