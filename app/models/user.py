@@ -1,5 +1,4 @@
 from datetime import datetime
-from uuid import uuid4
 
 from flask_login import UserMixin, AnonymousUserMixin
 from sqlalchemy import func
@@ -10,21 +9,16 @@ from app import db
 from app.models.utils import ModelMixin
 
 
-def gen_password_reset_id() -> str:
-    return str(uuid4())
-
-
 class User(db.Model, UserMixin, ModelMixin):
+
     __tablename__ = "users"
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(60), unique=True, nullable=False)
     email = db.Column(db.String(255), unique=True, nullable=False)
-    password_hash = db.Column(db.String(255))
+    password_hash = db.Column(db.String(255), nullable=False)
     activated = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.now)
-    deleted = db.Column(db.Boolean, default=False)
-    reset_password_uid = db.Column(db.String(64), default=gen_password_reset_id)
 
     @hybrid_property
     def password(self):
@@ -35,22 +29,12 @@ class User(db.Model, UserMixin, ModelMixin):
         self.password_hash = generate_password_hash(password)
 
     @classmethod
-    def authenticate(cls, email, password):
-        user = cls.query.filter(func.lower(cls.email) == func.lower(email)).first()
-        if (
-            user is not None
-            and user.activated
-            and check_password_hash(user.password, password)
-        ):
+    def authenticate(cls, user_id, password):
+        user = cls.query.filter(
+            db.or_(func.lower(cls.username) == func.lower(user_id), func.lower(cls.email) == func.lower(user_id))
+        ).first()
+        if user is not None and check_password_hash(user.password, password):
             return user
-
-    def reset_password(self):
-        self.password_hash = ""
-        self.reset_password_uid = gen_password_reset_id()
-        self.save()
-
-    def __str__(self) -> str:
-        return self.__repr__()
 
     def __repr__(self):
         return f"<User: {self.username}>"

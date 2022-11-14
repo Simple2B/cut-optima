@@ -2,18 +2,11 @@ from app import db
 
 
 class ModelMixin(object):
-    def save(self, commit=True):
+
+    def save(self):
         # Save this model to the database.
         db.session.add(self)
-        if commit:
-            db.session.commit()
-        return self
-
-    def delete(self, commit=True):
-        # Save this model to the database.
-        db.session.delete(self)
-        if commit:
-            db.session.commit()
+        db.session.commit()
         return self
 
 

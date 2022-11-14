@@ -1,17 +1,15 @@
-def register(client, username, email):
-    return client.post(
-        "/register",
-        data=dict(
-            username=username,
-            email=email,
-        ),
-        follow_redirects=True,
-    )
+from app.models import User
 
 
-def login(client, email, password):
+def register(username, email="username@test.com", password="password"):
+    user = User(username=username, email=email, password=password)
+    user.save()
+    return user.id
+
+
+def login(client, username, password="password"):
     return client.post(
-        "/login", data=dict(email=email, password=password), follow_redirects=True
+        "/login", data=dict(user_id=username, password=password), follow_redirects=True
     )
 
 
