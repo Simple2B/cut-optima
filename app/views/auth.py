@@ -22,6 +22,9 @@ def register():
         )
         log(log.INFO, "Create user [%s]", user)
         user.save()
+
+        # TODO SEND MAIL
+
         flash(
             "Please visit your email address to set you password",
             "success",
@@ -62,127 +65,68 @@ def logout():
     return redirect(url_for("main.index"))
 
 
-@auth_blueprint.route("/forgot_password", methods=["GET", "POST"])
-def forgot_password():
+@auth_blueprint.route("/reset_password", methods=["GET", "POST"])
+def reset_password():
     if current_user.is_authenticated:
         log(log.INFO, "User [%s] in logged in", current_user)
         return redirect(url_for("main.index"))
 
     form = ForgotPassword()
     if form.validate_on_submit():
-        email = form.email.data
+        email: str = form.email.data
 
         # edit previous recovery request
-        user = User.query.filter(User.email == email).first()
-        if not user.password_recovery:
-            user.password_recovery = PasswordRecovery(created_by=user)
+        user: User = User.query.filter(User.email == email.lower()).first()
 
-        recovery_code = str(uuid4())
-        user.password_recovery.recovery_code = recovery_code
+        if user:
+            log(log.INFO, "Create recovery request [%s]", user)
+            user.reset_password()
 
-        log(log.INFO, "Create recovery request [%s]", user)
-        user.save()
+            # TODO SEND MAIL
 
-        url = f'http://{conf.DOMAIN}{url_for("auth.password_recovery", recovery_code=recovery_code)}'
-
-        # mail_controller = MailController()
-        # mail_controller.send_password_recovery_mail(email, url)
-
-        flash("We sent a password reset URL to your email", "success")
-
+            flash(
+                "Password reset successful. For set new password please check your e-mail.",
+                "success",
+            )
+            return redirect(url_for("main.index"))
+    flash("No registered user with this e-mail", "danger")
     return render_template("auth/forgot_password.html", form=form)
 
 
-@auth_blueprint.route("/password_recovery/<recovery_code>", methods=["GET", "POST"])
-def password_recovery(recovery_code):
+@auth_blueprint.route(
+    "/password_recovery/<reset_password_uid>", methods=["GET", "POST"]
+)
+def password_recovery(reset_password_uid):
     if current_user.is_authenticated:
         return redirect(url_for("main.index"))
 
     message = error = None
-    recovery_request = PasswordRecovery.query.filter(
-        PasswordRecovery.recovery_code == recovery_code
+
+    user: User = User.query.filter(
+        User.reset_password_uid == reset_password_uid
     ).first()
-    if not recovery_request:
-        log(log.INFO, "Password recovery request does not exists [%s]", recovery_code)
-        error = "Password recovery request does not exists"
-        return render_template(
-            "etc/message_page.html",
-            error=error,
-        )
-    elif recovery_request:
-        period = recovery_request.created_at - datetime.now()
-        period = period.total_seconds() / 60 * -1  # in minutes
 
-        if period > 20:
-            log(
-                log.INFO,
-                "Password recovery link is expired [%s]",
-                recovery_request.user,
-            )
-
-            error = "Password recovery link is expired"
-            return render_template(
-                "etc/message_page.html",
-                error=error,
-            )
+    if not user:
+        log(log.ERROR, "wrong reset_password_uid. [%s]", reset_password_uid)
+        flash("Incorrect reset password link", "danger")
+        return redirect(url_for("main.index"))
 
     form = ChangePasswordForm()
 
     if form.validate_on_submit():
-        if not recovery_request:
-            log(
-                log.INFO,
-                "Password recovery request does not exists [%s]",
-                recovery_code,
-            )
-            error = "Password recovery request does not exists"
-            return render_template(
-                "etc/message_page.html",
-                error=error,
-            )
-        log(log.INFO, "Change password [%s]", recovery_request.user)
-        user = recovery_request.user
+        log(log.INFO, "Change password [%s]", user)
         user.password = form.password.data
+        user.reset_password_uid = ""
         user.save()
-        recovery_request.delete()
+        login_user(user)
         flash("Password has been changed.", "success")
-        return redirect(url_for("auth.login"))
+        flash("Login successful.", "success")
+        return redirect(url_for("main.index"))
 
     return render_template(
         "auth/reset_password.html",
         form=form,
-        recovery_code=recovery_code,
+        reset_password_uid=reset_password_uid,
         message=message,
         error=error,
     )
-
-
-@auth_blueprint.route("/confirm_email/<confirmation_token>", methods=["GET", "POST"])
-def confirm_email(confirmation_token):
-    if current_user.is_authenticated:
-        return redirect(url_for("main.index"))
-
-    user = User.query.filter(User.confirmation_token == confirmation_token).first()
-    if not user:
-        log(
-            log.INFO,
-            "User with email confirmation token [%s] does not exists ",
-            confirmation_token,
-        )
-        error = "User not found"
-        return render_template(
-            "etc/message_page.html",
-            error=error,
-        )
-
-    log(
-        log.INFO,
-        "Confirm user [%s] email",
-        user,
-    )
-    user.activated = True
-    user.confirmation_token = None
-    user.save()
-
-    flash("Email confirmed.", "success")
-    return redirect(url_for("auth.login"))

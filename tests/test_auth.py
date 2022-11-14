@@ -12,7 +12,7 @@ def test_auth_pages(client):
     assert response.status_code == 200
     response = client.get("/logout")
     assert response.status_code == 302
-    response = client.get("/forgot_password")
+    response = client.get("/reset_password")
     assert response.status_code == 200
 
 
@@ -98,36 +98,37 @@ def test_login_email_confirming_logout(client):
 
 def test_password_recovery(client):
     response = client.post(
-        "/forgot_password",
+        "/reset_password",
         data=dict(
             email=EMAIL,
         ),
         follow_redirects=True,
     )
     assert b"Email not found" in response.data
+    assert b"No registered user with this e-mail" in response.data
 
     response = register(client, USERNAME, EMAIL)
-    assert b"Please visit your email address to verify it" in response.data
+    assert b"Please visit your email address to set you password" in response.data
 
     response = client.post(
-        "/forgot_password",
+        "/reset_password",
         data=dict(
             email=EMAIL,
         ),
         follow_redirects=True,
     )
-    assert b"We sent a password reset URL to your email" in response.data
+    assert (
+        b"Password reset successful. For set new password please check your e-mail."
+        in response.data
+    )
 
     user: User = User.query.filter(User.email == EMAIL).first()
-    user.activated = True
-    user.save()
-    assert user.password_recovery
-    assert user.password_recovery.recovery_code
+    assert user.reset_password_uid
 
     new_password = "new_password"
     # passwords do not match
     response = client.post(
-        "/password_recovery/" + user.password_recovery.recovery_code,
+        "/password_recovery/" + user.reset_password_uid,
         data=dict(
             password=new_password,
             confirm_password=new_password + "123",
@@ -138,7 +139,7 @@ def test_password_recovery(client):
 
     # passwords match
     response = client.post(
-        "/password_recovery/" + user.password_recovery.recovery_code,
+        "/password_recovery/" + user.reset_password_uid,
         data=dict(
             password=new_password,
             confirm_password=new_password,
@@ -146,6 +147,4 @@ def test_password_recovery(client):
         follow_redirects=True,
     )
     assert b"Password has been changed" in response.data
-
-    response = login(client, EMAIL, new_password)
     assert b"Login successful." in response.data
