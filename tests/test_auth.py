@@ -1,8 +1,9 @@
 from typing import List
+
 from tests.utils import register, login, logout
 from app.models import User
-
 from .constants import EMAIL, PASSWORD, USERNAME
+from app import mail
 
 
 def test_auth_pages(client):
@@ -26,15 +27,20 @@ def test_register(client):
     assert b"The given data was invalid." in response.data
 
     # register with valid data
-    response = client.post(
-        "/register",
-        data=dict(
-            username=USERNAME,
-            email=EMAIL,
-        ),
-        follow_redirects=True,
-    )
-    assert b"Please visit your email address to set you password" in response.data
+    with mail.record_messages() as outbox:
+        response = client.post(
+            "/register",
+            data=dict(
+                username=USERNAME,
+                email=EMAIL,
+            ),
+            follow_redirects=True,
+        )
+        assert b"Please visit your email address to set you password" in response.data
+        # check email
+        assert len(outbox) == 1
+        letter = outbox[0]
+        assert letter.subject == "New password"
 
     user: User = User.query.filter(User.email == EMAIL).first()
     assert user
@@ -115,13 +121,19 @@ def test_password_recovery(client):
     response = register(client, USERNAME, EMAIL)
     assert b"Please visit your email address to set you password" in response.data
 
-    response = client.post(
-        "/reset_password",
-        data=dict(
-            email=EMAIL,
-        ),
-        follow_redirects=True,
-    )
+    with mail.record_messages() as outbox:
+        response = client.post(
+            "/reset_password",
+            data=dict(
+                email=EMAIL,
+            ),
+            follow_redirects=True,
+        )
+
+        # check email
+        assert len(outbox) == 1
+        letter = outbox[0]
+        assert letter.subject == "Reset password"
     assert (
         b"Password reset successful. For set new password please check your e-mail."
         in response.data

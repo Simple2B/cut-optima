@@ -1,12 +1,11 @@
-from uuid import uuid4
-from datetime import datetime
-
+from flask_mail import Message
 from flask import Blueprint, render_template, url_for, redirect, flash, request
 from flask_login import login_user, logout_user, login_required, current_user
 
 from app.models import User
 from app.forms import LoginForm, RegistrationForm, ForgotPassword, ChangePasswordForm
 from app.logger import log
+from app import mail
 from config import BaseConfig as conf
 
 auth_blueprint = Blueprint("auth", __name__)
@@ -23,7 +22,22 @@ def register():
         log(log.INFO, "Create user [%s]", user)
         user.save()
 
-        # TODO SEND MAIL
+        msg = Message(
+            subject="New password",
+            sender=conf.MAIL_DEFAULT_SENDER,
+            recipients=[user.email],
+        )
+        msg.html = render_template(
+            "email/register.html",
+            user=user,
+            url=url_for(
+                "auth.password_recovery",
+                reset_password_uid=user.reset_password_uid,
+                _external=True,
+            ),
+            config=conf,
+        )
+        mail.send(msg)
 
         flash(
             "Please visit your email address to set you password",
@@ -82,8 +96,23 @@ def reset_password():
             log(log.INFO, "Create recovery request [%s]", user)
             user.reset_password()
 
-            # TODO SEND MAIL
+            msg = Message(
+                subject="Reset password",
+                sender=conf.MAIL_DEFAULT_SENDER,
+                recipients=[user.email],
+            )
+            msg.html = render_template(
+                "email/reset_password.html",
+                user=user,
+                url=url_for(
+                    "auth.password_recovery",
+                    reset_password_uid=user.reset_password_uid,
+                    _external=True,
+                ),
+                config=conf,
+            )
 
+            mail.send(msg)
             flash(
                 "Password reset successful. For set new password please check your e-mail.",
                 "success",
