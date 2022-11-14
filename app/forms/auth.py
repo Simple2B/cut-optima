@@ -28,7 +28,7 @@ class RegistrationForm(FlaskForm):
 class ForgotPassword(FlaskForm):
     email = EmailField(
         "Email",
-        validators=[DataRequired(), Length(max=256)],
+        validators=[DataRequired(), Length(max=256), Email()],
         render_kw={"placeholder": "Email"},
     )
     submit = SubmitField("Reset Password")
