@@ -26,8 +26,6 @@ class User(db.Model, UserMixin, ModelMixin):
     deleted = db.Column(db.Boolean, default=False)
     reset_password_uid = db.Column(db.String(64), default=gen_password_reset_id)
 
-    password_recovery = db.relationship("PasswordRecovery", uselist=False)
-
     @hybrid_property
     def password(self):
         return self.password_hash
@@ -39,7 +37,11 @@ class User(db.Model, UserMixin, ModelMixin):
     @classmethod
     def authenticate(cls, email, password):
         user = cls.query.filter(func.lower(cls.email) == func.lower(email)).first()
-        if user is not None and check_password_hash(user.password, password):
+        if (
+            user is not None
+            and user.activated
+            and check_password_hash(user.password, password)
+        ):
             return user
 
     def reset_password(self):
