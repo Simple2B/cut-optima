@@ -4,7 +4,7 @@ from datetime import datetime
 from flask import Blueprint, render_template, url_for, redirect, flash, request
 from flask_login import login_user, logout_user, login_required, current_user
 
-from app.models import User, PasswordRecovery
+from app.models import User
 from app.forms import LoginForm, RegistrationForm, ForgotPassword, ChangePasswordForm
 from app.logger import log
 from config import BaseConfig as conf
@@ -39,20 +39,17 @@ def login():
         log(log.INFO, "User [%s] is already logged in", current_user)
         flash("You are already logged in.", "danger")
         return redirect(url_for("main.index"))
+
     form = LoginForm(request.form)
     if form.validate_on_submit():
         user: User = User.authenticate(form.email.data, form.password.data)
-        if user is not None and user.activated:
+        if user:
             log(log.INFO, "Login user [%s]", user)
             login_user(user)
             flash("Login successful.", "success")
             return redirect(url_for("main.index"))
-        elif user and not user.activated:
-            log(log.ERROR, "Cannot login in. User [%s] is not activated", user)
-            flash("Cannot login in. Please confirm your email.", "danger")
-        else:
-            log(log.ERROR, "Wrong email or password")
-            flash("Wrong email or password.", "danger")
+        log(log.ERROR, "Wrong email or password")
+        flash("Wrong email or password.", "danger")
     return render_template("auth/login.html", form=form)
 
 

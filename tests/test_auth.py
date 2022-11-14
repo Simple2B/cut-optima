@@ -62,20 +62,23 @@ def test_login_email_confirming_logout(client):
     response = logout(client)
     assert b"Please log in to access this page." in response.data
 
-    response = register(client, USERNAME, EMAIL, PASSWORD)
-    assert b"Please visit your email address to verify it" in response.data
+    response = register(client, USERNAME, EMAIL)
+    assert b"Please visit your email address to set you password" in response.data
 
     # login not activated user
     response = login(client, EMAIL, PASSWORD)
-    assert b"Cannot login in. Please confirm your email." in response.data
+    assert b"Wrong email or password" in response.data
 
     # confirm email
     user: User = User.query.filter(User.email == EMAIL).first()
-    response = client.post(
-        "/confirm_email/" + user.confirmation_token,
-        follow_redirects=True,
-    )
-    assert b"Email confirmed." in response.data
+    user.activated = True
+    user.password = PASSWORD
+    user.save()
+    # response = client.post(
+    #     "/confirm_email/" + user.confirmation_token,
+    #     follow_redirects=True,
+    # )
+    # assert b"Email confirmed." in response.data
 
     # login activated user
     response = login(client, EMAIL, PASSWORD)
@@ -103,7 +106,7 @@ def test_password_recovery(client):
     )
     assert b"Email not found" in response.data
 
-    response = register(client, USERNAME, EMAIL, PASSWORD)
+    response = register(client, USERNAME, EMAIL)
     assert b"Please visit your email address to verify it" in response.data
 
     response = client.post(
