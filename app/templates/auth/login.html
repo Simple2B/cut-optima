@@ -11,6 +11,7 @@
         action="{{ url_for('auth.login') }}"
         method="post"
       >
+        {{form.hidden_tag()}}
         <div class="form-group mb-2">
           {{form.email.label}} {{form.email(class='form-control')}} {% for error
           in form.errors.email %}
