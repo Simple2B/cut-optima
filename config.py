@@ -23,6 +23,15 @@ class BaseConfig(object):
     MAIL_PASSWORD = os.getenv("MAIL_PASSWORD", "no-password")
     MAIL_DEFAULT_SENDER = os.getenv("MAIL_DEFAULT_SENDER", "sender_name")
 
+    DEFAULT_BIN_SIZES = [
+        {"name": "A0", "width": 841, "height": 1188},
+        {"name": "A1", "width": 594, "height": 841},
+        {"name": "A2", "width": 420, "height": 594},
+        {"name": "A3", "width": 297, "height": 420},
+        {"name": "A4", "width": 210, "height": 297},
+        {"name": "A5", "width": 148, "height": 210},
+    ]
+
     @staticmethod
     def configure(app):
         # Implement this method to do further configuration on your app.

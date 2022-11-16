@@ -109,6 +109,53 @@ a {
   outline: grey 1px solid;
 }
 
+/* input sufix */
+/* prepare wrapper element */
+.input-sufix-block {
+  display: inline-block;
+  position: relative;
+}
+.input-sufix-block input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+.input-sufix-block input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* position the unit to the right of the wrapper */
+.input-sufix-block::after {
+  position: absolute;
+  top: 0px;
+  right: 0.5em;
+  transition: all 0.05s ease-in-out;
+}
+
+/* handle Firefox (arrows always shown) */
+@supports (-moz-appearance: none) {
+  .input-sufix-block::after {
+    right: 1.5em;
+  }
+}
+
+/* set the unit abbreviation for each unit class */
+.cm::after {
+  content: "cm";
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+.in::after {
+  content: "in";
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+/*  */
+
 @media screen and (min-width: 768px) {
   #navbar {
     display: flex;
@@ -122,5 +169,30 @@ a {
 @media screen and (max-width: 768px) {
   #navbar {
     margin-left: 10px;
+  }
+  .calculator-l-side {
+    width: 100% !important;
+  }
+  .calculator-r-side {
+    width: 100% !important;
+  }
+}
+
+@media screen and (max-width: 950px) {
+  #navbar {
+    margin-left: 10px;
+  }
+  .calculator-content {
+    flex-direction: column;
+    align-items: center;
+  }
+  .calculator-l-side {
+    width: 75%;
+  }
+  .calculator-r-side {
+    width: 75%;
+  }
+  .calculator-content .left-border {
+    border-left: none;
   }
 }

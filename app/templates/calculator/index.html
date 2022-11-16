@@ -5,49 +5,29 @@
       <h5 class="settings-block-title p-1">Stock sheets</h5>
       <div class="bin-sizes d-flex border-bottom">
         <select class="form-select border-0" id="bin-size-select">
-          <option value="100x200" selected>100x200</option>
-          <option value="200x200">200x200</option>
-          <option value="300x200">300x200</option>
+          {% for default_size in config.DEFAULT_BIN_SIZES %}
+          <option value="{{default_size.width}}x{{default_size.height}}">
+            {{default_size.name}} ({{default_size.width /
+            10}}x{{default_size.height / 10}} cm)
+          </option>
+          {% endfor %}
+          <option value="x">Custom size</option>
         </select>
         <div class="btn rounded btn btn-light" id="bin-add-btn">Add</div>
       </div>
-      <div class="added-bins mt-1">
-        <!--
-          <div class="d-flex on-hover-border mb-2px">
-            <input
-              type="text"
-              class="left-border-0 form-control"
-              placeholder="Width"
-            />
-            <span class="input-group-text">x</span>
-            <input
-              type="text"
-              class="left-border-0 form-control"
-              placeholder="Height"
-            />
-            <div
-              class="del-btn btn d-flex flex-column justify-content-center px-2 ml-2 bg-light rounded"
-            >
-              <img
-                src="{{ url_for('static', filename='img/trash-can.svg') }}"
-                alt="trash-can"
-              />
-            </div>
-          </div>
-        -->
-      </div>
+      <div class="added-bins mt-1"></div>
     </div>
     <div class="rects-settings mt-4">
       <h5 class="settings-block-title p-1">Items</h5>
       <div class="rect-sizes d-flex border-bottom">
         <input
-          class="left-border-0 form-control rect-width"
+          class="form-control rect-width"
           placeholder="Width"
           type="number"
         />
         <span class="input-group-text">x</span>
         <input
-          class="left-border-0 form-control rect-height"
+          class="form-control rect-height"
           placeholder="Height"
           type="number"
         />
@@ -57,7 +37,48 @@
     </div>
     <div class="general-settings mt-4">
       <h5 class="settings-block-title p-1">Settings</h5>
-      <div class="mt-1"></div>
+      <div class="mt-1">
+        <div class="d-flex mb-1">
+          <span class="input-group-text">Blade size</span>
+          <input
+            class="form-control blade-size"
+            placeholder="Blade size"
+            value="0"
+            type="number"
+          />
+        </div>
+        <div class="d-flex mb-1">
+          <span class="input-group-text">Price per square</span>
+          <input
+            class="form-control print-price"
+            placeholder="Print price"
+            value="0"
+            type="number"
+          />
+        </div>
+        <div class="d-flex">
+          <span class="input-group-text">Unit of measurement</span>
+          <select class="form-select metic-system">
+            <option value="10" selected>Centimeter</option>
+            <option value="25.4">Inch</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="actions mt-4">
+      <h5 class="settings-block-title p-1">Actions</h5>
+      <div class="mt-1 d-flex">
+        <div
+          class="btn border rounded btn btn-outline-success w-50 calculate-btn"
+        >
+          Calculate
+        </div>
+        <div
+          class="btn border rounded btn btn-outline-danger w-50 clean-all-btn"
+        >
+          Clean All
+        </div>
+      </div>
     </div>
   </div>
   <div class="calculator-r-side"></div>
@@ -72,6 +93,11 @@
 
 <script
   src="{{ url_for('static', filename='js/calculator/rects_settings.js') }}"
+  type="text/javascript"
+></script>
+
+<script
+  src="{{ url_for('static', filename='js/calculator/actions.js') }}"
   type="text/javascript"
 ></script>
 
