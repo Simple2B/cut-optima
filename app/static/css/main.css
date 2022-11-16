@@ -9,6 +9,11 @@
   box-shadow: none !important;
 }
 
+html,
+body {
+  height: 100%;
+}
+
 a {
   text-decoration: none;
 }
@@ -90,11 +95,13 @@ a {
 /* calculator */
 .calculator-content {
   flex-direction: row;
-  padding: 10px 15px 0 !important;
+  /* padding: 10px 15px 0 !important; */
 }
 
 .calculator-l-side {
   width: 25%;
+  padding-top: 10px;
+  margin-left: 15px;
 }
 .calculator-r-side {
   width: 75%;

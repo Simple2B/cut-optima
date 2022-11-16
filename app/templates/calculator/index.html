@@ -1,5 +1,5 @@
 {% extends 'base.html' %} {% block content %}
-<div class="calculator-content d-flex">
+<div class="calculator-content d-flex h-100">
   <div class="calculator-l-side left-border">
     <div class="bin-settings">
       <h5 class="settings-block-title p-1">Stock sheets</h5>
@@ -18,7 +18,7 @@
       <div class="added-bins mt-1"></div>
     </div>
     <div class="rects-settings mt-4">
-      <h5 class="settings-block-title p-1">Items</h5>
+      <h5 class="settings-block-title p-1 mb-1">Items</h5>
       <div class="rect-sizes d-flex border-bottom">
         <input
           class="form-control rect-width"
@@ -67,15 +67,13 @@
     </div>
     <div class="actions mt-4">
       <h5 class="settings-block-title p-1">Actions</h5>
-      <div class="mt-1 d-flex">
+      <div class="mt-1 d-flex flex-column">
         <div
-          class="btn border rounded btn btn-outline-success w-50 calculate-btn"
+          class="btn border rounded btn btn-outline-success calculate-btn mb-1"
         >
           Calculate
         </div>
-        <div
-          class="btn border rounded btn btn-outline-danger w-50 clean-all-btn"
-        >
+        <div class="btn border rounded btn btn-outline-danger clean-all-btn">
           Clean All
         </div>
       </div>
