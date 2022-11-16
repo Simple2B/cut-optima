@@ -23,6 +23,11 @@ class BaseConfig(object):
     MAIL_PASSWORD = os.getenv("MAIL_PASSWORD", "no-password")
     MAIL_DEFAULT_SENDER = os.getenv("MAIL_DEFAULT_SENDER", "sender_name")
 
+    # colors
+    COLOR_WHITE = "white"
+    COLOR_BLACK = "black"
+    COLOR_GREY = "#efe6e6"
+
     @staticmethod
     def configure(app):
         # Implement this method to do further configuration on your app.

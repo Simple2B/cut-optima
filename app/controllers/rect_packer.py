@@ -1,5 +1,6 @@
 from rectpack import newPacker, guillotine
 from PIL import Image, ImageDraw
+from config import BaseConfig as conf
 
 
 class RectPacker:
@@ -83,10 +84,10 @@ class RectPacker:
     def generate_image_for_bin(self, bin):
         shape = [(bin.width, bin.height), 0, 0]
 
-        img = Image.new("RGB", (bin.width, bin.height), "white")
+        img = Image.new("RGB", (bin.width, bin.height), conf.COLOR_WHITE)
 
         img_draw = ImageDraw.Draw(img)
-        img_draw.rectangle(shape, outline="black")
+        img_draw.rectangle(shape, outline=conf.COLOR_BLACK)
 
         for rect in bin:
             rectangle = [
@@ -95,8 +96,8 @@ class RectPacker:
             ]
             img_draw.rectangle(
                 rectangle,
-                outline="white" if self.blade_size else "black",
-                fill="white" if self.blade_size else "#efe6e6",
+                outline=conf.COLOR_WHITE if self.blade_size else conf.COLOR_BLACK,
+                fill=conf.COLOR_WHITE if self.blade_size else conf.COLOR_GREY,
             )
             if self.blade_size:
                 rectangle = [
@@ -108,7 +109,7 @@ class RectPacker:
                 ]
                 img_draw.rectangle(
                     rectangle,
-                    outline="black",
-                    fill="#efe6e6",
+                    outline=conf.COLOR_BLACK,
+                    fill=conf.COLOR_GREY,
                 )
         return img
