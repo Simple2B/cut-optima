@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
         }">
         <input
             type="number"
-            class="left-border-0 form-control"
+            class="left-border-0 form-control added-rect-width"
             placeholder="Width"
             value=${widht}
         />
@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
         }">
         <input
             type="number"
-            class="left-border-0 form-control"
+            class="left-border-0 form-control added-rect-height"
             placeholder="Height"
             value=${height}
         />
@@ -62,7 +62,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
     const heightInput = document.querySelector(".rect-height");
     const width = parseFloat(widthInput.value);
     const height = parseFloat(heightInput.value);
-    console.log("data", !width || !height);
     if (!width || !height) {
       alert("You must enter both width and height");
       return;
@@ -71,7 +70,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
     widthInput.value = "";
     heightInput.value = "";
 
-    console.log(width, height);
     addRect(width, height);
   });
 });

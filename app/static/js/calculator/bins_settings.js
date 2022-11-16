@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
         }">
           <input
               type="number"
-              class="left-border-0 form-control"
+              class="left-border-0 form-control added-bin-width"
               placeholder="Width"
               value=${widht}
           />
@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
         }">
         <input
             type="number"
-            class="left-border-0 form-control"
+            class="left-border-0 form-control added-bin-height"
             placeholder="Height"
             value=${height}
         />
