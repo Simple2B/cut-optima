@@ -2,6 +2,7 @@ from rectpack import newPacker, guillotine
 from PIL import Image, ImageDraw
 
 from config import BaseConfig as conf
+from app.logger import log
 
 
 class RectPacker:
@@ -30,6 +31,7 @@ class RectPacker:
             width (int): bin width
             height (int): bin height
         """
+        log(log.INFO, "Add bin [%s]", [width, height])
         self.bins.append([width, height])
 
     def add_rectangle(self, width: int, height: int):
@@ -39,6 +41,7 @@ class RectPacker:
             width (int): rectangle width
             height (int): rectangle height
         """
+        log(log.INFO, "Add rectangle [%s]", [width, height])
         self.rectangles.append(sorted([width, height]))
 
     def validate_rectangles(self):
@@ -49,9 +52,13 @@ class RectPacker:
             ValueError: if rectangles are not added
             ValueError: if found invalid rectangle
         """
+        log(log.INFO, "Validate rectangles")
+
         if not self.bins:
+            log(log.ERROR, "Bins not found")
             raise ValueError("Bins not found")
         elif not self.rectangles:
+            log(log.ERROR, "Rectangles not found")
             raise ValueError("Rectangles not found")
         invalid_rectangles = []
 
@@ -68,10 +75,14 @@ class RectPacker:
                 invalid_rectangles.append(rect)
 
         if invalid_rectangles:
+            log(log.ERROR, "Found invalid rectangle(s): [%s]", invalid_rectangles)
             raise ValueError(f"Found invalid rectangle(s): {invalid_rectangles}")
+        log(log.INFO, "Validation succeess")
 
     def pack(self):
         """Place rectangles on bin area and creating image"""
+        log(log.INFO, "Prepare to pack rectangles")
+
         for bin in self.bins:
             self.packer.add_bin(*bin)
         for rect in self.rectangles:
@@ -81,10 +92,12 @@ class RectPacker:
             ]
             self.packer.add_rect(*rect)
 
+        log(log.INFO, "Prepare to pack rectangles")
         self.packer.pack()
 
         not_placed_rectangles = [sorted(rect) for rect in self.rectangles]
         for bin in self.packer:
+            log(log.INFO, "Generate result for bin [%s]", bin)
             bin_result = {
                 "sizes": [bin.width, bin.height],
                 "rectangles": [],
@@ -119,6 +132,7 @@ class RectPacker:
         Returns:
             PIL.Image.Image: generated image with rectangles on bin area
         """
+        log(log.INFO, "Generate image for bin [%s]", bin)
         shape = [(bin.width, bin.height), 0, 0]
 
         img = Image.new("RGB", (bin.width, bin.height), conf.COLOR_WHITE)
