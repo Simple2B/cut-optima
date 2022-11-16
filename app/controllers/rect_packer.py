@@ -1,10 +1,19 @@
 from rectpack import newPacker, guillotine
 from PIL import Image, ImageDraw
+
 from config import BaseConfig as conf
 
 
 class RectPacker:
     def __init__(self, blade_size: int = 0):
+        """Init RectPacker instance with rectpack.racker object to
+        find the optimal arrangement of rectangles on bin area and show it
+        on image
+
+        Args:
+            blade_size (int, optional): Value that will be added
+            to each side of rectangle. Defaults to 0.
+        """
         self.packer = newPacker(pack_algo=guillotine.GuillotineBssfMaxas)
         self.bins = []
         self.rectangles = []
@@ -15,12 +24,31 @@ class RectPacker:
         }
 
     def add_bin(self, width: int, height: int):
+        """Add bin to bins list
+
+        Args:
+            width (int): bin width
+            height (int): bin height
+        """
         self.bins.append([width, height])
 
     def add_rectangle(self, width: int, height: int):
+        """Add rectangle to rectangles list
+
+        Args:
+            width (int): rectangle width
+            height (int): rectangle height
+        """
         self.rectangles.append(sorted([width, height]))
 
     def validate_rectangles(self):
+        """Check if addded rectangles is valid and can be placed on bin area
+
+        Raises:
+            ValueError: if bins are not added
+            ValueError: if rectangles are not added
+            ValueError: if found invalid rectangle
+        """
         if not self.bins:
             raise ValueError("Bins not found")
         elif not self.rectangles:
@@ -43,6 +71,7 @@ class RectPacker:
             raise ValueError(f"Found invalid rectangle(s): {invalid_rectangles}")
 
     def pack(self):
+        """Place rectangles on bin area and creating image"""
         for bin in self.bins:
             self.packer.add_bin(*bin)
         for rect in self.rectangles:
@@ -81,7 +110,15 @@ class RectPacker:
 
         self.result["not_placed_rectangles"] = not_placed_rectangles
 
-    def generate_image_for_bin(self, bin):
+    def generate_image_for_bin(self, bin: object):
+        """Generate image using bin data
+
+        Args:
+            bin (object): rectpack bin object
+
+        Returns:
+            PIL.Image.Image: generated image with rectangles on bin area
+        """
         shape = [(bin.width, bin.height), 0, 0]
 
         img = Image.new("RGB", (bin.width, bin.height), conf.COLOR_WHITE)
