@@ -3,12 +3,22 @@
   border-radius: 0 !important;
 }
 
+*:focus {
+  outline: none;
+  outline: none;
+  box-shadow: none !important;
+}
+
 a {
   text-decoration: none;
 }
 
 .close {
   padding: 5px 6px 7px 5px !important;
+}
+
+.mb-2px {
+  margin-bottom: 2px;
 }
 
 .hit_flash {
@@ -67,6 +77,36 @@ a {
 
 .bg-none {
   background: none;
+}
+
+.left-border {
+  border-left: #00000025 2px solid;
+}
+
+.left-border-0 {
+  border-left: none;
+}
+
+/* calculator */
+.calculator-content {
+  flex-direction: row;
+  padding: 10px 15px 0 !important;
+}
+
+.calculator-l-side {
+  width: 25%;
+}
+.calculator-r-side {
+  width: 75%;
+}
+
+.settings-block-title {
+  border-bottom: #00000025 2px solid;
+  margin-bottom: 0;
+}
+
+.on-hover-border:hover {
+  outline: grey 1px solid;
 }
 
 @media screen and (min-width: 768px) {
