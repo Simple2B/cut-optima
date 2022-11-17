@@ -70,8 +70,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
   };
 
   rectAddBtn.addEventListener("click", () => {
-    meticSystemSelect.disabled = true;
-
     const widthInput = document.querySelector(".rect-width");
     const heightInput = document.querySelector(".rect-height");
     const width = parseFloat(widthInput.value);
@@ -84,6 +82,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
     widthInput.value = "";
     heightInput.value = "";
 
+    meticSystemSelect.disabled = true;
     addRect(width, height);
   });
 });
