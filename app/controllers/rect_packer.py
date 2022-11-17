@@ -1,9 +1,20 @@
 from rectpack import newPacker, guillotine
 from PIL import Image, ImageDraw
 
+from config import BaseConfig as conf
+from app.logger import log
+
 
 class RectPacker:
     def __init__(self, blade_size: int = 0):
+        """Init RectPacker instance with rectpack.racker object to
+        find the optimal arrangement of rectangles on bin area and show it
+        on image
+
+        Args:
+            blade_size (int, optional): Value that will be added
+            to each side of rectangle. Defaults to 0.
+        """
         self.packer = newPacker(pack_algo=guillotine.GuillotineBssfMaxas)
         self.bins = []
         self.rectangles = []
@@ -14,15 +25,40 @@ class RectPacker:
         }
 
     def add_bin(self, width: int, height: int):
+        """Add bin to bins list
+
+        Args:
+            width (int): bin width
+            height (int): bin height
+        """
+        log(log.INFO, "Add bin [%s]", [width, height])
         self.bins.append([width, height])
 
     def add_rectangle(self, width: int, height: int):
+        """Add rectangle to rectangles list
+
+        Args:
+            width (int): rectangle width
+            height (int): rectangle height
+        """
+        log(log.INFO, "Add rectangle [%s]", [width, height])
         self.rectangles.append(sorted([width, height]))
 
     def validate_rectangles(self):
+        """Check if addded rectangles is valid and can be placed on bin area
+
+        Raises:
+            ValueError: if bins are not added
+            ValueError: if rectangles are not added
+            ValueError: if found invalid rectangle
+        """
+        log(log.INFO, "Validate rectangles")
+
         if not self.bins:
+            log(log.ERROR, "Bins not found")
             raise ValueError("Bins not found")
         elif not self.rectangles:
+            log(log.ERROR, "Rectangles not found")
             raise ValueError("Rectangles not found")
         invalid_rectangles = []
 
@@ -39,9 +75,14 @@ class RectPacker:
                 invalid_rectangles.append(rect)
 
         if invalid_rectangles:
+            log(log.ERROR, "Found invalid rectangle(s): [%s]", invalid_rectangles)
             raise ValueError(f"Found invalid rectangle(s): {invalid_rectangles}")
+        log(log.INFO, "Validation succeess")
 
     def pack(self):
+        """Place rectangles on bin area and creating image"""
+        log(log.INFO, "Prepare to pack rectangles")
+
         for bin in self.bins:
             self.packer.add_bin(*bin)
         for rect in self.rectangles:
@@ -51,10 +92,12 @@ class RectPacker:
             ]
             self.packer.add_rect(*rect)
 
+        log(log.INFO, "Prepare to pack rectangles")
         self.packer.pack()
 
         not_placed_rectangles = [sorted(rect) for rect in self.rectangles]
         for bin in self.packer:
+            log(log.INFO, "Generate result for bin [%s]", bin)
             bin_result = {
                 "sizes": [bin.width, bin.height],
                 "rectangles": [],
@@ -80,13 +123,22 @@ class RectPacker:
 
         self.result["not_placed_rectangles"] = not_placed_rectangles
 
-    def generate_image_for_bin(self, bin):
+    def generate_image_for_bin(self, bin: object):
+        """Generate image using bin data
+
+        Args:
+            bin (object): rectpack bin object
+
+        Returns:
+            PIL.Image.Image: generated image with rectangles on bin area
+        """
+        log(log.INFO, "Generate image for bin [%s]", bin)
         shape = [(bin.width, bin.height), 0, 0]
 
-        img = Image.new("RGB", (bin.width, bin.height), "white")
+        img = Image.new("RGB", (bin.width, bin.height), conf.COLOR_WHITE)
 
         img_draw = ImageDraw.Draw(img)
-        img_draw.rectangle(shape, outline="black")
+        img_draw.rectangle(shape, outline=conf.COLOR_BLACK)
 
         for rect in bin:
             rectangle = [
@@ -95,8 +147,8 @@ class RectPacker:
             ]
             img_draw.rectangle(
                 rectangle,
-                outline="white" if self.blade_size else "black",
-                fill="white" if self.blade_size else "#efe6e6",
+                outline=conf.COLOR_WHITE if self.blade_size else conf.COLOR_BLACK,
+                fill=conf.COLOR_WHITE if self.blade_size else conf.COLOR_GREY,
             )
             if self.blade_size:
                 rectangle = [
@@ -108,7 +160,7 @@ class RectPacker:
                 ]
                 img_draw.rectangle(
                     rectangle,
-                    outline="black",
-                    fill="#efe6e6",
+                    outline=conf.COLOR_BLACK,
+                    fill=conf.COLOR_GREY,
                 )
         return img

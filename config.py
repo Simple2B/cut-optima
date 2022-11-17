@@ -32,6 +32,11 @@ class BaseConfig(object):
         {"name": "A5", "width": 148, "height": 210},
     ]
 
+    # colors
+    COLOR_WHITE = "white"
+    COLOR_BLACK = "black"
+    COLOR_GREY = "#efe6e6"
+
     @staticmethod
     def configure(app):
         # Implement this method to do further configuration on your app.

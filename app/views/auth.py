@@ -118,7 +118,7 @@ def reset_password():
                 "success",
             )
             return redirect(url_for("main.index"))
-    flash("No registered user with this e-mail", "danger")
+        flash("No registered user with this e-mail", "danger")
     return render_template("auth/forgot_password.html", form=form)
 
 
