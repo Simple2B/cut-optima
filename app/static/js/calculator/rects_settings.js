@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
   const rectAddBtn = document.querySelector("#rect-add-btn");
   const meticSystemSelect = document.querySelector(".metic-system");
 
-  const addedRectsDiv = document.querySelector(".added-rects");
+  const addedRectsTable = document.querySelector(".added-rects");
 
   const removeRect = (e) => {
     let elementToDelete = e.target.parentNode.parentNode;
@@ -14,42 +14,56 @@ document.addEventListener("DOMContentLoaded", (event) => {
   };
 
   const addRect = (widht, height) => {
-    var newRectDiv = document.createElement("div");
-    newRectDiv.setAttribute("class", "d-flex on-hover-border mb-2px");
-    newRectDiv.innerHTML = `
-    <div class="d-flex on-hover-border w-100">
+    var newRectTr = document.createElement("tr");
+    newRectTr.innerHTML = `
+      <th>
         <div class="input-sufix-block w-100 ${
           meticSystemSelect.value == "10" ? "cm" : "in"
         }">
-        <input
+          <input
             type="number"
-            class="left-border-0 form-control added-rect-width"
+            class="left-border-0 form-control added-rect-width h-42px"
             placeholder="Width"
             value=${widht}
-        />
+            onfocusout="validateInput(this)"
+          />
         </div>
-        <span class="input-group-text">x</span>
+      </th>
+      <th>
         <div class="input-sufix-block w-100 ${
           meticSystemSelect.value == "10" ? "cm" : "in"
         }">
         <input
-            type="number"
-            class="left-border-0 form-control added-rect-height"
-            placeholder="Height"
-            value=${height}
+          type="number"
+          class="left-border-0 form-control added-rect-height h-42px"
+          placeholder="Height"
+          value=${height}
+          onfocusout="validateInput(this)"
         />
         </div>
-        <div
-            class="del-rect-btn btn d-flex flex-column justify-content-center px-2 ml-2 bg-light rounded"
-        >
-            <img
-                src="/static/img/trash-can.svg"
-                alt="trash-can"
-            />
+        </th>
+
+        <th>
+        <div class="input-sufix-block w-100 pcs">
+          <input
+            type="number"
+            class="form-control added-bin-height h-42px"
+            placeholder="Quantity"
+            value="1"
+            onfocusout="validateInputInt(this)"
+          />
         </div>
-    </div>
+      </th>
+      <th>
+        <div
+          class="del-rect-btn btn d-flex flex-column justify-content-center px-2 ml-2 bg-light rounded"
+        >
+          <img src="/static/img/trash-can.svg" alt="trash-can" />
+        </div>
+      </th>
     `;
-    addedRectsDiv.appendChild(newRectDiv);
+
+    addedRectsTable.appendChild(newRectTr);
 
     const delButtons = document.querySelectorAll(".del-rect-btn");
     delButtons[delButtons.length - 1].addEventListener("click", removeRect);

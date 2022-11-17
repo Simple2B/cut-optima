@@ -22,6 +22,18 @@ a {
   padding: 5px 6px 7px 5px !important;
 }
 
+.w-10 {
+  width: 10%;
+}
+
+.h-42px {
+  height: 42px;
+}
+
+.flex-1 {
+  flex: 1;
+}
+
 .mb-2px {
   margin-bottom: 2px;
 }
@@ -88,8 +100,16 @@ a {
   background: none;
 }
 
+.fw-600 {
+  font-weight: 600 !important;
+}
+
 .left-border {
   border-left: #00000025 2px solid;
+}
+
+.left-border-black {
+  border-left: black 2px solid;
 }
 
 .left-border-0 {
@@ -151,6 +171,13 @@ input::-webkit-inner-spin-button {
   }
 }
 
+.added-bins th,
+.added-rects th {
+  padding: 0;
+  text-align: center;
+  border-style: none;
+}
+
 /* set the unit abbreviation for each unit class */
 .cm::after {
   content: "cm";
@@ -160,6 +187,12 @@ input::-webkit-inner-spin-button {
 }
 .in::after {
   content: "in";
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+.pcs::after {
+  content: "pcs";
   display: flex;
   align-items: center;
   height: 100%;

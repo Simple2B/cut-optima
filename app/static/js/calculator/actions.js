@@ -41,17 +41,27 @@ document.addEventListener("DOMContentLoaded", (event) => {
     for (const addedBinDiv of addedBinsDiv.children) {
       const widthInput = addedBinDiv.querySelector(".added-bin-width");
       const heightInput = addedBinDiv.querySelector(".added-bin-height");
+      const picsInput = addedBinDiv.querySelector(".added-bin-quantity");
       const width = parseFloat(widthInput.value);
       const height = parseFloat(heightInput.value);
-      addedBins.push([width, height]);
+      const pics = parseInt(picsInput.value);
+      addedBins.push({
+        size: [width, height],
+        pics: pics,
+      });
     }
 
     for (const addedRectDiv of addedRectsDiv.children) {
       const widthInput = addedRectDiv.querySelector(".added-rect-width");
       const heightInput = addedRectDiv.querySelector(".added-rect-height");
+      const picsInput = addedRectDiv.querySelector(".added-rect-quantity");
       const width = parseFloat(widthInput.value);
       const height = parseFloat(heightInput.value);
-      addedRects.push([width, height]);
+      const pics = parseInt(picsInput.value);
+      addedRects.push({
+        size: [width, height],
+        pics: pics,
+      });
     }
 
     console.log("bins", addedBins);

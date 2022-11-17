@@ -15,7 +15,19 @@
         </select>
         <div class="btn rounded btn btn-light" id="bin-add-btn">Add</div>
       </div>
-      <div class="added-bins mt-1"></div>
+      <div>
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col" class="fw-normal p-1">Width</th>
+              <th scope="col" class="fw-normal p-1">Height</th>
+              <th scope="col" class="fw-normal p-1">Qty</th>
+              <th scope="col" class="fw-normal p-1"></th>
+            </tr>
+          </thead>
+          <tbody class="added-bins border-top-0"></tbody>
+        </table>
+      </div>
     </div>
     <div class="rects-settings mt-4">
       <h5 class="calculator-block-title text-center p-1 mb-1">Items</h5>
@@ -33,7 +45,19 @@
         />
         <div class="btn rounded btn btn-light" id="rect-add-btn">Add</div>
       </div>
-      <div class="added-rects mt-1"></div>
+      <div>
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col" class="fw-normal">Width</th>
+              <th scope="col" class="fw-normal">Height</th>
+              <th scope="col" class="fw-normal">Qty</th>
+              <th scope="col" class="fw-normal"></th>
+            </tr>
+          </thead>
+          <tbody class="added-rects border-top-0"></tbody>
+        </table>
+      </div>
     </div>
     <div class="general-settings mt-4">
       <h5 class="calculator-block-title text-center p-1">Settings</h5>
@@ -45,6 +69,7 @@
             placeholder="Blade size"
             value="0"
             type="number"
+            onfocusout="validateInput(this)"
           />
         </div>
         <div class="d-flex mb-1">
@@ -54,6 +79,7 @@
             placeholder="Print price"
             value="0"
             type="number"
+            onfocusout="validateInput(this)"
           />
         </div>
         <div class="d-flex">

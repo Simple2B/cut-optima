@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
   const binSizeSelect = document.querySelector("#bin-size-select");
   const meticSystemSelect = document.querySelector(".metic-system");
 
-  const addedBinsDiv = document.querySelector(".added-bins");
+  const addedBinsTable = document.querySelector(".added-bins");
 
   const removeBin = (e) => {
     let elementToDelete = e.target.parentNode.parentNode;
@@ -15,42 +15,56 @@ document.addEventListener("DOMContentLoaded", (event) => {
   };
 
   const addBin = (widht, height) => {
-    var newBinDiv = document.createElement("div");
-    newBinDiv.setAttribute("class", "d-flex on-hover-border mb-2px");
-    newBinDiv.innerHTML = `
-    <div class="d-flex on-hover-border w-100">
+    var newBinTr = document.createElement("tr");
+    newBinTr.innerHTML = `
+      <th>
         <div class="input-sufix-block w-100 ${
           meticSystemSelect.value == "10" ? "cm" : "in"
         }">
           <input
-              type="number"
-              class="left-border-0 form-control added-bin-width"
-              placeholder="Width"
-              value=${widht}
+            type="number"
+            class="form-control added-bin-width h-42px"
+            placeholder="Width"
+            value=${widht}
+            onfocusout="validateInput(this)"
           />
         </div>
-        <span class="input-group-text">x</span>
+      </th>
+      <th>
         <div class="input-sufix-block w-100 ${
           meticSystemSelect.value == "10" ? "cm" : "in"
         }">
         <input
-            type="number"
-            class="left-border-0 form-control added-bin-height"
-            placeholder="Height"
-            value=${height}
+        type="number"
+        class="form-control added-bin-height h-42px"
+        placeholder="Height"
+        value=${height}
+        onfocusout="validateInput(this)"
         />
         </div>
-        <div
-            class="del-bin-btn btn d-flex flex-column justify-content-center px-2 ml-2 bg-light rounded"
-        >
-            <img
-                src="/static/img/trash-can.svg"
-                alt="trash-can"
-            />
+        </th>
+
+        <th>
+        <div class="input-sufix-block w-100 pcs">
+          <input
+            type="number"
+            class="form-control added-bin-quantity h-42px"
+            placeholder="Quantity"
+            value="1"
+            min="1"
+            onfocusout="validateInputInt(this)"
+          />
         </div>
-    </div>
+      </th>
+      <th>
+        <div
+          class="del-bin-btn btn d-flex flex-column justify-content-center px-2 ml-2 bg-light rounded h-42px"
+        >
+          <img src="/static/img/trash-can.svg" alt="trash-can" />
+        </div>
+      </th>
     `;
-    addedBinsDiv.appendChild(newBinDiv);
+    addedBinsTable.appendChild(newBinTr);
 
     const delButtons = document.querySelectorAll(".del-bin-btn");
     delButtons[delButtons.length - 1].addEventListener("click", removeBin);
