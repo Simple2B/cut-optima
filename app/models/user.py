@@ -26,6 +26,8 @@ class User(db.Model, UserMixin, ModelMixin):
     deleted = db.Column(db.Boolean, default=False)
     reset_password_uid = db.Column(db.String(64), default=gen_password_reset_id)
 
+    sheets = db.relationship("Sheet", viewonly=True)
+
     @hybrid_property
     def password(self):
         return self.password_hash
