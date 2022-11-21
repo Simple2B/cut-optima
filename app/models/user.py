@@ -33,7 +33,7 @@ class User(db.Model, UserMixin, ModelMixin):
     reset_password_uid = db.Column(db.String(64), default=gen_password_reset_id)
 
     # settings
-    metric_system = db.Column(Enum(MetricSystem), default=MetricSystem.centimeter)
+    metric_system = db.Enum(MetricSystem, default=MetricSystem.centimeter)
     print_price = db.Column(db.Float(), default=0)
     is_price_per_sheet = db.Column(db.Boolean, default=False)
     moq = db.Column(db.Integer(), default=1)
