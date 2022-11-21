@@ -1,4 +1,48 @@
-from app.models import Sheet
+from app.models import Sheet, User
+
+
+def test_settings(client, authorize):
+    user = User.query.first()
+
+    assert user
+
+    # assert defaul values
+    assert user.metric_system == User.MetricSystem.centimeter
+    assert user.print_price == 0
+    assert not user.is_price_per_sheet
+    assert user.moq == 1
+    assert user.cut_spacing == 0.5
+    assert not user.is_enabled_buy_btn
+    assert not user.buy_url
+
+    new_metric_system = User.MetricSystem.inch.value
+    new_print_price = 100
+    new_moq = 100
+    new_cut_spacing = 100
+    new_is_enabled_buy_btn = True
+    new_buy_url = "https://google.com/"
+
+    client.post(
+        "/settings",
+        json={
+            "metric_system": new_metric_system,
+            "print_price": new_print_price,
+            "is_price_per": "Sheet",
+            "moq": new_moq,
+            "cut_spacing": new_cut_spacing,
+            "is_enabled_buy_btn": new_is_enabled_buy_btn,
+            "buy_url": new_buy_url,
+        },
+        follow_redirects=True,
+    )
+
+    assert user.metric_system == new_metric_system
+    assert user.print_price == new_print_price
+    assert user.is_price_per_sheet
+    assert user.moq == new_moq
+    assert user.cut_spacing == new_cut_spacing
+    assert user.is_enabled_buy_btn
+    assert user.buy_url
 
 
 def test_sheet_crud(client, authorize):
