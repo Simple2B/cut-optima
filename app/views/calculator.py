@@ -25,6 +25,7 @@ def calculate():
     elif data.get("meticSystem") not in ["centimeter", "inch"]:
         return jsonify({"message": "Invalid metic system"}), 400
 
+    metic_system = data.get("meticSystem")
     rect_packer = RectPacker(blade_size=data["bladeSize"])
 
     for bin in data["bins"]:
@@ -50,6 +51,14 @@ def calculate():
     if data.get("printPrice"):
         print_sqr_price = data.get("printPrice")
 
+    square_unit = None
+    if metic_system == "centimeter":
+        # square meter
+        square_unit = 100 * 100
+    elif metic_system == "inch":
+        # square feet
+        square_unit = 12 * 12
+
     res = {
         "used_area": 0,
         "wasted_area": 0,
@@ -61,7 +70,7 @@ def calculate():
         res["used_area"] += bin["used_area"]
         res["wasted_area"] += bin["wasted_area"]
         res["placed_items"] += bin["rectangles"]
-        res["print_price"] += bin["used_area"] / 100 * print_sqr_price
+        res["print_price"] += bin["used_area"] / square_unit * print_sqr_price
 
         res["bins"].append(
             {
@@ -69,7 +78,7 @@ def calculate():
                 "used_area": bin["used_area"],
                 "wasted_area": bin["wasted_area"],
                 "placed_items": bin["rectangles"],
-                "print_price": bin["used_area"] / 100 * print_sqr_price,
+                "print_price": bin["used_area"] / square_unit * print_sqr_price,
                 "image": serve_pil_image(bin["image"]),
             }
         )
