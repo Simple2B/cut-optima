@@ -22,6 +22,10 @@ a {
   padding: 5px 6px 7px 5px !important;
 }
 
+.border-90 {
+  border-radius: 90px !important;
+}
+
 .w-10 {
   width: 10%;
 }

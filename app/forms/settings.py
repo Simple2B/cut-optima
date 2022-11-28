@@ -2,7 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import (
     FloatField,
     SubmitField,
-    RadioField,
+    SelectField,
     IntegerField,
     BooleanField,
     StringField,
@@ -13,19 +13,19 @@ from app.models import User
 
 
 class SettingsForm(FlaskForm):
-    metric_system = RadioField(
+    metric_system = SelectField(
         "Metric System",
         [DataRequired()],
         choices=[(choice.name, choice.value) for choice in User.MetricSystem],
     )
     print_price = FloatField(
-        "Pint price",
+        "Print price",
         render_kw={
             "placeholder": "0.0",
         },
         default=0.0,
     )
-    is_price_per = RadioField(
+    is_price_per = SelectField(
         "Price per",
         [DataRequired()],
         choices=[("Sheet", "Sheet"), ("Square", "Square")],

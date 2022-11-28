@@ -1,4 +1,4 @@
-from flask import jsonify, Blueprint, request
+from flask import jsonify, Blueprint, request, render_template, flash
 from flask_login import login_required, current_user
 
 from app.models import Sheet, User
@@ -15,7 +15,6 @@ def settings():
     if form.validate_on_submit():
         current_user.metric_system = User.MetricSystem[form.metric_system.data]
         current_user.print_price = form.print_price.data
-        current_user.print_price = form.print_price.data
         current_user.is_price_per_sheet = form.is_price_per.data == "Sheet"
         current_user.moq = form.moq.data
         current_user.cut_spacing = form.cut_spacing.data
@@ -23,11 +22,9 @@ def settings():
         current_user.buy_url = form.buy_url.data
 
         current_user.save()
+        flash("Updated", "success")
 
-        return jsonify({"message": "success"})
-
-    return jsonify({"message": "render template"})
-    # return render_template
+    return render_template("user/settings.html", form=form)
 
 
 @blueprint.route("/sheet/create", methods=["POST"])
