@@ -36,7 +36,7 @@ def test_settings(client, authorize):
         follow_redirects=True,
     )
 
-    assert user.metric_system == new_metric_system
+    assert user.metric_system == User.MetricSystem[new_metric_system]
     assert user.print_price == new_print_price
     assert user.is_price_per_sheet
     assert user.moq == new_moq

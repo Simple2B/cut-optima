@@ -1,9 +1,9 @@
 from datetime import datetime
 from uuid import uuid4
-from enum import Enum
+import enum
 
 from flask_login import UserMixin, AnonymousUserMixin
-from sqlalchemy import func
+from sqlalchemy import func, Enum
 from sqlalchemy.ext.hybrid import hybrid_property
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -19,7 +19,7 @@ class User(db.Model, UserMixin, ModelMixin):
     __tablename__ = "users"
 
     # Enums
-    class MetricSystem(Enum):
+    class MetricSystem(enum.Enum):
         centimeter = "centimeter"
         inch = "inch"
 
@@ -33,7 +33,7 @@ class User(db.Model, UserMixin, ModelMixin):
     reset_password_uid = db.Column(db.String(64), default=gen_password_reset_id)
 
     # settings
-    metric_system = db.Enum(MetricSystem, default=MetricSystem.centimeter)
+    metric_system = db.Column(Enum(MetricSystem), default=MetricSystem.centimeter)
     print_price = db.Column(db.Float(), default=0)
     is_price_per_sheet = db.Column(db.Boolean, default=False)
     moq = db.Column(db.Integer(), default=1)

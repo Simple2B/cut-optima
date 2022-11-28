@@ -22,6 +22,8 @@ def settings():
         current_user.is_enabled_buy_btn = form.is_enabled_buy_btn.data
         current_user.buy_url = form.buy_url.data
 
+        current_user.save()
+
         return jsonify({"message": "success"})
 
     return jsonify({"message": "render template"})
