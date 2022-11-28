@@ -17,7 +17,12 @@ mail = Mail()
 def create_app(environment="development"):
 
     from config import config
-    from app.views import main_blueprint, auth_blueprint, settings_blueprint
+    from app.views import (
+        main_blueprint,
+        auth_blueprint,
+        settings_blueprint,
+        calculator_blueprint,
+    )
     from app.models import (
         User,
         AnonymousUser,
@@ -41,6 +46,7 @@ def create_app(environment="development"):
     app.register_blueprint(auth_blueprint)
     app.register_blueprint(main_blueprint)
     app.register_blueprint(settings_blueprint)
+    app.register_blueprint(calculator_blueprint)
 
     # Set up flask login.
     @login_manager.user_loader

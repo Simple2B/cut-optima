@@ -3,12 +3,43 @@
   border-radius: 0 !important;
 }
 
+*:focus {
+  outline: none;
+  outline: none;
+  box-shadow: none !important;
+}
+
+html,
+body {
+  height: 100%;
+}
+
 a {
   text-decoration: none;
 }
 
 .close {
   padding: 5px 6px 7px 5px !important;
+}
+
+.w-10 {
+  width: 10%;
+}
+
+.h-42px {
+  height: 42px;
+}
+
+.flex-1 {
+  flex: 1;
+}
+
+.mb-2px {
+  margin-bottom: 2px;
+}
+
+.pl-15px {
+  padding-left: 15px;
 }
 
 .hit_flash {
@@ -69,6 +100,112 @@ a {
   background: none;
 }
 
+.fw-600 {
+  font-weight: 600 !important;
+}
+
+.left-border {
+  border-left: #00000025 2px solid;
+}
+
+.left-border-black {
+  border-left: black 2px solid;
+}
+
+.left-border-0 {
+  border-left: none;
+}
+
+/* calculator */
+.calculator-content {
+  flex-direction: row;
+  /* padding: 10px 15px 0 !important; */
+}
+
+.calculator-l-side {
+  width: 25%;
+  /* margin-left: 15px; */
+}
+.calculator-r-side {
+  width: 75%;
+}
+
+.calculator-block-title {
+  border-bottom: #00000025 2px solid;
+  margin-bottom: 0;
+}
+
+.on-hover-border:hover {
+  outline: grey 1px solid;
+}
+
+/* input sufix */
+/* prepare wrapper element */
+.input-sufix-block {
+  display: inline-block;
+  position: relative;
+}
+.input-sufix-block input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+.input-sufix-block input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* position the unit to the right of the wrapper */
+.input-sufix-block::after {
+  position: absolute;
+  top: 0px;
+  right: 0.5em;
+  transition: all 0.05s ease-in-out;
+}
+
+/* handle Firefox (arrows always shown) */
+@supports (-moz-appearance: none) {
+  .input-sufix-block::after {
+    right: 1.5em;
+  }
+}
+
+.added-bins th,
+.added-rects th {
+  padding: 0;
+  text-align: center;
+  border-style: none;
+}
+
+/* set the unit abbreviation for each unit class */
+.cm::after {
+  content: "cm";
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+.in::after {
+  content: "in";
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+.pcs::after {
+  content: "pcs";
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+/*  */
+
+.result-img-data {
+  width: 70%;
+}
+.result-text-data {
+  width: 30%;
+}
+
 @media screen and (min-width: 768px) {
   #navbar {
     display: flex;
@@ -82,5 +219,41 @@ a {
 @media screen and (max-width: 768px) {
   #navbar {
     margin-left: 10px;
+  }
+  .calculator-l-side {
+    width: 100% !important;
+  }
+  .calculator-r-side {
+    width: 100% !important;
+  }
+}
+
+@media screen and (max-width: 950px) {
+  #navbar {
+    margin-left: 10px;
+  }
+  .calculator-content {
+    flex-direction: column;
+    align-items: center;
+  }
+  .calculator-l-side {
+    width: 75%;
+    margin-left: 0;
+  }
+  .calculator-r-side {
+    width: 75%;
+    margin-top: 40px;
+  }
+  .calculator-content .left-border {
+    border-left: none;
+  }
+  .calculator-results {
+    flex-direction: column-reverse;
+    align-items: center;
+  }
+
+  .result-img-data,
+  .result-text-data {
+    width: 100%;
   }
 }
