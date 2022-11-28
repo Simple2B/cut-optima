@@ -68,8 +68,8 @@ class RectPacker:
             for bin in self.bins:
                 bin = sorted(bin)
                 fit_in_bins.append(
-                    rect[0] + self.blade_size * 2 < bin[0]
-                    and rect[1] + self.blade_size * 2 < bin[0]
+                    rect[0] + self.blade_size * 2 <= bin[0]
+                    and rect[1] + self.blade_size * 2 <= bin[0]
                 )
             if not any(fit_in_bins):
                 invalid_rectangles.append(rect)
