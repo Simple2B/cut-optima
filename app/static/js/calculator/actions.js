@@ -2,26 +2,30 @@
 document.addEventListener("DOMContentLoaded", (event) => {
   // millimeters in different metric systems
   const meticSystemMapping = {
-    10: "centimeter",
-    25.4: "inch",
+    cm: "M",
+    in: "FT",
   };
 
   const calculateBtn = document.querySelector(".calculate-btn");
-  const binsResultsDiv = document.querySelector(".bins-results");
   const imagesResultDiv = document.querySelector(".images-result");
 
   // input data
-  const addedBinsDiv = document.querySelector(".added-bins");
   const bladeSizeInput = document.querySelector(".blade-size");
   const printPriceInput = document.querySelector(".print-price");
   const meticSystemSelect = document.querySelector(".metic-system");
 
   // output data
-  const usedSheetsResInput = document.querySelector(".res-used-sheets");
-  const usedAreaResInput = document.querySelector(".res-used-area");
-  const wastedAreaResInput = document.querySelector(".res-wasted-area");
-  const placedItemResInput = document.querySelector(".res-placed-item");
-  const printPriceResInput = document.querySelector(".res-print-price");
+  const metricResDiv = document.querySelector(".metric-res");
+  const sheetSizeResDiv = document.querySelector(".sheet-size-res");
+  const usageResQtyDiv = document.querySelector(".usage-res-qty");
+  const usageMetricResDiv = document.querySelector(".usage-metric-res");
+  const usageMetricDiv = document.querySelector(".usage-metric");
+  const availableResQtyDiv = document.querySelector(".available-res-qty");
+  const availableResPerUnitDiv = document.querySelector(
+    ".available-res-per-unit"
+  );
+  const availableMetricResDiv = document.querySelector(".available-metric-res");
+  const totalCostResDiv = document.querySelector(".total-cost-res");
 
   calculateBtn.addEventListener("click", async () => {
     // binsResultsDiv.innerHTML = "";
@@ -79,7 +83,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
     const bladeSize = parseFloat(bladeSizeInput.value);
     const printPrice = parseFloat(printPriceInput.value);
-    const meticSystem = meticSystemMapping[parseFloat(meticSystemSelect.value)];
+    const meticSystem = meticSystemSelect.value;
 
     console.log("bins", addedBins);
     console.log("rects", addedRects);
@@ -111,66 +115,21 @@ document.addEventListener("DOMContentLoaded", (event) => {
       return;
     }
 
-    usedSheetsResInput.value = resJson.bins.length;
-    usedAreaResInput.value = resJson.used_area;
-    wastedAreaResInput.value = resJson.wasted_area;
-    placedItemResInput.value = resJson.placed_items.length;
-    printPriceResInput.value = resJson.print_price;
+    metricResDiv.innerHTML = meticSystem;
+    usageResQtyDiv.innerHTML = resJson.used_area;
+    usageMetricResDiv.innerHTML = "SQR";
+    usageMetricDiv.innerHTML = meticSystemMapping[meticSystem];
+
+    availableResQtyDiv.innerHTML = resJson.wasted_area;
+    totalCostResDiv.innerHTML = resJson.print_price;
+    availableMetricResDiv.innerHTML = meticSystemMapping[meticSystem];
+    availableResPerUnitDiv.innerHTML = "SQR";
 
     for (let bin of resJson.bins) {
-      var binResultDiv = document.createElement("div");
-      binResultDiv.setAttribute("class", "bin-result pl-15px");
-
-      binResultDiv.innerHTML = `
-      <div class="bin-result pl-15px">
-        <h6 class="calculator-block-title p-1 mb-1">Sheet ${bin.sizes[0]}x${bin.sizes[1]}</h6>
-        <div class="mt-1">
-          <div class="d-flex mb-1">
-            <span class="input-group-text">Used area</span>
-            <input
-              class="form-control res-used-sheets"
-              placeholder="Used area"
-              value="${bin.used_area}"
-              type="number"
-              disabled
-            />
-          </div>
-          <div class="d-flex mb-1">
-            <span class="input-group-text">Wasted area</span>
-            <input
-              class="form-control res-wasted-area"
-              placeholder="Wasted area"
-              value="${bin.wasted_area}"
-              type="number"
-              disabled
-            />
-          </div>
-          <div class="d-flex mb-1">
-            <span class="input-group-text">Placed items</span>
-            <input
-              class="form-control res-placed-item"
-              placeholder="Placed items"
-              value="${bin.placed_items.length}"
-              type="number"
-              disabled
-            />
-          </div>
-          <div class="d-flex mb-1">
-            <span class="input-group-text">Print price</span>
-            <input
-              class="form-control res-print-price"
-              placeholder="Print price"
-              value="${bin.print_price}"
-              type="number"
-              disabled
-            />
-          </div>
-        </div>
-      </div>
-      `;
-      binsResultsDiv.appendChild(binResultDiv);
-
       var imgResultDiv = document.createElement("div");
+
+      sheetSizeResDiv.innerHTML = `${bin.sizes[0]}x${bin.sizes[1]}`;
+
       imgResultDiv.setAttribute(
         "class",
         "mt-3 d-flex flex-column align-items-center"

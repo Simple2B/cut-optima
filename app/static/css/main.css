@@ -58,6 +58,14 @@ a {
   margin-left: 10px;
 }
 
+.mr-10px {
+  margin-right: 10px;
+}
+
+.mr-5px {
+  margin-right: 5px;
+}
+
 .hit_flash {
   margin: 0;
   padding: 15px 0 0 0 !important;
@@ -217,6 +225,7 @@ input::-webkit-inner-spin-button {
 
 .result-img-data {
   width: 70%;
+  background: #e7e7e7;
 }
 .result-text-data {
   width: 30%;

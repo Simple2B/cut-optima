@@ -11,7 +11,23 @@ blueprint = Blueprint("calculator", __name__)
 @login_required
 @blueprint.route("/calculator", methods=["GET"])
 def calculator():
-    return render_template("calculator/index.html", config=conf)
+    moq = ""
+    moq_unit = ""
+    cost = ""
+    cost_per = ""
+    order_url = ""
+    order_enabled = False
+
+    return render_template(
+        "calculator/index.html",
+        config=conf,
+        moq=moq,
+        moq_unit=moq_unit,
+        cost=cost,
+        cost_per=cost_per,
+        order_url=order_url,
+        order_enabled=order_enabled,
+    )
 
 
 @blueprint.route("/calculate", methods=["POST"])
@@ -22,7 +38,7 @@ def calculate():
         return jsonify({"message": "Bin(s) not found"}), 400
     elif not data.get("rectangles"):
         return jsonify({"message": "Rectangle(s) not found"}), 400
-    elif data.get("meticSystem") not in ["centimeter", "inch"]:
+    elif data.get("meticSystem") not in ["cm", "in"]:
         return jsonify({"message": "Invalid metic system"}), 400
 
     metic_system = data.get("meticSystem")
@@ -52,10 +68,10 @@ def calculate():
         print_sqr_price = data.get("printPrice")
 
     square_unit = None
-    if metic_system == "centimeter":
+    if metic_system == "cm":
         # square meter
         square_unit = 100 * 100
-    elif metic_system == "inch":
+    elif metic_system == "in":
         # square feet
         square_unit = 12 * 12
 
@@ -67,8 +83,8 @@ def calculate():
         "bins": [],
     }
     for bin in rect_packer.result["bins"]:
-        res["used_area"] += bin["used_area"]
-        res["wasted_area"] += bin["wasted_area"]
+        res["used_area"] += bin["used_area"] / square_unit
+        res["wasted_area"] += bin["wasted_area"] / square_unit
         res["placed_items"] += bin["rectangles"]
         res["print_price"] += bin["used_area"] / square_unit * print_sqr_price
 
