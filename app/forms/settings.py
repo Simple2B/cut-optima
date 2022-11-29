@@ -54,4 +54,4 @@ class SettingsForm(FlaskForm):
         render_kw={"placeholder": "e.g. https://your-site.com/buy"},
     )
 
-    submit = SubmitField("Save")
+    submit = SubmitField("Save Settings")

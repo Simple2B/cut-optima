@@ -1,6 +1,8 @@
 from flask_wtf import FlaskForm
-from wtforms import FloatField, SubmitField, ValidationError
+from wtforms import FloatField, SubmitField, ValidationError, IntegerField
 from wtforms.validators import DataRequired
+
+from app.models import Sheet
 
 
 class AddSheet(FlaskForm):
@@ -22,3 +24,16 @@ class AddSheet(FlaskForm):
     def validate_height(form, height):
         if height.data <= 0:
             raise ValidationError("Height cannot be 0 or less")
+
+
+class DeleteSheet(FlaskForm):
+    id = IntegerField(
+        "Sheet Id",
+        [DataRequired()],
+    )
+
+    submit = SubmitField("Delete Sheet")
+
+    def validate_id(form, id):
+        if not Sheet.query.get(id.data):
+            raise ValidationError("Sheet not found")
