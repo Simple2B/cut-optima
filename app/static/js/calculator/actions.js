@@ -26,6 +26,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
   );
   const availableMetricResDiv = document.querySelector(".available-metric-res");
   const totalCostResDiv = document.querySelector(".total-cost-res");
+  const costResDiv = document.querySelector(".cost-res");
 
   calculateBtn.addEventListener("click", async () => {
     // binsResultsDiv.innerHTML = "";
@@ -116,14 +117,15 @@ document.addEventListener("DOMContentLoaded", (event) => {
     }
 
     metricResDiv.innerHTML = meticSystem;
-    usageResQtyDiv.innerHTML = resJson.used_area;
+    usageResQtyDiv.innerHTML = resJson.used_area.toFixed(1);
     usageMetricResDiv.innerHTML = "SQR";
     usageMetricDiv.innerHTML = meticSystemMapping[meticSystem];
 
-    availableResQtyDiv.innerHTML = resJson.wasted_area;
-    totalCostResDiv.innerHTML = resJson.print_price;
+    availableResQtyDiv.innerHTML = resJson.wasted_area.toFixed(1);
+    totalCostResDiv.innerHTML = resJson.print_price.toFixed(2) + "$";
     availableMetricResDiv.innerHTML = meticSystemMapping[meticSystem];
     availableResPerUnitDiv.innerHTML = "SQR";
+    costResDiv.innerHTML = printPriceInput.value + "$";
 
     for (let bin of resJson.bins) {
       var imgResultDiv = document.createElement("div");

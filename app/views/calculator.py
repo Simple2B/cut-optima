@@ -4,6 +4,7 @@ from flask_login import login_required
 from config import BaseConfig as conf
 from app.controllers import RectPacker
 from app.utils import serve_pil_image
+from app.models import User
 
 blueprint = Blueprint("calculator", __name__)
 
@@ -17,16 +18,36 @@ def calculator():
     cost_per = ""
     order_url = ""
     order_enabled = False
+    cut_spacing = 0.5
+    metric_system = None
+    sheets = None
+
+    setup_id = request.args.get("setup_id")
+    if setup_id:
+        user: User = User.query.get(request.args.get("setup_id"))
+        moq = user.moq
+        moq_unit = "Sheet" if user.is_price_per_sheet else "SQR"
+        cost = user.print_price
+        cost_per = "Sheet" if user.is_price_per_sheet else "SQR"
+        order_url = user.buy_url
+        order_enabled = user.is_enabled_buy_btn
+        cut_spacing = user.cut_spacing
+        metric_system = user.metric_system.value
+        sheets = user.sheets
 
     return render_template(
         "calculator/index.html",
         config=conf,
+        setup_id=setup_id,
         moq=moq,
         moq_unit=moq_unit,
         cost=cost,
         cost_per=cost_per,
         order_url=order_url,
         order_enabled=order_enabled,
+        cut_spacing=cut_spacing,
+        metric_system=metric_system,
+        sheets=sheets,
     )
 
 

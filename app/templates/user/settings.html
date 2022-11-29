@@ -36,8 +36,15 @@
               <label for="print_price" class="form-label"
                 >{{form.print_price.label}}</label
               >
-              {{form.print_price(class="form-control", id="print_price",
-              value=current_user.print_price, type="number")}} {% for error in
+              <input
+                class="form-control"
+                id="print_price"
+                name="print_price"
+                placeholder="0.0"
+                onfocusout="validateInput(this)"
+                value={{ current_user.print_price }}
+              >
+              {% for error in
               form.errors.print_price %}
               <small class="text-danger">{{error}}</small> {% endfor %}
             </div>
@@ -81,8 +88,15 @@
               <label for="cut_spacing" class="form-label"
                 >{{form.cut_spacing.label}}</label
               >
-              {{form.cut_spacing(class="form-control", id="cut_spacing",
-              value=current_user.cut_spacing, type="number")}} {% for error in
+              <input
+                class="form-control"
+                id="cut_spacing"
+                name="cut_spacing"
+                placeholder="0.0"
+                onfocusout="validateInput(this)"
+                value={{ current_user.cut_spacing }}
+              >
+              {% for error in
               form.errors.cut_spacing %}
               <small class="text-danger">{{error}}</small> {% endfor %}
             </div>

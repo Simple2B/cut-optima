@@ -6,16 +6,15 @@
         Sheet Size
       </h5>
       <div class="d-flex justify-content-center">
-        {#
+        {% if sheets %}
         <select class="form-select w-75 bin-size-input">
-          {% for default_size in config.DEFAULT_BIN_SIZES %}
-          <option value="{{default_size.width}}x{{default_size.height}}">
-            {{default_size.name}} ({{default_size.width /
-            10}}x{{default_size.height / 10}} cm)
+          {% for sheet in sheets %}
+          <option value="{{sheet.width}}x{{sheet.height}}">
+            {{sheet.width}}  x  {{sheet.height}}
           </option>
           {% endfor %}
         </select>
-        #}
+        {% else %}
         <div class="input-group input-group-sm w-75 bin-size-input">
           <input
             class="form-control bin-width w-25"
@@ -35,6 +34,8 @@
             onfocusout="validateInput(this)"
           />
         </div>
+        {% endif %}
+
       </div>
     </div>
 
@@ -89,7 +90,7 @@
       </div>
     </div>
 
-    <div class="general-settings mt-4">
+    <div class="general-settings mt-4 {% if setup_id != None %}d-none{% endif %}">
       <div class="mb-3">
         <h6 class="calculator-block-title border-0 text-center p-1 mb-1">
           Blade size
@@ -98,7 +99,7 @@
           <input
             class="form-control rect-height w-25 blade-size"
             placeholder="Blade size"
-            value="0.5"
+            value="{{ cut_spacing }}"
             type="number"
             onfocusout="validateInput(this)"
           />
@@ -107,13 +108,13 @@
 
       <div class="mb-3">
         <h6 class="calculator-block-title border-0 text-center p-1 mb-1">
-          Price per square feet/meter
+          Price per {% if cost_per == "Sheet" %}sheet{% else %}square feet/meter{% endif %}
         </h6>
         <div class="d-flex justify-content-center">
           <input
             class="form-control rect-height w-25 print-price"
             placeholder="Print price"
-            value="0"
+            value="{{ cost }}"
             type="number"
             onfocusout="validateInput(this)"
           />
@@ -126,15 +127,15 @@
         </h6>
         <div class="d-flex justify-content-center">
           <select class="form-select metic-system w-50">
-            <option value="cm" selected>Centimeter</option>
-            <option value="in">Inch</option>
+            <option value="cm" {% if metric_system == "centimeter" %}selected{% endif %}>Centimeter</option>
+            <option value="in" {% if metric_system == "inch" %}selected{% endif %}>Inch</option>
           </select>
         </div>
       </div>
     </div>
 
     <div class="d-flex justify-content-center">
-      <div class="btn border rounded btn btn-primary calculate-btn mb-1 fs-4">
+      <div class="btn border rounded btn btn-primary calculate-btn mb-1 fs-4 mt-4">
         Calculate
       </div>
     </div>
@@ -199,7 +200,7 @@
             <div class="d-flex mb-1">
               <div class="fw-light mr-5px">Cost per</div>
               <div class="fw-light cost-per mr-10px">{{ cost_per }}</div>
-              <div class="fw-light cost-res">{{ cost }}</div>
+              <div class="fw-light cost-res">{{ cost }}$</div>
             </div>
           </div>
         </div>
@@ -208,22 +209,18 @@
         >
           Total cost: <span class="total-cost-res"></span>
         </h6>
+        {% if order_enabled %}
         <div class="d-flex justify-content-center">
           <a
             href="{{ order_url }}"
             class="btn btn-primary btn-lg rounded"
             tabindex="-1"
             role="button"
-            {%
-            if
-            not
-            order_enabled
-            %}disabled{%
-            endif
-            %}
+            target="_blank"
             >Order Now</a
           >
         </div>
+        {% endif %}
       </div>
     </div>
   </div>
