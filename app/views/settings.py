@@ -1,8 +1,8 @@
-from flask import jsonify, Blueprint, render_template, flash
+from flask import jsonify, Blueprint, render_template, flash, request
 from flask_login import login_required, current_user
 
 from app.models import Sheet, User
-from app.forms import SettingsForm, AddSheet, DeleteSheet
+from app.forms import SettingsForm
 
 blueprint = Blueprint("settings", __name__, url_prefix="/settings")
 
@@ -30,36 +30,38 @@ def settings():
 @blueprint.route("/sheet/create", methods=["POST"])
 @login_required
 def sheet_create():
-    form = AddSheet()
+    data = request.json if request.json else {}
 
-    sheet = None
-    if form.validate_on_submit():
-        sheet = Sheet(
-            user=current_user,
-            width=form.width.data,
-            height=form.height.data,
-        )
-        sheet.save()
-        return jsonify({"message": "success", "id": sheet.id})
-    elif form.is_submitted():
-        if form.width.data is None or form.height.data is None:
-            return jsonify({"message": "Width and height are required"}), 400
-        elif form.width.data <= 0 or form.height.data <= 0:
-            return jsonify({"message": "Size value cannot be 0 or less"}), 400
+    width = data.get("width")
+    height = data.get("height")
 
-    return jsonify({"message": "unknown error"}), 400
+    if width is None or height is None:
+        return jsonify({"message": "Width and height are required"}), 400
+    elif width <= 0 or height <= 0:
+        return jsonify({"message": "Size value cannot be 0 or less"}), 400
+
+    sheet = Sheet(
+        user=current_user,
+        width=width,
+        height=height,
+    )
+    sheet.save()
+    return jsonify({"message": "success"})
 
 
 @blueprint.route("/sheet/delete", methods=["DELETE"])
 @login_required
 def sheet_delete():
-    form = DeleteSheet()
+    data = request.json if request.json else {}
 
-    if form.validate_on_submit():
-        sheet = Sheet.query.get(form.id.data)
-        sheet.delete()
-    elif form.is_submitted():
-        if form.errors:
-            return jsonify({"message": form.errors["id"][0]}), 400
+    sheet_id = data.get("id")
+    if sheet_id is None:
+        return jsonify({"message": "id is required"}), 400
+
+    sheet = Sheet.query.get(sheet_id)
+    if not sheet or sheet.user != current_user:
+        return jsonify({"message": "Sheet not found"}), 400
+
+    sheet.delete()
 
     return jsonify({"message": "success"})
