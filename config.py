@@ -7,6 +7,8 @@ class BaseConfig(object):
     """Base configuration."""
 
     APP_NAME = "Cost Calc"
+    SERVER_NAME = os.environ.get("SERVER_NAME")
+    SERVER_HOST = os.environ.get("SERVER_HOST")
     DEBUG_TB_ENABLED = False
     SECRET_KEY = os.environ.get(
         "SECRET_KEY", "Ensure you set a secret key, this is important!"
