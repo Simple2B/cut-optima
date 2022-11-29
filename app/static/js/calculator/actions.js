@@ -8,6 +8,8 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
   const cleanAllBtn = document.querySelector(".clean-all-btn");
   const calculateBtn = document.querySelector(".calculate-btn");
+  const binsResultsDiv = document.querySelector(".bins-results");
+  const imagesResultDiv = document.querySelector(".images-result");
 
   // input data
   const addedBinsDiv = document.querySelector(".added-bins");
@@ -24,6 +26,11 @@ document.addEventListener("DOMContentLoaded", (event) => {
   const printPriceResInput = document.querySelector(".res-print-price");
 
   cleanAllBtn.addEventListener("click", () => {
+    iziToast.success({
+      title: "Success",
+      message: "Clean",
+    });
+
     addedBinsDiv.innerHTML = "";
     addedRectsDiv.innerHTML = "";
     bladeSizeInput.value = 0;
@@ -31,7 +38,10 @@ document.addEventListener("DOMContentLoaded", (event) => {
     meticSystemSelect.disabled = false;
   });
 
-  calculateBtn.addEventListener("click", () => {
+  calculateBtn.addEventListener("click", async () => {
+    binsResultsDiv.innerHTML = "";
+    imagesResultDiv.innerHTML = "";
+
     const addedBins = [];
     const addedRects = [];
     const bladeSize = parseFloat(bladeSizeInput.value);
@@ -69,5 +79,105 @@ document.addEventListener("DOMContentLoaded", (event) => {
     console.log("bladeSize", bladeSize);
     console.log("printPrice", printPrice);
     console.log("meticSystem", meticSystem);
+
+    const res = await fetch(`/calculate`, {
+      credentials: "include",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        bins: addedBins,
+        rectangles: addedRects,
+        bladeSize: bladeSize,
+        printPrice: printPrice,
+        meticSystem: meticSystem,
+      }),
+    });
+    const resJson = await res.json();
+    if (res.status !== 200) {
+      iziToast.error({
+        position: "bottomRight",
+        title: "Error",
+        message: resJson.message,
+      });
+      return;
+    }
+
+    usedSheetsResInput.value = resJson.bins.length;
+    usedAreaResInput.value = resJson.used_area;
+    wastedAreaResInput.value = resJson.wasted_area;
+    placedItemResInput.value = resJson.placed_items.length;
+    printPriceResInput.value = resJson.print_price;
+
+    for (let bin of resJson.bins) {
+      var binResultDiv = document.createElement("div");
+      binResultDiv.setAttribute("class", "bin-result pl-15px");
+
+      binResultDiv.innerHTML = `
+      <div class="bin-result pl-15px">
+        <h6 class="calculator-block-title p-1 mb-1">Sheet ${bin.sizes[0]}x${bin.sizes[1]}</h6>
+        <div class="mt-1">
+          <div class="d-flex mb-1">
+            <span class="input-group-text">Used area</span>
+            <input
+              class="form-control res-used-sheets"
+              placeholder="Used area"
+              value="${bin.used_area}"
+              type="number"
+              disabled
+            />
+          </div>
+          <div class="d-flex mb-1">
+            <span class="input-group-text">Wasted area</span>
+            <input
+              class="form-control res-wasted-area"
+              placeholder="Wasted area"
+              value="${bin.wasted_area}"
+              type="number"
+              disabled
+            />
+          </div>
+          <div class="d-flex mb-1">
+            <span class="input-group-text">Placed items</span>
+            <input
+              class="form-control res-placed-item"
+              placeholder="Placed items"
+              value="${bin.placed_items.length}"
+              type="number"
+              disabled
+            />
+          </div>
+          <div class="d-flex mb-1">
+            <span class="input-group-text">Print price</span>
+            <input
+              class="form-control res-print-price"
+              placeholder="Print price"
+              value="${bin.print_price}"
+              type="number"
+              disabled
+            />
+          </div>
+        </div>
+      </div>
+      `;
+      binsResultsDiv.appendChild(binResultDiv);
+
+      var imgResultDiv = document.createElement("div");
+      imgResultDiv.setAttribute(
+        "class",
+        "mt-3 d-flex flex-column align-items-center"
+      );
+      imgResultDiv.innerHTML = `
+      <h5 class="mb-0">Sheet ${bin.sizes[0]}x${bin.sizes[1]}</h5>
+      <img class="w-75 border border-2 rounded test-img"
+        src="data:image/png;base64,${bin.image}"
+        alt="calculator-result-img"
+      >
+      `;
+      console.log("imgResultDiv", imgResultDiv);
+
+      imagesResultDiv.appendChild(imgResultDiv);
+    }
   });
 });
