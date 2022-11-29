@@ -6,14 +6,12 @@ document.addEventListener("DOMContentLoaded", (event) => {
     25.4: "inch",
   };
 
-  const cleanAllBtn = document.querySelector(".clean-all-btn");
   const calculateBtn = document.querySelector(".calculate-btn");
   const binsResultsDiv = document.querySelector(".bins-results");
   const imagesResultDiv = document.querySelector(".images-result");
 
   // input data
   const addedBinsDiv = document.querySelector(".added-bins");
-  const addedRectsDiv = document.querySelector(".added-rects");
   const bladeSizeInput = document.querySelector(".blade-size");
   const printPriceInput = document.querySelector(".print-price");
   const meticSystemSelect = document.querySelector(".metic-system");
@@ -25,54 +23,63 @@ document.addEventListener("DOMContentLoaded", (event) => {
   const placedItemResInput = document.querySelector(".res-placed-item");
   const printPriceResInput = document.querySelector(".res-print-price");
 
-  cleanAllBtn.addEventListener("click", () => {
-    iziToast.success({
-      title: "Success",
-      message: "Clean",
-    });
-
-    addedBinsDiv.innerHTML = "";
-    addedRectsDiv.innerHTML = "";
-    bladeSizeInput.value = 0;
-    printPriceInput.value = 0;
-    meticSystemSelect.disabled = false;
-  });
-
   calculateBtn.addEventListener("click", async () => {
-    binsResultsDiv.innerHTML = "";
+    // binsResultsDiv.innerHTML = "";
     imagesResultDiv.innerHTML = "";
+    let addedBins = [];
+    let binWidth = 0;
+    let binHeight = 0;
 
-    const addedBins = [];
-    const addedRects = [];
-    const bladeSize = parseFloat(bladeSizeInput.value);
-    const printPrice = parseFloat(printPriceInput.value);
-    const meticSystem = meticSystemMapping[parseFloat(meticSystemSelect.value)];
-
-    for (const addedBinDiv of addedBinsDiv.children) {
-      const widthInput = addedBinDiv.querySelector(".added-bin-width");
-      const heightInput = addedBinDiv.querySelector(".added-bin-height");
-      const picsInput = addedBinDiv.querySelector(".added-bin-quantity");
-      const width = parseFloat(widthInput.value);
-      const height = parseFloat(heightInput.value);
-      const pics = parseInt(picsInput.value);
-      addedBins.push({
-        size: [width, height],
-        pics: pics,
-      });
+    const binSizeInput = document.querySelector(".bin-size-input");
+    if (binSizeInput.tagName === "DIV") {
+      const binSizeWidhtInput = binSizeInput.querySelector(".bin-width");
+      binWidth = parseFloat(binSizeWidhtInput.value);
+      const binSizeHeightInput = binSizeInput.querySelector(".bin-height");
+      binHeight = parseFloat(binSizeHeightInput.value);
+    } else {
+      const binSizeInputValue = binSizeInput.value;
+      const splitedValue = binSizeInputValue.split("x");
+      binWidth = parseFloat(splitedValue[0]);
+      binHeight = parseFloat(splitedValue[1]);
     }
 
-    for (const addedRectDiv of addedRectsDiv.children) {
-      const widthInput = addedRectDiv.querySelector(".added-rect-width");
-      const heightInput = addedRectDiv.querySelector(".added-rect-height");
-      const picsInput = addedRectDiv.querySelector(".added-rect-quantity");
+    if (!binWidth || !binHeight || binWidth < 1 || binHeight < 1) {
+      iziToast.error({
+        message: "Incorrect sheet sizes",
+      });
+      return;
+    }
+
+    addedBins.push({
+      size: [binWidth, binHeight],
+      pics: 1,
+    });
+
+    const addedRects = [];
+
+    const addedRectDivs = document.querySelectorAll(".add-rect-form");
+    for (const addedRectDiv of addedRectDivs) {
+      const widthInput = addedRectDiv.querySelector(".rect-width");
+      const heightInput = addedRectDiv.querySelector(".rect-height");
+      const picsInput = addedRectDiv.querySelector(".rect-qty");
       const width = parseFloat(widthInput.value);
       const height = parseFloat(heightInput.value);
       const pics = parseInt(picsInput.value);
+      if (!width || !height || width < 1 || height < 1) {
+        iziToast.error({
+          message: "Incorrect artwork sizes",
+        });
+        return;
+      }
       addedRects.push({
         size: [width, height],
         pics: pics,
       });
     }
+
+    const bladeSize = parseFloat(bladeSizeInput.value);
+    const printPrice = parseFloat(printPriceInput.value);
+    const meticSystem = meticSystemMapping[parseFloat(meticSystemSelect.value)];
 
     console.log("bins", addedBins);
     console.log("rects", addedRects);
