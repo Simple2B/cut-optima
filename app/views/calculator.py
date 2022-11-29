@@ -1,5 +1,4 @@
 from flask import Blueprint, render_template, request, jsonify
-from flask_login import login_required
 
 from config import BaseConfig as conf
 from app.controllers import RectPacker
@@ -9,7 +8,6 @@ from app.models import User
 blueprint = Blueprint("calculator", __name__)
 
 
-@login_required
 @blueprint.route("/calculator", methods=["GET"])
 def calculator():
     moq = ""

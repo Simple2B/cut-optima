@@ -1,4 +1,4 @@
-from flask import jsonify, Blueprint, request, render_template, flash
+from flask import jsonify, Blueprint, render_template, flash
 from flask_login import login_required, current_user
 
 from app.models import Sheet, User
