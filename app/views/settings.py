@@ -32,6 +32,7 @@ def settings():
 def sheet_create():
     form = AddSheet()
 
+    sheet = None
     if form.validate_on_submit():
         sheet = Sheet(
             user=current_user,
