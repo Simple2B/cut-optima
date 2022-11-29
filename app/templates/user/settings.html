@@ -1,5 +1,6 @@
 {% extends 'base.html' %} {% block content %}
-<div class="container py-4">
+<div class="pb-100px">
+<div class="container py-4 ">
   <h3>Settings</h3>
   <div class="settings-form p2">
     <div class="card-body">
@@ -16,12 +17,12 @@
           >
           <select class="form-control" id="metric_system" name="metric_system" required="">
             {% for choices in form.metric_system.choices %}
-            <option
+              <option
                 value="{{ choices[0] }}"
                 {% if current_user.metric_system.value == choices[0] %}selected{% endif %}
-            >
-              {{ choices[0].title() }}
-            </option>
+              >
+                {{ choices[0].title() }}
+              </option>
             {% endfor %}
           </select>
 
@@ -107,5 +108,50 @@
       </form>
     </div>
   </div>
+  <h3>Sheet Sizes</h3>
+  <div class="d-flex justify-content-center">
+    <div class="sheet-sizes p2 w-75">
+      <div class="create-sheet-size mb-3">
+        <div class="d-flex">
+          <input class="form-control sheet-size-width" placeholder="Width" type="number">
+          <span class="input-group-text">x</span>
+          <input class="form-control sheet-size-height" placeholder="Height" type="number">
+          <div class="btn rounded btn btn-light add-sheet-size ml-10px">Add</div>
+        </div>
+      </div>
+      <div class="added-sheet-sizes">
+        {% for added_sheet in current_user.sheets %}
+          <div class="d-flex mb-2" id="{{ added_sheet.id }}">
+            <input
+              class="form-control added-sheet-size-width"
+              placeholder="Width"
+              type="number"
+              disabled
+              value={{ added_sheet.width }}
+            >
+            <span class="input-group-text">x</span>
+            <input
+                class="form-control added-sheet-size-height"
+                placeholder="Height"
+                type="number"
+                disabled
+                value={{ added_sheet.height }}
+            >
+            <div class="btn rounded btn btn-light delete-sheet-size ml-10px">Delete</div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
 </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+
+<script
+  src="{{ url_for('static', filename='js/settings/sheet_sizes.js') }}"
+  type="text/javascript"
+></script>
+
 {% endblock %}
