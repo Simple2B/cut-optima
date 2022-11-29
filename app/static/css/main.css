@@ -42,8 +42,16 @@ a {
   margin-bottom: 2px;
 }
 
+.pb-100pxpx {
+  padding-bottom: 100px;
+}
+
 .pl-15px {
   padding-left: 15px;
+}
+
+.ml-10px {
+  margin-left: 10px;
 }
 
 .hit_flash {
