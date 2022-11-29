@@ -46,7 +46,7 @@ def sheet_create():
         height=height,
     )
     sheet.save()
-    return jsonify({"message": "success"})
+    return jsonify({"message": "success", "id": sheet.id})
 
 
 @blueprint.route("/sheet/delete", methods=["DELETE"])
