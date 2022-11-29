@@ -107,23 +107,6 @@ def test_sheet_crud(client, authorize):
     assert sheet_to_update.width != new_width
     assert sheet_to_update.height != new_height
 
-    response = client.patch(
-        "/settings/sheet/update",
-        json=dict(id=100, width=50.5, height=50.5),
-        follow_redirects=True,
-    )
-    res = response.json
-    assert res
-    assert res["message"] == "Sheet not found"
-
-    response = client.patch(
-        "/settings/sheet/update",
-        follow_redirects=True,
-    )
-    res = response.json
-    assert res
-    assert res["message"] == "id, width and height are required"
-
     sheet_to_delete = Sheet.query.first()
     assert sheet_to_delete
 
@@ -153,4 +136,4 @@ def test_sheet_crud(client, authorize):
     )
     res = response.json
     assert res
-    assert res["message"] == "id is required"
+    assert res["message"] == "This field is required."
