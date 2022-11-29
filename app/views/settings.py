@@ -40,13 +40,14 @@ def sheet_create():
             height=form.height.data,
         )
         sheet.save()
+        return jsonify({"message": "success", "id": sheet.id})
     elif form.is_submitted():
         if form.width.data is None or form.height.data is None:
             return jsonify({"message": "Width and height are required"}), 400
         elif form.width.data <= 0 or form.height.data <= 0:
             return jsonify({"message": "Size value cannot be 0 or less"}), 400
 
-    return jsonify({"message": "success", "id": sheet.id})
+    return jsonify({"message": "unknown error"}), 400
 
 
 @blueprint.route("/sheet/delete", methods=["DELETE"])
