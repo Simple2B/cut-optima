@@ -1,6 +1,8 @@
 import pytest
 
 from app import db, create_app
+from tests.utils import register, login, activate_user
+from .constants import EMAIL, PASSWORD, USERNAME
 
 
 @pytest.fixture
@@ -17,3 +19,10 @@ def client():
         db.session.remove()
         db.drop_all()
         app_ctx.pop()
+
+
+@pytest.fixture
+def authorize(client):
+    register(client, USERNAME, EMAIL)
+    activate_user(USERNAME, PASSWORD)
+    login(client, EMAIL, PASSWORD)

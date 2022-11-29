@@ -1,0 +1,111 @@
+{% extends 'base.html' %} {% block content %}
+<div class="container py-4">
+  <h3>Settings</h3>
+  <div class="settings-form p2">
+    <div class="card-body">
+      <form
+        class="form"
+        role="form"
+        action="{{ url_for('settings.settings') }}"
+        method="post"
+      >
+        {{form.hidden_tag()}}
+        <div class="mb-3">
+          <label for="metric_system" class="form-label"
+            >{{form.metric_system.label}}</label
+          >
+          <select class="form-control" id="metric_system" name="metric_system" required="">
+            {% for choices in form.metric_system.choices %}
+            <option
+                value="{{ choices[0] }}"
+                {% if current_user.metric_system.value == choices[0] %}selected{% endif %}
+            >
+              {{ choices[0].title() }}
+            </option>
+            {% endfor %}
+          </select>
+
+          {% for error in form.errors.metric_system %}
+            <small class="text-danger">{{error}}</small>
+          {% endfor %}
+        </div>
+
+        <div class="mb-3">
+          <label for="print_price" class="form-label"
+            >{{form.print_price.label}}</label
+          >
+          {{form.print_price(class="form-control", id="print_price",
+          value=current_user.print_price, type="number")}} {% for error in
+          form.errors.print_price %}
+          <small class="text-danger">{{error}}</small> {% endfor %}
+        </div>
+
+        <div class="mb-3">
+          <label for="is_price_per" class="form-label"
+            >{{form.is_price_per.label}}</label
+          >
+          <select
+            class="form-control"
+            id="is_price_per"
+            name="is_price_per"
+            required=""
+          >
+            {% for choices in form.is_price_per.choices %}
+            <option
+                value="{{ choices[0] }}"
+                {% if current_user.is_price_per_sheet and "Sheet" in choices  %}
+                  selected
+                {% elif not current_user.is_price_per_sheet and "Sheet" not in choices %}
+                  selected
+                {% endif %}
+            >
+              {{ choices[0].title() }}
+            </option>
+            {% endfor %}
+          </select>
+
+          {% for error in form.errors.is_price_per %}
+          <small class="text-danger">{{error}}</small> {% endfor %}
+        </div>
+
+        <div class="mb-3">
+          <label for="imoq" class="form-label">{{form.moq.label}}</label>
+          {{form.moq(class="form-control", id="moq", value=current_user.moq, type="number")}}
+          {% for error in form.errors.moq %}
+          <small class="text-danger">{{error}}</small> {% endfor %}
+        </div>
+
+        <div class="mb-3">
+          <label for="cut_spacing" class="form-label"
+            >{{form.cut_spacing.label}}</label
+          >
+          {{form.cut_spacing(class="form-control", id="cut_spacing",
+          value=current_user.cut_spacing, type="number")}} {% for error in
+          form.errors.cut_spacing %}
+          <small class="text-danger">{{error}}</small> {% endfor %}
+        </div>
+
+        <div class="mb-3 form-check form-switch">
+          {{form.is_enabled_buy_btn(class="form-check-input border-90",
+          id="is_enabled_buy_btn", checked=current_user.is_enabled_buy_btn)}}
+          <label for="is_enabled_buy_btn" class="form-check-label"
+            >{{form.is_enabled_buy_btn.label}}</label
+          >
+          {% for error in form.errors.is_enabled_buy_btn %}
+          <small class="text-danger">{{error}}</small> {% endfor %}
+        </div>
+
+        <div class="mb-3">
+          <label for="buy_url" class="form-label">{{form.buy_url.label}}</label>
+          {{form.buy_url(class="form-control", id="buy_url",
+          value=current_user.buy_url if current_user.buy_url else "")}} {% for
+          error in form.errors.buy_url %}
+          <small class="text-danger">{{error}}</small> {% endfor %}
+        </div>
+
+        {{ form.submit(class="form-control btn btn-outline-success rounded" ) }}
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
