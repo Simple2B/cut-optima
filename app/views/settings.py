@@ -1,7 +1,7 @@
 from flask import jsonify, Blueprint, render_template, flash, request
 from flask_login import login_required, current_user
 
-from app.models import Sheet, User
+import app.models as m
 from app.forms import SettingsForm
 
 blueprint = Blueprint("settings", __name__, url_prefix="/settings")
@@ -13,7 +13,7 @@ def settings():
     form = SettingsForm()
 
     if form.validate_on_submit():
-        current_user.metric_system = User.MetricSystem[form.metric_system.data]
+        current_user.metric_system = m.User.MetricSystem[form.metric_system.data]
         current_user.print_price = form.print_price.data
         current_user.is_price_per_sheet = form.is_price_per.data == "Sheet"
         current_user.moq = form.moq.data
@@ -32,15 +32,15 @@ def settings():
 def sheet_create():
     data = request.json if request.json else {}
 
-    width = int(data.get("width"))
-    height = int(data.get("height"))
+    width = int(data.get("width")) if data.get("width") is not None else None
+    height = int(data.get("height")) if data.get("height") is not None else None
 
     if width is None or height is None:
         return jsonify({"message": "Width and height are required"}), 400
     elif width <= 0 or height <= 0:
         return jsonify({"message": "Size value cannot be 0 or less"}), 400
 
-    sheet = Sheet(
+    sheet = m.Sheet(
         user=current_user,
         width=width,
         height=height,
@@ -58,7 +58,7 @@ def sheet_delete():
     if sheet_id is None:
         return jsonify({"message": "id is required"}), 400
 
-    sheet = Sheet.query.get(sheet_id)
+    sheet = m.Sheet.query.get(sheet_id)
     if not sheet or sheet.user != current_user:
         return jsonify({"message": "Sheet not found"}), 400
 
