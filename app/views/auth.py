@@ -27,14 +27,16 @@ def register():
             sender=conf.MAIL_DEFAULT_SENDER,
             recipients=[user.email],
         )
+        url = url_for(
+            "auth.password_recovery",
+            reset_password_uid=user.reset_password_uid,
+        )
+        url = f"http://{conf.DOMAIN}{url}"
+
         msg.html = render_template(
             "email/register.html",
             user=user,
-            url=url_for(
-                "auth.password_recovery",
-                reset_password_uid=user.reset_password_uid,
-                _external=True,
-            ),
+            url=url,
             config=conf,
         )
         mail.send(msg)
@@ -101,14 +103,16 @@ def reset_password():
                 sender=conf.MAIL_DEFAULT_SENDER,
                 recipients=[user.email],
             )
+            url = url_for(
+                "auth.password_recovery",
+                reset_password_uid=user.reset_password_uid,
+            )
+            url = f"http://{conf.DOMAIN}{url}"
+
             msg.html = render_template(
                 "email/reset_password.html",
                 user=user,
-                url=url_for(
-                    "auth.password_recovery",
-                    reset_password_uid=user.reset_password_uid,
-                    _external=True,
-                ),
+                url=url,
                 config=conf,
             )
 
