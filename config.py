@@ -35,8 +35,8 @@ class BaseConfig(object):
     ]
 
     METRIC_TO_SQR_UNIT_VALUE = {
-        "centimeter": 100 * 100,
-        "inch": 12 * 12,
+        "cm": 100 * 100,
+        "in": 12 * 12,
     }
 
     # colors
