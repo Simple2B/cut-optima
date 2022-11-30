@@ -6,7 +6,7 @@ base_dir = os.path.dirname(os.path.abspath(__file__))
 class BaseConfig(object):
     """Base configuration."""
 
-    APP_NAME = "CutOptima"
+    APP_NAME = "Cost Calc"
     DEBUG_TB_ENABLED = False
     SECRET_KEY = os.environ.get(
         "SECRET_KEY", "Ensure you set a secret key, this is important!"
@@ -32,10 +32,17 @@ class BaseConfig(object):
         {"name": "A5", "width": 148, "height": 210},
     ]
 
+    METRIC_TO_SQR_UNIT_VALUE = {
+        "centimeter": 100 * 100,
+        "inch": 12 * 12,
+    }
+
     # colors
     COLOR_WHITE = "white"
     COLOR_BLACK = "black"
     COLOR_GREY = "#efe6e6"
+
+    RECT_PACK_IMG_MAX_SIDE_SIZE = 1024
 
     @staticmethod
     def configure(app):

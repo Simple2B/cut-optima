@@ -68,15 +68,19 @@ class RectPacker:
             for bin in self.bins:
                 bin = sorted(bin)
                 fit_in_bins.append(
-                    rect[0] + self.blade_size * 2 < bin[0]
-                    and rect[1] + self.blade_size * 2 < bin[0]
+                    rect[0] + self.blade_size * 2 <= bin[0]
+                    and rect[1] + self.blade_size * 2 <= bin[0]
                 )
             if not any(fit_in_bins):
                 invalid_rectangles.append(rect)
 
         if invalid_rectangles:
             log(log.ERROR, "Found invalid rectangle(s): [%s]", invalid_rectangles)
-            raise ValueError(f"Found invalid rectangle(s): {invalid_rectangles}")
+
+            raise ValueError(
+                "Found invalid rectangle(s): %s"
+                % ", ".join([str(rect) for rect in invalid_rectangles]),
+            )
         log(log.INFO, "Validation succeess")
 
     def pack(self):
@@ -84,7 +88,7 @@ class RectPacker:
         log(log.INFO, "Prepare to pack rectangles")
 
         for bin in self.bins:
-            self.packer.add_bin(*bin)
+            self.packer.add_bin(*sorted(bin, reverse=True))
         for rect in self.rectangles:
             rect = [
                 rect[0] + self.blade_size * 2,
@@ -95,7 +99,9 @@ class RectPacker:
         log(log.INFO, "Prepare to pack rectangles")
         self.packer.pack()
 
-        not_placed_rectangles = [sorted(rect) for rect in self.rectangles]
+        not_placed_rectangles = [
+            sorted([float(rect[0]), float(rect[1])]) for rect in self.rectangles
+        ]
         for bin in self.packer:
             log(log.INFO, "Generate result for bin [%s]", bin)
             bin_result = {
@@ -108,8 +114,8 @@ class RectPacker:
             for rect in bin:
                 rect = sorted(
                     [
-                        rect.width - self.blade_size * 2,
-                        rect.height - self.blade_size * 2,
+                        round(rect.width - self.blade_size * 2),
+                        round(rect.height - self.blade_size * 2),
                     ]
                 )
                 bin_result["rectangles"].append(rect)
@@ -133,17 +139,20 @@ class RectPacker:
             PIL.Image.Image: generated image with rectangles on bin area
         """
         log(log.INFO, "Generate image for bin [%s]", bin)
-        shape = [(bin.width, bin.height), 0, 0]
 
-        img = Image.new("RGB", (bin.width, bin.height), conf.COLOR_WHITE)
+        larger_side = max([bin.width, bin.height])
+        scale = conf.RECT_PACK_IMG_MAX_SIDE_SIZE / larger_side
+
+        bin_width = int(bin.width * scale)
+        bin_height = int(bin.height * scale)
+        img = Image.new("RGB", (bin_width, bin_height), conf.COLOR_WHITE)
 
         img_draw = ImageDraw.Draw(img)
-        img_draw.rectangle(shape, outline=conf.COLOR_BLACK)
 
         for rect in bin:
             rectangle = [
-                (rect.x, rect.y),
-                (rect.x + rect.width, rect.y + rect.height),
+                (rect.x * scale, rect.y * scale),
+                ((rect.x + rect.width) * scale, (rect.y + rect.height) * scale),
             ]
             img_draw.rectangle(
                 rectangle,
@@ -152,10 +161,13 @@ class RectPacker:
             )
             if self.blade_size:
                 rectangle = [
-                    (rect.x + self.blade_size, rect.y + self.blade_size),
                     (
-                        rect.x + rect.width - self.blade_size,
-                        rect.y + rect.height - self.blade_size,
+                        (rect.x + self.blade_size) * scale,
+                        (rect.y + self.blade_size) * scale,
+                    ),
+                    (
+                        (rect.x + rect.width - self.blade_size) * scale,
+                        (rect.y + rect.height - self.blade_size) * scale,
                     ),
                 ]
                 img_draw.rectangle(
@@ -163,4 +175,8 @@ class RectPacker:
                     outline=conf.COLOR_BLACK,
                     fill=conf.COLOR_GREY,
                 )
+
+        shape = [(bin_width - 1, bin_height - 1), 0, 0]
+        img_draw.rectangle(shape, outline=conf.COLOR_BLACK)
+
         return img

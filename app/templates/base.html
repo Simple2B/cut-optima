@@ -18,6 +18,11 @@
       rel="stylesheet"
       media="screen"
     />
+    <link
+      href="{{ url_for('static', filename='css/iziToast.min.css') }}"
+      rel="stylesheet"
+      media="screen"
+    />
     {% block links %}{% endblock %}
   </head>
 
@@ -114,6 +119,12 @@
     <script
       src="{{ url_for('static', filename='js/main.js') }}"
       type="text/javascript"
+      defer
+    ></script>
+    <script
+      src="{{ url_for('static', filename='js/iziToast.min.js') }}"
+      type="text/javascript"
+      defer
     ></script>
     {% block scripts %}{% endblock %}
   </body>

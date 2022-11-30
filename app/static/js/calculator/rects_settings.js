@@ -47,7 +47,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
         <div class="input-sufix-block w-100 pcs">
           <input
             type="number"
-            class="form-control added-bin-height h-42px"
+            class="form-control added-rect-quantity h-42px"
             placeholder="Quantity"
             value="1"
             onfocusout="validateInputInt(this)"
