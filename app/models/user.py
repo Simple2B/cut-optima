@@ -1,8 +1,9 @@
 from datetime import datetime
 from uuid import uuid4
+import enum
 
 from flask_login import UserMixin, AnonymousUserMixin
-from sqlalchemy import func
+from sqlalchemy import func, Enum
 from sqlalchemy.ext.hybrid import hybrid_property
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -17,6 +18,11 @@ def gen_password_reset_id() -> str:
 class User(db.Model, UserMixin, ModelMixin):
     __tablename__ = "users"
 
+    # Enums
+    class MetricSystem(enum.Enum):
+        centimeter = "centimeter"
+        inch = "inch"
+
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(60), unique=True, nullable=False)
     email = db.Column(db.String(255), unique=True, nullable=False)
@@ -25,6 +31,17 @@ class User(db.Model, UserMixin, ModelMixin):
     created_at = db.Column(db.DateTime, default=datetime.now)
     deleted = db.Column(db.Boolean, default=False)
     reset_password_uid = db.Column(db.String(64), default=gen_password_reset_id)
+
+    # settings
+    metric_system = db.Column(Enum(MetricSystem), default=MetricSystem.centimeter)
+    print_price = db.Column(db.Float(), default=0)
+    is_price_per_sheet = db.Column(db.Boolean, default=False)
+    moq = db.Column(db.Integer(), default=1)
+    cut_spacing = db.Column(db.Float(), default=0.5)
+    is_enabled_buy_btn = db.Column(db.Boolean, default=False)
+    buy_url = db.Column(db.String(255), nullable=True)
+
+    sheets = db.relationship("Sheet", viewonly=True)
 
     @hybrid_property
     def password(self):

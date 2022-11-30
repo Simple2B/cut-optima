@@ -2,7 +2,7 @@ from flask_mail import Message
 from flask import Blueprint, render_template, url_for, redirect, flash, request
 from flask_login import login_user, logout_user, login_required, current_user
 
-from app.models import User
+import app.models as m
 from app.forms import LoginForm, RegistrationForm, ForgotPassword, ChangePasswordForm
 from app.logger import log
 from app import mail
@@ -15,7 +15,7 @@ auth_blueprint = Blueprint("auth", __name__)
 def register():
     form = RegistrationForm(request.form)
     if form.validate_on_submit():
-        user = User(
+        user = m.User(
             username=form.username.data,
             email=form.email.data,
         )
@@ -59,7 +59,7 @@ def login():
 
     form = LoginForm(request.form)
     if form.validate_on_submit():
-        user: User = User.authenticate(form.email.data, form.password.data)
+        user: m.User = m.User.authenticate(form.email.data, form.password.data)
         if user:
             log(log.INFO, "Login user [%s]", user)
             login_user(user)
@@ -90,7 +90,7 @@ def reset_password():
         email: str = form.email.data
 
         # edit previous recovery request
-        user: User = User.query.filter(User.email == email.lower()).first()
+        user: m.User = m.User.query.filter(m.User.email == email.lower()).first()
 
         if user:
             log(log.INFO, "Create recovery request [%s]", user)
@@ -132,8 +132,8 @@ def password_recovery(reset_password_uid):
 
     message = error = None
 
-    user: User = User.query.filter(
-        User.reset_password_uid == reset_password_uid
+    user: m.User = m.User.query.filter(
+        m.User.reset_password_uid == reset_password_uid
     ).first()
 
     if not user:

@@ -1,3 +1,6 @@
+import app.models as m
+
+
 def register(client, username, email):
     return client.post(
         "/register",
@@ -7,6 +10,13 @@ def register(client, username, email):
         ),
         follow_redirects=True,
     )
+
+
+def activate_user(username, password):
+    user: m.User = m.User.query.filter(m.User.username == username).first()
+    user.password = password
+    user.activated = True
+    user.save()
 
 
 def login(client, email, password):
