@@ -124,10 +124,12 @@
     <script
       src="{{ url_for('static', filename='js/main.js') }}"
       type="text/javascript"
+      defer
     ></script>
     <script
       src="{{ url_for('static', filename='js/iziToast.min.js') }}"
       type="text/javascript"
+      defer
     ></script>
     {% block scripts %}{% endblock %}
   </body>

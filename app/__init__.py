@@ -17,16 +17,8 @@ mail = Mail()
 def create_app(environment="development"):
 
     from config import config
-    from app.views import (
-        main_blueprint,
-        auth_blueprint,
-        settings_blueprint,
-        calculator_blueprint,
-    )
-    from app.models import (
-        User,
-        AnonymousUser,
-    )
+    import app.views as v
+    import app.models as m
 
     # Instantiate app.
     app = Flask(__name__)
@@ -43,19 +35,19 @@ def create_app(environment="development"):
     mail.init_app(app)
 
     # Register blueprints.
-    app.register_blueprint(auth_blueprint)
-    app.register_blueprint(main_blueprint)
-    app.register_blueprint(settings_blueprint)
-    app.register_blueprint(calculator_blueprint)
+    app.register_blueprint(v.auth_blueprint)
+    app.register_blueprint(v.main_blueprint)
+    app.register_blueprint(v.settings_blueprint)
+    app.register_blueprint(v.calculator_blueprint)
 
     # Set up flask login.
     @login_manager.user_loader
     def get_user(id):
-        return User.query.get(int(id))
+        return m.User.query.get(int(id))
 
     login_manager.login_view = "auth.login"
     login_manager.login_message_category = "info"
-    login_manager.anonymous_user = AnonymousUser
+    login_manager.anonymous_user = m.AnonymousUser
 
     # Error handlers.
     @app.errorhandler(HTTPException)

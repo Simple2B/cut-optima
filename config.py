@@ -34,6 +34,11 @@ class BaseConfig(object):
         {"name": "A5", "width": 148, "height": 210},
     ]
 
+    METRIC_TO_SQR_UNIT_VALUE = {
+        "centimeter": 100 * 100,
+        "inch": 12 * 12,
+    }
+
     # colors
     COLOR_WHITE = "white"
     COLOR_BLACK = "black"

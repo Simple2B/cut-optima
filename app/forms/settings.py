@@ -9,14 +9,14 @@ from wtforms import (
 )
 from wtforms.validators import DataRequired, Length
 
-from app.models import User
+import app.models as m
 
 
 class SettingsForm(FlaskForm):
     metric_system = SelectField(
         "Metric System",
         [DataRequired()],
-        choices=[(choice.name, choice.value) for choice in User.MetricSystem],
+        choices=[(choice.name, choice.value) for choice in m.User.MetricSystem],
     )
     print_price = FloatField(
         "Print price",

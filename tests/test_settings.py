@@ -1,13 +1,13 @@
-from app.models import Sheet, User
+import app.models as m
 
 
 def test_settings(client, authorize):
-    user = User.query.first()
+    user = m.User.query.first()
 
     assert user
 
     # assert defaul values
-    assert user.metric_system == User.MetricSystem.centimeter
+    assert user.metric_system == m.User.MetricSystem.centimeter
     assert user.print_price == 0
     assert not user.is_price_per_sheet
     assert user.moq == 1
@@ -15,7 +15,7 @@ def test_settings(client, authorize):
     assert not user.is_enabled_buy_btn
     assert not user.buy_url
 
-    new_metric_system = User.MetricSystem.inch.value
+    new_metric_system = m.User.MetricSystem.inch.value
     new_print_price = 100
     new_moq = 100
     new_cut_spacing = 100
@@ -36,7 +36,7 @@ def test_settings(client, authorize):
         follow_redirects=True,
     )
 
-    assert user.metric_system == User.MetricSystem[new_metric_system]
+    assert user.metric_system == m.User.MetricSystem[new_metric_system]
     assert user.print_price == new_print_price
     assert user.is_price_per_sheet
     assert user.moq == new_moq
@@ -45,8 +45,8 @@ def test_settings(client, authorize):
     assert user.buy_url
 
 
-def test_sheet_crud(client, authorize):
-    assert not Sheet.query.all()
+def test_sheet_crete_delete(client, authorize):
+    assert not m.Sheet.query.all()
 
     response = client.post(
         "/settings/sheet/create",
@@ -55,7 +55,7 @@ def test_sheet_crud(client, authorize):
     res = response.json
     assert res
     assert res["message"] == "Width and height are required"
-    assert not Sheet.query.all()
+    assert not m.Sheet.query.all()
 
     # incorect size
     response = client.post(
@@ -66,7 +66,7 @@ def test_sheet_crud(client, authorize):
     res = response.json
     assert res
     assert res["message"] == "Size value cannot be 0 or less"
-    assert not Sheet.query.all()
+    assert not m.Sheet.query.all()
 
     response = client.post(
         "/settings/sheet/create",
@@ -76,7 +76,7 @@ def test_sheet_crud(client, authorize):
     res = response.json
     assert res
     assert res["message"] == "Size value cannot be 0 or less"
-    assert not Sheet.query.all()
+    assert not m.Sheet.query.all()
 
     # integer sizes
     response = client.post(
@@ -87,7 +87,7 @@ def test_sheet_crud(client, authorize):
     res = response.json
     assert res
     assert res["message"] == "success"
-    assert len(Sheet.query.all()) == 1
+    assert len(m.Sheet.query.all()) == 1
 
     # float sizes
     response = client.post(
@@ -98,16 +98,16 @@ def test_sheet_crud(client, authorize):
     res = response.json
     assert res
     assert res["message"] == "success"
-    assert len(Sheet.query.all()) == 2
+    assert len(m.Sheet.query.all()) == 2
 
-    sheet_to_update = Sheet.query.first()
+    sheet_to_update = m.Sheet.query.first()
     new_width = 10.0
     new_height = 10.0
 
     assert sheet_to_update.width != new_width
     assert sheet_to_update.height != new_height
 
-    sheet_to_delete = Sheet.query.first()
+    sheet_to_delete = m.Sheet.query.first()
     assert sheet_to_delete
 
     response = client.delete(
@@ -118,7 +118,7 @@ def test_sheet_crud(client, authorize):
     res = response.json
     assert res
     assert res["message"] == "success"
-    deleted_sheet = Sheet.query.get(sheet_to_update.id)
+    deleted_sheet = m.Sheet.query.get(sheet_to_update.id)
     assert not deleted_sheet
 
     response = client.delete(

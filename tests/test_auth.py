@@ -1,7 +1,7 @@
 from typing import List
 
 from tests.utils import register, login, logout
-from app.models import User
+import app.models as m
 from .constants import EMAIL, PASSWORD, USERNAME
 from app import mail
 
@@ -42,7 +42,7 @@ def test_register(client):
         letter = outbox[0]
         assert letter.subject == "New password"
 
-    user: User = User.query.filter(User.email == EMAIL).first()
+    user: m.User = m.User.query.filter(m.User.email == EMAIL).first()
     assert user
     assert user.email == EMAIL
     assert user.username == USERNAME
@@ -58,7 +58,7 @@ def test_register(client):
     assert b"The given data was invalid." in response.data
     assert b"This email is already registered." in response.data
 
-    users: List[User] = User.query.filter(User.email == EMAIL).all()
+    users: List[m.User] = m.User.query.filter(m.User.email == EMAIL).all()
     assert users
     assert len(users) == 1
 
@@ -76,7 +76,7 @@ def test_login_email_confirming_logout(client):
     assert b"Wrong email or password" in response.data
 
     # activation user
-    user: User = User.query.filter(User.email == EMAIL).first()
+    user: m.User = m.User.query.filter(m.User.email == EMAIL).first()
     response = client.post(
         "/password_recovery/" + user.reset_password_uid,
         data=dict(
@@ -139,7 +139,7 @@ def test_password_recovery(client):
         in response.data
     )
 
-    user: User = User.query.filter(User.email == EMAIL).first()
+    user: m.User = m.User.query.filter(m.User.email == EMAIL).first()
     assert user.reset_password_uid
 
     new_password = "new_password"

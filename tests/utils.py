@@ -1,4 +1,4 @@
-from app.models import User
+import app.models as m
 
 
 def register(client, username, email):
@@ -13,7 +13,7 @@ def register(client, username, email):
 
 
 def activate_user(username, password):
-    user: User = User.query.filter(User.username == username).first()
+    user: m.User = m.User.query.filter(m.User.username == username).first()
     user.password = password
     user.activated = True
     user.save()

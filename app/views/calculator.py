@@ -86,13 +86,9 @@ def calculate():
     if data.get("printPrice"):
         print_sqr_price = data.get("printPrice")
 
-    square_unit = None
-    if metic_system == "cm":
-        # square meter
-        square_unit = 100 * 100
-    elif metic_system == "in":
-        # square feet
-        square_unit = 12 * 12
+    square_unit = conf.METRIC_TO_SQR_UNIT_VALUE.get(metic_system)
+    if not square_unit:
+        return jsonify({"message": "Incorrect metric system"}), 400
 
     res = {
         "used_area": 0,
