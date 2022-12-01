@@ -39,6 +39,12 @@ class BaseConfig(object):
         "in": 12 * 12,
     }
 
+    CURRENCY_NAME_TO_SYMBOL = {
+        "dollar": "$",
+        "pound": "£",
+        "euro": "€",
+    }
+
     # colors
     COLOR_WHITE = "white"
     COLOR_BLACK = "black"

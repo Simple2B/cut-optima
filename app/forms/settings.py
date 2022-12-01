@@ -25,6 +25,11 @@ class SettingsForm(FlaskForm):
         },
         default=0.0,
     )
+    currency = SelectField(
+        "Currency",
+        [DataRequired()],
+        choices=[(choice.name, choice.value) for choice in m.User.Currency],
+    )
     is_price_per = SelectField(
         "Price per",
         [DataRequired()],

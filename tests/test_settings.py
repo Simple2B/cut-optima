@@ -9,6 +9,7 @@ def test_settings(client, authorize):
     # assert defaul values
     assert user.metric_system == m.User.MetricSystem.centimeter
     assert user.print_price == 0
+    assert user.currency == m.User.Currency.dollar
     assert not user.is_price_per_sheet
     assert user.moq == 1
     assert user.cut_spacing == 0.5
@@ -17,6 +18,7 @@ def test_settings(client, authorize):
 
     new_metric_system = m.User.MetricSystem.inch.value
     new_print_price = 100
+    new_currency = m.User.Currency.euro.value
     new_moq = 100
     new_cut_spacing = 100
     new_is_enabled_buy_btn = True
@@ -27,6 +29,7 @@ def test_settings(client, authorize):
         json={
             "metric_system": new_metric_system,
             "print_price": new_print_price,
+            "currency": new_currency,
             "is_price_per": "Sheet",
             "moq": new_moq,
             "cut_spacing": new_cut_spacing,
@@ -38,6 +41,7 @@ def test_settings(client, authorize):
 
     assert user.metric_system == m.User.MetricSystem[new_metric_system]
     assert user.print_price == new_print_price
+    assert user.currency == m.User.Currency[new_currency]
     assert user.is_price_per_sheet
     assert user.moq == new_moq
     assert user.cut_spacing == new_cut_spacing

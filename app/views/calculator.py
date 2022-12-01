@@ -19,6 +19,7 @@ def calculator():
     cut_spacing = 0.5
     metric_system = "centimeter"
     sheets = None
+    currency = conf.CURRENCY_NAME_TO_SYMBOL["dollar"]
 
     setup_id = request.args.get("setup_id")
     if setup_id:
@@ -32,6 +33,7 @@ def calculator():
         cut_spacing = user.cut_spacing
         metric_system = user.metric_system.value
         sheets = user.sheets
+        currency = conf.CURRENCY_NAME_TO_SYMBOL[user.currency.value]
 
     return render_template(
         "calculator/index.html",
@@ -46,6 +48,7 @@ def calculator():
         cut_spacing=cut_spacing,
         metric_system=metric_system,
         sheets=sheets,
+        currency=currency,
     )
 
 

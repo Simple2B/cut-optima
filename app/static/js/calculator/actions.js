@@ -122,7 +122,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
     usageMetricDiv.innerHTML = meticSystemMapping[meticSystem];
 
     availableResQtyDiv.innerHTML = resJson.wasted_area.toFixed(2);
-    totalCostResDiv.innerHTML = "$" + resJson.print_price.toFixed(2);
+    totalCostResDiv.innerHTML = resJson.print_price.toFixed(2);
     availableMetricResDiv.innerHTML = meticSystemMapping[meticSystem];
     availableResPerUnitDiv.innerHTML = "SQR";
     costResDiv.innerHTML = printPriceInput.value + "$";

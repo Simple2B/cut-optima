@@ -50,6 +50,26 @@
             </div>
 
             <div class="mb-3">
+              <label for="currency" class="form-label"
+                >{{form.currency.label}}</label
+              >
+              <select class="form-control" id="currency" name="currency" required="">
+                {% for choices in form.currency.choices %}
+                  <option
+                    value="{{ choices[0] }}"
+                    {% if current_user.currency.value == choices[0] %}selected{% endif %}
+                  >
+                    {{ choices[0].title() }}
+                  </option>
+                {% endfor %}
+              </select>
+
+              {% for error in form.errors.currency %}
+                <small class="text-danger">{{error}}</small>
+              {% endfor %}
+            </div>
+
+            <div class="mb-3">
               <label for="is_price_per" class="form-label"
                 >{{form.is_price_per.label}}</label
               >

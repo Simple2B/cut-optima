@@ -15,6 +15,7 @@ def settings():
     if form.validate_on_submit():
         current_user.metric_system = m.User.MetricSystem[form.metric_system.data]
         current_user.print_price = form.print_price.data
+        current_user.currency = form.currency.data
         current_user.is_price_per_sheet = form.is_price_per.data == "Sheet"
         current_user.moq = form.moq.data
         current_user.cut_spacing = form.cut_spacing.data

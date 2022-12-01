@@ -203,14 +203,14 @@
               <div class="d-flex mb-1">
                 <div class="fw-light mr-5px">Cost per</div>
                 <div class="fw-light cost-per mr-10px">{{ cost_per }}:</div>
-                <div class="fw-light cost-res">${{ cost }}</div>
+                <div class="fw-light cost-res">{{ currency }}{{ cost }}</div>
               </div>
             </div>
           </div>
           <h6
             class="calculator-block-title border-0 p-1 mb-2 text-uppercase fw-bolder"
           >
-            Total cost: <span class="total-cost-res"></span>
+            Total cost: {{currency}}<span class="total-cost-res">0</span>
           </h6>
           {% if order_enabled %}
           <div class="d-flex">
