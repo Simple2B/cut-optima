@@ -1,67 +1,24 @@
 {% extends 'base.html' %} {% block content %}
 <div class="calculator-content d-flex h-100">
   <div class="calculator-l-side h-100">
-    <div class="bin-size mt-4">
-      <h5 class="calculator-block-title border-0 text-center p-1 mb-1">
-        Sheet Size
-      </h5>
-      <div class="d-flex justify-content-center">
-        {% if sheets %}
-        <select class="form-select w-75 bin-size-input">
-          {% for sheet in sheets %}
-          <option value="{{sheet.width}}x{{sheet.height}}">
-            {{sheet.width}}  x  {{sheet.height}}
-          </option>
-          {% endfor %}
-        </select>
-        {% else %}
-        <div class="input-group input-group-sm w-75 bin-size-input">
-          <input
-            class="form-control bin-width w-25"
-            placeholder="Width"
-            type="number"
-            onfocusout="validateInput(this)"
-          />
-          <span
-            class="input-group-text bg-white border-0 px-3"
-            id="inputGroup-sizing-sm"
-            >x</span
-          >
-          <input
-            class="form-control bin-height w-25"
-            placeholder="Height"
-            type="number"
-            onfocusout="validateInput(this)"
-          />
-        </div>
-        {% endif %}
-
-      </div>
-    </div>
-
-    <div class="rects-settings mt-4">
-      <h6 class="calculator-block-title border-0 text-center p-1 mb-1">
-        Add more artwork qty and sizes
-      </h6>
-      <div class="d-flex align-items-center flex-column added-rects">
-        <div class="d-flex justify-content-between w-75 add-rect-form mb-2">
-          {#
-          <select class="form-select form-select-sm w-17" id="bin-size-select">
-            <option value="">qty</option>
-            {% for qty in range(1, 11) %}
-            <option value="{{ qty }}">{{ qty }}</option>
+    <div class="w-90">
+      <div class="bin-size mt-4">
+        <h5 class="calculator-block-title border-0 p-1 mb-1">
+          Sheet Size
+        </h5>
+        <div class="d-flex justify-content-center">
+          {% if sheets %}
+          <select class="form-select bin-size-input">
+            {% for sheet in sheets %}
+            <option value="{{sheet.width}}x{{sheet.height}}">
+              {{sheet.width}}  x  {{sheet.height}}
+            </option>
             {% endfor %}
           </select>
-          #}
-          <input
-            class="form-control rect-qty w-17"
-            placeholder="Qty"
-            type="number"
-            onfocusout="validateInputInt(this)"
-          />
-          <div class="input-group input-group-sm w-75">
+          {% else %}
+          <div class="input-group  bin-size-input">
             <input
-              class="form-control rect-width w-25"
+              class="form-control bin-width"
               placeholder="Width"
               type="number"
               onfocusout="validateInput(this)"
@@ -72,71 +29,116 @@
               >x</span
             >
             <input
-              class="form-control rect-height w-25"
+              class="form-control bin-height"
               placeholder="Height"
               type="number"
               onfocusout="validateInput(this)"
             />
           </div>
+          {% endif %}
+
         </div>
       </div>
-      <div class="d-flex align-items-center flex-column">
-        <div class="d-flex justify-content-end w-75 mt-2">
-          <div class="btn rounded btn rect-add-btn btn-primary">Add</div>
-          <div class="btn rounded btn rect-remove-last-btn ml-10px btn-primary">
-            Remove Last
+
+      <div class="rects-settings mt-4">
+        <h6 class="calculator-block-title border-0 p-1 mb-1">
+          Add more artwork qty and sizes
+        </h6>
+        <div class="d-flex align-items-center flex-column added-rects">
+          <div class="d-flex justify-content-between add-rect-form mb-2">
+            {#
+            <select class="form-select form-select-sm w-17" id="bin-size-select">
+              <option value="">qty</option>
+              {% for qty in range(1, 11) %}
+              <option value="{{ qty }}">{{ qty }}</option>
+              {% endfor %}
+            </select>
+            #}
+            <input
+              class="form-control rect-qty w-17"
+              placeholder="Qty"
+              type="number"
+              onfocusout="validateInputInt(this)"
+            />
+            <div class="input-group input-group-sm w-75">
+              <input
+                class="form-control rect-width w-25"
+                placeholder="Width"
+                type="number"
+                onfocusout="validateInput(this)"
+              />
+              <span
+                class="input-group-text bg-white border-0 px-3"
+                id="inputGroup-sizing-sm"
+                >x</span
+              >
+              <input
+                class="form-control rect-height w-25"
+                placeholder="Height"
+                type="number"
+                onfocusout="validateInput(this)"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="d-flex flex-column">
+          <div class="d-flex  mt-2">
+            <div class="btn rounded btn rect-add-btn btn-primary">Add</div>
+            <div class="btn rounded btn rect-remove-last-btn ml-10px btn-primary">
+              Remove Last
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <div class="general-settings mt-4 {% if setup_id not in [None, ""] %}d-none{% endif %}">
-      <div class="mb-3">
-        <h6 class="calculator-block-title border-0 text-center p-1 mb-1">
-          Blade size
-        </h6>
-        <div class="d-flex justify-content-center">
-          <input
-            class="form-control rect-height w-25 blade-size"
-            placeholder="Blade size"
-            value="{{ cut_spacing }}"
-            type="number"
-            onfocusout="validateInput(this)"
-          />
+      <div class="general-settings mt-4 {% if setup_id not in [None, ""] %}d-none{% endif %}">
+        <div class="mb-3">
+          <h6 class="calculator-block-title border-0 p-1 mb-1">
+            Cutting Space
+          </h6>
+          <div class="">
+            <input
+              class="form-control rect-height blade-size"
+              placeholder="Blade size"
+              value="{{ cut_spacing }}"
+              type="number"
+              onfocusout="validateInput(this)"
+            />
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <h6 class="calculator-block-title border-0 p-1 mb-1">
+            Price per {% if cost_per == "Sheet" %}sheet{% else %}square feet/meter{% endif %}
+          </h6>
+          <div class="d-flex justify-content-center">
+            <input
+              class="form-control rect-height print-price"
+              placeholder="Print price"
+              value="{{ cost }}"
+              type="number"
+              onfocusout="validateInput(this)"
+            />
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <h6 class="calculator-block-title border-0 p-1 mb-1">
+            Unit of measurement
+          </h6>
+          <div class="d-flex">
+            <select class="form-select metic-system ">
+              <option value="cm" {% if metric_system == "centimeter" %}selected{% endif %}>Centimeter</option>
+              <option value="in" {% if metric_system == "inch" %}selected{% endif %}>Inch</option>
+            </select>
+          </div>
         </div>
       </div>
 
-      <div class="mb-3">
-        <h6 class="calculator-block-title border-0 text-center p-1 mb-1">
-          Price per {% if cost_per == "Sheet" %}sheet{% else %}square feet/meter{% endif %}
-        </h6>
-        <div class="d-flex justify-content-center">
-          <input
-            class="form-control rect-height w-25 print-price"
-            placeholder="Print price"
-            value="{{ cost }}"
-            type="number"
-            onfocusout="validateInput(this)"
-          />
+      <div class="d-flex">
+        <div class="btn border rounded btn btn-primary calculate-btn mb-1 fs-4 mt-4">
+          Calculate
         </div>
-      </div>
-
-      <div class="mb-3">
-        <h6 class="calculator-block-title border-0 text-center p-1 mb-1">
-          Unit of measurement
-        </h6>
-        <div class="d-flex justify-content-center">
-          <select class="form-select metic-system w-50">
-            <option value="cm" {% if metric_system == "centimeter" %}selected{% endif %}>Centimeter</option>
-            <option value="in" {% if metric_system == "inch" %}selected{% endif %}>Inch</option>
-          </select>
-        </div>
-      </div>
-    </div>
-
-    <div class="d-flex justify-content-center">
-      <div class="btn border rounded btn btn-primary calculate-btn mb-1 fs-4 mt-4">
-        Calculate
       </div>
     </div>
   </div>
@@ -146,81 +148,83 @@
       <div class="result-img-data h-100">
         <div class="images-result"></div>
       </div>
-      <div class="result-text-data h-100 mt-4">
-        <h6
-          class="calculator-block-title border-0 text-center p-1 mb-1 text-decoration-underline text-uppercase fw-bolder"
-        >
-          Information
-        </h6>
-        <div class="d-flex justify-content-center">
-          <div class="mt-1 w-75">
-            <div class="d-flex mb-1">
-              <div class="fw-light mr-10px">Metric:</div>
-              <div class="fw-light metric-res"></div>
-            </div>
-            <div class="d-flex mb-1">
-              <div class="fw-light mr-10px">MOQ:</div>
-              <div class="fw-light moq-res-qty mr-10px">{{ moq }}</div>
-              <div class="fw-light moq-res-metric">{{ moq_unit }}</div>
-            </div>
-            <div class="d-flex mb-1">
-              <div class="fw-light mr-10px">Sheet Size:</div>
-              <div class="fw-light sheet-size-res"></div>
-            </div>
-          </div>
-        </div>
-        <h6
-          class="calculator-block-title border-0 text-center p-1 mb-1 text-decoration-underline text-uppercase fw-bolder"
-        >
-          Usage
-        </h6>
-        <div class="d-flex justify-content-center">
-          <div class="mt-1 w-75">
-            <div class="d-flex mb-1">
-              <div class="fw-light mr-10px">Used:</div>
-              <div class="fw-light usage-res-qty mr-10px"></div>
-              <div class="fw-light usage-metric-res mr-10px"></div>
-              <div class="fw-light usage-metric"></div>
-            </div>
-            <div class="d-flex mb-1">
-              <div class="fw-light mr-10px">Available:</div>
-              <div class="fw-light available-res-qty mr-10px"></div>
-              <div class="fw-light available-res-per-unit mr-10px"></div>
-              <div class="fw-light available-metric-res"></div>
-            </div>
-          </div>
-        </div>
-        <h6
-          class="calculator-block-title border-0 text-center p-1 mb-1 text-decoration-underline text-uppercase fw-bolder"
-        >
-          Cost
-        </h6>
-        <div class="d-flex justify-content-center">
-          <div class="mt-1 w-75">
-            <div class="d-flex mb-1">
-              <div class="fw-light mr-5px">Cost per</div>
-              <div class="fw-light cost-per mr-10px">{{ cost_per }}</div>
-              <div class="fw-light cost-res">{{ cost }}$</div>
-            </div>
-          </div>
-        </div>
-        <h6
-          class="calculator-block-title border-0 text-center p-1 mb-2 text-uppercase fw-bolder"
-        >
-          Total cost: <span class="total-cost-res"></span>
-        </h6>
-        {% if order_enabled %}
-        <div class="d-flex justify-content-center">
-          <a
-            href="{{ order_url }}"
-            class="btn btn-primary btn-lg rounded"
-            tabindex="-1"
-            role="button"
-            target="_blank"
-            >Order Now</a
+      <div class="result-text-data h-100 mt-4 d-flex justify-content-center">
+        <div class="w-90">
+          <h6
+            class="calculator-block-title border-0 p-1 mb-1 text-decoration-underline text-uppercase fw-bolder"
           >
+            Information
+          </h6>
+          <div class="d-flex justify-content-center">
+            <div class="mt-1 w-90">
+              <div class="d-flex mb-1">
+                <div class="fw-light mr-10px">Metric:</div>
+                <div class="fw-light metric-res">{{ metric_system }}</div>
+              </div>
+              <div class="d-flex mb-1">
+                <div class="fw-light mr-10px">MOQ:</div>
+                <div class="fw-light moq-res-qty mr-10px">{{ moq }}</div>
+                <div class="fw-light moq-res-metric">{{ moq_unit }}</div>
+              </div>
+              <div class="d-flex mb-1">
+                <div class="fw-light mr-10px">Sheet Size:</div>
+                <div class="fw-light sheet-size-res"></div>
+              </div>
+            </div>
+          </div>
+          <h6
+            class="calculator-block-title border-0 p-1 mb-1 text-decoration-underline text-uppercase fw-bolder"
+          >
+            Usage
+          </h6>
+          <div class="d-flex justify-content-center">
+            <div class="mt-1 w-90">
+              <div class="d-flex mb-1">
+                <div class="fw-light mr-10px">Used:</div>
+                <div class="fw-light usage-res-qty mr-10px"></div>
+                <div class="fw-light usage-metric-res mr-10px"></div>
+                <div class="fw-light usage-metric"></div>
+              </div>
+              <div class="d-flex mb-1">
+                <div class="fw-light mr-10px">Available:</div>
+                <div class="fw-light available-res-qty mr-10px"></div>
+                <div class="fw-light available-res-per-unit mr-10px"></div>
+                <div class="fw-light available-metric-res"></div>
+              </div>
+            </div>
+          </div>
+          <h6
+            class="calculator-block-title border-0 p-1 mb-1 text-decoration-underline text-uppercase fw-bolder"
+          >
+            Cost
+          </h6>
+          <div class="d-flex justify-content-center">
+            <div class="mt-1 w-90">
+              <div class="d-flex mb-1">
+                <div class="fw-light mr-5px">Cost per</div>
+                <div class="fw-light cost-per mr-10px">{{ cost_per }}:</div>
+                <div class="fw-light cost-res">${{ cost }}</div>
+              </div>
+            </div>
+          </div>
+          <h6
+            class="calculator-block-title border-0 p-1 mb-2 text-uppercase fw-bolder"
+          >
+            Total cost: <span class="total-cost-res"></span>
+          </h6>
+          {% if order_enabled %}
+          <div class="d-flex">
+            <a
+              href="{{ order_url }}"
+              class="btn btn-primary btn-lg rounded"
+              tabindex="-1"
+              role="button"
+              target="_blank"
+              >Order Now</a
+            >
+          </div>
+          {% endif %}
         </div>
-        {% endif %}
       </div>
     </div>
   </div>

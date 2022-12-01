@@ -17,7 +17,7 @@ def calculator():
     order_url = ""
     order_enabled = False
     cut_spacing = 0.5
-    metric_system = None
+    metric_system = "centimeter"
     sheets = None
 
     setup_id = request.args.get("setup_id")

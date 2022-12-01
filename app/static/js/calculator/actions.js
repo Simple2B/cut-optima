@@ -116,13 +116,13 @@ document.addEventListener("DOMContentLoaded", (event) => {
       return;
     }
 
-    metricResDiv.innerHTML = meticSystem;
+    // metricResDiv.innerHTML = meticSystem;
     usageResQtyDiv.innerHTML = resJson.used_area.toFixed(2);
     usageMetricResDiv.innerHTML = "SQR";
     usageMetricDiv.innerHTML = meticSystemMapping[meticSystem];
 
     availableResQtyDiv.innerHTML = resJson.wasted_area.toFixed(2);
-    totalCostResDiv.innerHTML = resJson.print_price.toFixed(2) + "$";
+    totalCostResDiv.innerHTML = "$" + resJson.print_price.toFixed(2);
     availableMetricResDiv.innerHTML = meticSystemMapping[meticSystem];
     availableResPerUnitDiv.innerHTML = "SQR";
     costResDiv.innerHTML = printPriceInput.value + "$";
