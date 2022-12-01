@@ -138,10 +138,12 @@ document.addEventListener("DOMContentLoaded", (event) => {
       );
       imgResultDiv.innerHTML = `
       <h5 class="mb-0">Sheet ${bin.sizes[0]}x${bin.sizes[1]}</h5>
-      <img class="w-75 border border-2 rounded test-img"
-        src="data:image/png;base64,${bin.image}"
-        alt="calculator-result-img"
-      >
+      <div class="w-75 d-flex justify-content-center">
+        <img class="border border-2 rounded img-sizes"
+          src="data:image/png;base64,${bin.image}"
+          alt="calculator-result-img"
+        >
+      </div>
       `;
       console.log("imgResultDiv", imgResultDiv);
 

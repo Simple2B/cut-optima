@@ -88,7 +88,7 @@ class RectPacker:
         log(log.INFO, "Prepare to pack rectangles")
 
         for bin in self.bins:
-            self.packer.add_bin(*sorted(bin, reverse=True))
+            self.packer.add_bin(*bin)
         for rect in self.rectangles:
             rect = [
                 rect[0] + self.blade_size * 2,
