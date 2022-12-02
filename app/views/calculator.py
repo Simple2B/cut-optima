@@ -115,13 +115,16 @@ def calculate():
         "bins": [],
     }
     for bin in rect_packer.result["bins"]:
-        res["used_area"] += bin["used_area"] / square_unit
+        # res["used_area"] += bin["used_area"] / square_unit
         # wasted area = area - used area
         # res["wasted_area"] += bin["wasted_area"] / square_unit
 
         # wasted area calculated by max_y_coordinate * width
         reduced_height = bin["sizes"][1] - rect_packer.result["max_y_coordinate"]
         res["wasted_area"] = bin["sizes"][0] * reduced_height / square_unit
+        res["used_area"] = (
+            math.prod(bin["sizes"]) - (bin["sizes"][0] * reduced_height)
+        ) / square_unit
         res["placed_items"] += bin["rectangles"]
 
         if price_per == "sqr":
