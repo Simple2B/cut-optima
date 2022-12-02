@@ -24,6 +24,14 @@ class RectPacker:
             "bins": [],
         }
 
+    def reset(self):
+        """Remove all results"""
+        self.packer = newPacker(pack_algo=guillotine.GuillotineBssfMaxas)
+        self.result = {
+            "not_placed_rectangles": [],
+            "bins": [],
+        }
+
     def add_bin(self, width: int, height: int):
         """Add bin to bins list
 
@@ -69,7 +77,7 @@ class RectPacker:
                 bin = sorted(bin)
                 fit_in_bins.append(
                     rect[0] + self.blade_size * 2 <= bin[0]
-                    and rect[1] + self.blade_size * 2 <= bin[0]
+                    and rect[1] + self.blade_size * 2 <= bin[1]
                 )
             if not any(fit_in_bins):
                 invalid_rectangles.append(rect)
@@ -120,7 +128,9 @@ class RectPacker:
                 )
                 bin_result["rectangles"].append(rect)
                 not_placed_rectangles.remove(rect)
-                bin_result["used_area"] += rect[0] * rect[1]
+                bin_result["used_area"] += (rect[0] + self.blade_size * 2) * (
+                    rect[1] + self.blade_size * 2
+                )
             bin_result["wasted_area"] = bin.width * bin.height - bin_result["used_area"]
 
             self.result["bins"].append(bin_result)
@@ -128,6 +138,11 @@ class RectPacker:
             bin_result["image"] = self.generate_image_for_bin(bin)
 
         self.result["not_placed_rectangles"] = not_placed_rectangles
+
+        if self.result["not_placed_rectangles"]:
+            self.bins.append(self.bins[0])
+            self.reset()
+            self.pack()
 
     def generate_image_for_bin(self, bin: object):
         """Generate image using bin data

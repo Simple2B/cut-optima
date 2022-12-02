@@ -13,17 +13,16 @@ document.addEventListener("DOMContentLoaded", (event) => {
   const bladeSizeInput = document.querySelector(".blade-size");
   const printPriceInput = document.querySelector(".print-price");
   const meticSystemSelect = document.querySelector(".metic-system");
+  const pricePerSelect = document.querySelector(".price-per");
+  const moqQtyDiv = document.querySelector(".moq-qty");
 
   // output data
-  const metricResDiv = document.querySelector(".metric-res");
   const sheetSizeResDiv = document.querySelector(".sheet-size-res");
   const usageResQtyDiv = document.querySelector(".usage-res-qty");
-  const usageMetricResDiv = document.querySelector(".usage-metric-res");
+  const usageSheetQtyDiv = document.querySelector(".usage-sheet-qty");
   const usageMetricDiv = document.querySelector(".usage-metric");
   const availableResQtyDiv = document.querySelector(".available-res-qty");
-  const availableResPerUnitDiv = document.querySelector(
-    ".available-res-per-unit"
-  );
+  const costPerDiv = document.querySelector(".cost-per");
   const availableMetricResDiv = document.querySelector(".available-metric-res");
   const totalCostResDiv = document.querySelector(".total-cost-res");
   const costResDiv = document.querySelector(".cost-res");
@@ -85,12 +84,16 @@ document.addEventListener("DOMContentLoaded", (event) => {
     const bladeSize = parseFloat(bladeSizeInput.value);
     const printPrice = parseFloat(printPriceInput.value);
     const meticSystem = meticSystemSelect.value;
+    const pricePer = pricePerSelect.value;
+    const moqQty = parseFloat(moqQtyDiv.innerHTML);
 
     console.log("bins", addedBins);
     console.log("rects", addedRects);
     console.log("bladeSize", bladeSize);
     console.log("printPrice", printPrice);
     console.log("meticSystem", meticSystem);
+    console.log("pricePer", pricePer);
+    console.log("moqQty", moqQty);
 
     const res = await fetch(`/calculate`, {
       credentials: "include",
@@ -104,6 +107,8 @@ document.addEventListener("DOMContentLoaded", (event) => {
         bladeSize: bladeSize,
         printPrice: printPrice,
         meticSystem: meticSystem,
+        pricePer: pricePer,
+        moqQty: moqQty,
       }),
     });
     const resJson = await res.json();
@@ -115,16 +120,13 @@ document.addEventListener("DOMContentLoaded", (event) => {
       });
       return;
     }
-
-    // metricResDiv.innerHTML = meticSystem;
     usageResQtyDiv.innerHTML = resJson.used_area.toFixed(2);
-    usageMetricResDiv.innerHTML = "SQR";
     usageMetricDiv.innerHTML = meticSystemMapping[meticSystem];
-
+    usageSheetQtyDiv.innerHTML = resJson.bins.length;
     availableResQtyDiv.innerHTML = resJson.wasted_area.toFixed(2);
     totalCostResDiv.innerHTML = resJson.print_price.toFixed(2);
     availableMetricResDiv.innerHTML = meticSystemMapping[meticSystem];
-    availableResPerUnitDiv.innerHTML = "SQR";
+    costPerDiv.innerHTML = pricePer.toUpperCase();
     costResDiv.innerHTML = printPriceInput.value + "$";
 
     for (let bin of resJson.bins) {

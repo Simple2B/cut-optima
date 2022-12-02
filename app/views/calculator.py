@@ -1,3 +1,5 @@
+import math
+
 from flask import Blueprint, render_template, request, jsonify
 
 from config import BaseConfig as conf
@@ -64,6 +66,8 @@ def calculate():
         return jsonify({"message": "Invalid metic system"}), 400
 
     metic_system = data.get("meticSystem")
+    price_per = data.get("pricePer")
+
     rect_packer = RectPacker(blade_size=data["bladeSize"])
 
     for bin in data["bins"]:
@@ -85,9 +89,15 @@ def calculate():
 
     rect_packer.pack()
 
-    print_sqr_price = 0
+    print_price = 0
     if data.get("printPrice"):
-        print_sqr_price = data.get("printPrice")
+        print_price = data.get("printPrice")
+
+    moq = 1
+    if data.get("moqQty"):
+        moq = data.get("moqQty")
+
+    moq_price = print_price * moq
 
     square_unit = conf.METRIC_TO_SQR_UNIT_VALUE.get(metic_system)
     if not square_unit:
@@ -104,7 +114,10 @@ def calculate():
         res["used_area"] += bin["used_area"] / square_unit
         res["wasted_area"] += bin["wasted_area"] / square_unit
         res["placed_items"] += bin["rectangles"]
-        res["print_price"] += bin["used_area"] / square_unit * print_sqr_price
+        if price_per == "sqr":
+            res["print_price"] += (math.prod(bin["sizes"]) / square_unit) * print_price
+        else:
+            res["print_price"] += print_price
 
         res["bins"].append(
             {
@@ -112,9 +125,12 @@ def calculate():
                 "used_area": bin["used_area"],
                 "wasted_area": bin["wasted_area"],
                 "placed_items": bin["rectangles"],
-                "print_price": bin["used_area"] / square_unit * print_sqr_price,
+                "print_price": (math.prod(bin["sizes"]) / square_unit) * print_price,
                 "image": serve_pil_image(bin["image"]),
             }
         )
+
+    if res["print_price"] < moq_price:
+        res["print_price"] = moq_price
 
     return jsonify(res)
