@@ -7,7 +7,7 @@ from app.utils import generate_color_hex
 
 
 class RectPacker:
-    def __init__(self, blade_size: int = 0):
+    def __init__(self, blade_size: int = 0, is_bin_width_larger: bool = True):
         """Init RectPacker instance with rectpack.racker object to
         find the optimal arrangement of rectangles on bin area and show it
         on image
@@ -16,13 +16,19 @@ class RectPacker:
             blade_size (int, optional): Value that will be added
             to each side of rectangle. Defaults to 0.
         """
-        self.packer = newPacker(pack_algo=guillotine.GuillotineBssfMaxas)
+        pack_algo = (
+            guillotine.GuillotineBssfMaxas
+            if is_bin_width_larger
+            else guillotine.GuillotineBssfMinas
+        )
+        self.packer = newPacker(pack_algo=pack_algo)
         self.bins = []
         self.rectangles = []
         self.blade_size = blade_size
         self.result = {
             "not_placed_rectangles": [],
             "bins": [],
+            "max_y_coordinate": 0,
         }
 
     def reset(self):
@@ -123,6 +129,8 @@ class RectPacker:
                 "image": None,
             }
             for rect in bin:
+                if self.result["max_y_coordinate"] < rect.y + rect.height:
+                    self.result["max_y_coordinate"] = rect.y + rect.height
                 rect = sorted(
                     [
                         rect.width - self.blade_size * 2,

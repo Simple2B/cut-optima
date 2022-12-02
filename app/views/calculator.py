@@ -68,7 +68,11 @@ def calculate():
     metic_system = data.get("meticSystem")
     price_per = data.get("pricePer")
 
-    rect_packer = RectPacker(blade_size=data["bladeSize"])
+    first_bin = data["bins"][0]
+    rect_packer = RectPacker(
+        blade_size=data["bladeSize"],
+        is_bin_width_larger=first_bin["size"][0] > first_bin["size"][1],
+    )
 
     for bin in data["bins"]:
         for _ in range(bin["pics"]):
@@ -112,8 +116,14 @@ def calculate():
     }
     for bin in rect_packer.result["bins"]:
         res["used_area"] += bin["used_area"] / square_unit
-        res["wasted_area"] += bin["wasted_area"] / square_unit
+        # wasted area = area - used area
+        # res["wasted_area"] += bin["wasted_area"] / square_unit
+
+        # wasted area calculated by max_y_coordinate * width
+        reduced_height = bin["sizes"][1] - rect_packer.result["max_y_coordinate"]
+        res["wasted_area"] = bin["sizes"][0] * reduced_height / square_unit
         res["placed_items"] += bin["rectangles"]
+
         if price_per == "sqr":
             res["print_price"] += (math.prod(bin["sizes"]) / square_unit) * print_price
         else:
