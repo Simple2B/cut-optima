@@ -3,6 +3,7 @@ from PIL import Image, ImageDraw
 
 from config import BaseConfig as conf
 from app.logger import log
+from app.utils import generate_color_hex
 
 
 class RectPacker:
@@ -110,6 +111,8 @@ class RectPacker:
         not_placed_rectangles = [
             sorted([float(rect[0]), float(rect[1])]) for rect in self.rectangles
         ]
+
+        color_chema = {}
         for bin in self.packer:
             log(log.INFO, "Generate result for bin [%s]", bin)
             bin_result = {
@@ -135,7 +138,7 @@ class RectPacker:
 
             self.result["bins"].append(bin_result)
 
-            bin_result["image"] = self.generate_image_for_bin(bin)
+            bin_result["image"] = self.generate_image_for_bin(bin, color_chema)
 
         self.result["not_placed_rectangles"] = not_placed_rectangles
 
@@ -144,7 +147,7 @@ class RectPacker:
             self.reset()
             self.pack()
 
-    def generate_image_for_bin(self, bin: object):
+    def generate_image_for_bin(self, bin: object, color_chema: dict):
         """Generate image using bin data
 
         Args:
@@ -165,6 +168,12 @@ class RectPacker:
         img_draw = ImageDraw.Draw(img)
 
         for rect in bin:
+            rect_color = color_chema.get(str([rect.width, rect.height]))
+            if not rect_color:
+                color = generate_color_hex()
+                color_chema[str([rect.width, rect.height])] = color
+                rect_color = color
+
             rectangle = [
                 (rect.x * scale, rect.y * scale),
                 ((rect.x + rect.width) * scale, (rect.y + rect.height) * scale),
@@ -172,7 +181,7 @@ class RectPacker:
             img_draw.rectangle(
                 rectangle,
                 outline=conf.COLOR_WHITE if self.blade_size else conf.COLOR_BLACK,
-                fill=conf.COLOR_WHITE if self.blade_size else conf.COLOR_GREY,
+                fill=conf.COLOR_WHITE if self.blade_size else rect_color,
             )
             if self.blade_size:
                 rectangle = [
@@ -188,7 +197,7 @@ class RectPacker:
                 img_draw.rectangle(
                     rectangle,
                     outline=conf.COLOR_BLACK,
-                    fill=conf.COLOR_GREY,
+                    fill=rect_color,
                 )
 
         shape = [(bin_width - 1, bin_height - 1), 0, 0]

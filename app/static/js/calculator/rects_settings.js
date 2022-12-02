@@ -12,10 +12,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
     rectQtyInputs.forEach((el) => {
       if (parseInt(el.value)) {
         totalRestsQty = totalRestsQty + parseInt(el.value);
-      } else {
-        iziToast.error({
-          message: "Invalid value",
-        });
       }
     });
     totalRectsSpan.innerHTML = totalRestsQty;
