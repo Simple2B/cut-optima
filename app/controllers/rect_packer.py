@@ -122,8 +122,8 @@ class RectPacker:
             for rect in bin:
                 rect = sorted(
                     [
-                        round(rect.width - self.blade_size * 2),
-                        round(rect.height - self.blade_size * 2),
+                        rect.width - self.blade_size * 2,
+                        rect.height - self.blade_size * 2,
                     ]
                 )
                 bin_result["rectangles"].append(rect)

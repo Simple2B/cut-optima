@@ -41,6 +41,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
     iziToast.success({
       message: "Removed",
     });
+    calculateTotalRestsQty();
   });
 
   rectAddBtn.addEventListener("click", () => {
