@@ -149,6 +149,8 @@
       <div class="sheet-sizes p2 w-75">
         <div class="create-sheet-size mb-3">
           <div class="d-flex">
+            <input class="form-control sheet-price w-25 mr-20px" placeholder="Price" type="number">
+
             <input class="form-control sheet-size-width" placeholder="Width" type="number">
             <span class="input-group-text">x</span>
             <input class="form-control sheet-size-height" placeholder="Height" type="number">
@@ -158,6 +160,14 @@
         <div class="added-sheet-sizes">
           {% for added_sheet in current_user.sheets %}
             <div class="d-flex mb-2" id="{{ added_sheet.id }}">
+              <input
+                class="form-control added-sheet-price mr-20px"
+                placeholder="Price"
+                type="number"
+                disabled
+                value={{ added_sheet.price }}
+              >
+
               <input
                 class="form-control added-sheet-size-width"
                 placeholder="Width"

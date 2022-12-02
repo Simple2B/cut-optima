@@ -2,6 +2,7 @@
 document.addEventListener("DOMContentLoaded", (event) => {
   const sheetWidthInput = document.querySelector(".sheet-size-width");
   const sheetHeightInput = document.querySelector(".sheet-size-height");
+  const sheetPriceInput = document.querySelector(".sheet-price");
   const addSheetBtn = document.querySelector(".add-sheet-size");
   const addedSheetSizesDiv = document.querySelector(".added-sheet-sizes");
 
@@ -43,11 +44,20 @@ document.addEventListener("DOMContentLoaded", (event) => {
   const addSheetToFront = (id) => {
     const sheetWidth = sheetWidthInput.value;
     const sheetHeight = sheetHeightInput.value;
+    const sheetPrice = sheetPriceInput.value;
 
     const newSheetDiv = document.createElement("div");
     newSheetDiv.setAttribute("class", "d-flex mb-2");
     newSheetDiv.setAttribute("id", id);
     newSheetDiv.innerHTML = `
+        <input
+          class="form-control added-sheet-price mr-20px"
+          placeholder="Price"
+          type="number"
+          disabled
+          value=${parseFloat(sheetPrice)}
+        >
+
         <input
             class="form-control added-sheet-size-width"
             placeholder="Width"
@@ -80,6 +90,14 @@ document.addEventListener("DOMContentLoaded", (event) => {
   addSheetBtn.addEventListener("click", async () => {
     const sheetWidth = sheetWidthInput.value;
     const sheetHeight = sheetHeightInput.value;
+    const sheetPrice = sheetPriceInput.value;
+
+    if (!sheetWidth || !sheetHeight || !sheetPrice || sheetPrice < 0) {
+      iziToast.error({
+        message: "Invalid new sheet data",
+      });
+      return;
+    }
 
     const res = await fetch(`/settings/sheet/create`, {
       credentials: "include",
@@ -90,6 +108,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
       body: JSON.stringify({
         width: sheetWidth,
         height: sheetHeight,
+        price: sheetPrice,
       }),
     });
     if (res.status == 200) {

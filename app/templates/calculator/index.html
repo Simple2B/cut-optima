@@ -10,7 +10,7 @@
           {% if sheets %}
           <select class="form-select bin-size-input">
             {% for sheet in sheets %}
-            <option value="{{sheet.width}}x{{sheet.height}}">
+            <option value="{{sheet.width}}x{{sheet.height}}" {% if cost_per == "Sheet" %}price="{{ sheet.price }}"{% endif %}>
               {{sheet.width}}  x  {{sheet.height}}
             </option>
             {% endfor %}
@@ -224,7 +224,7 @@
               <div class="d-flex mb-1">
                 <div class="fw-light mr-5px">Cost per</div>
                 <div class="fw-light cost-per mr-10px">{{ cost_per }}:</div>
-                <div class="fw-light cost-res">{{ currency }}{{ cost }}</div>
+                <div class="fw-light cost-res">{{ currency }} <span class="cost-value">{{ cost }}</span></div>
               </div>
             </div>
           </div>
@@ -258,11 +258,19 @@
   <script
     src="{{ url_for('static', filename='js/calculator/rects_settings.js') }}"
     type="text/javascript"
+    defer
   ></script>
 
   <script
     src="{{ url_for('static', filename='js/calculator/actions.js') }}"
     type="text/javascript"
+    defer
+  ></script>
+
+  <script
+    src="{{ url_for('static', filename='js/calculator/sheet_price.js') }}"
+    type="text/javascript"
+    defer
   ></script>
 
   {% endblock %}
