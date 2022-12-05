@@ -19,7 +19,7 @@ class SettingsForm(FlaskForm):
         choices=[(choice.name, choice.value) for choice in m.User.MetricSystem],
     )
     print_price = FloatField(
-        "Print price",
+        "Price",
         render_kw={
             "placeholder": "0.0",
         },
@@ -55,7 +55,7 @@ class SettingsForm(FlaskForm):
     )
     buy_url = StringField(
         "Buy URL",
-        validators=[DataRequired(), Length(max=256)],
+        validators=[Length(max=256)],
         render_kw={"placeholder": "e.g. https://your-site.com/buy"},
     )
 
