@@ -26,16 +26,17 @@ def calculator():
     setup_id = request.args.get("setup_id")
     if setup_id:
         user: User = User.query.get(request.args.get("setup_id"))
-        moq = user.moq
-        moq_unit = "Sheet" if user.is_price_per_sheet else "SQR"
-        cost = user.print_price
-        cost_per = "Sheet" if user.is_price_per_sheet else "SQR"
-        order_url = user.buy_url
-        order_enabled = user.is_enabled_buy_btn
-        cut_spacing = user.cut_spacing
-        metric_system = user.metric_system.value
-        sheets = user.sheets
-        currency = conf.CURRENCY_NAME_TO_SYMBOL[user.currency.value]
+        if user:
+            moq = user.moq
+            moq_unit = "Sheet" if user.is_price_per_sheet else "SQR"
+            cost = user.print_price
+            cost_per = "Sheet" if user.is_price_per_sheet else "SQR"
+            order_url = user.buy_url
+            order_enabled = user.is_enabled_buy_btn
+            cut_spacing = user.cut_spacing
+            metric_system = user.metric_system.value
+            sheets = user.sheets
+            currency = conf.CURRENCY_NAME_TO_SYMBOL[user.currency.value]
 
     return render_template(
         "calculator/index.html",
