@@ -132,7 +132,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
         width: sheetWidth,
         height: sheetHeight,
         price: sheetPrice,
-        mq: sheetMoq,
+        moq: sheetMoq,
       }),
     });
     if (res.status == 200) {

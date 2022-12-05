@@ -10,7 +10,11 @@
           {% if sheets %}
           <select class="form-select bin-size-input">
             {% for sheet in sheets %}
-            <option value="{{sheet.width}}x{{sheet.height}}" {% if cost_per == "Sheet" %}price="{{ sheet.price }}"{% endif %}>
+            <option
+              value="{{sheet.width}}x{{sheet.height}}"
+              moq="{{sheet.moq}}"
+              {% if cost_per == "Sheet" %}price="{{ sheet.price }}"{% endif %}
+            >
               {{sheet.width}}  x  {{sheet.height}}
             </option>
             {% endfor %}
@@ -176,7 +180,17 @@
               </div>
               <div class="d-flex mb-1">
                 <div class="fw-light mr-10px">MOQ:</div>
-                <div class="fw-light moq-qty mr-10px">{{ moq }}</div>
+                <div class="fw-light moq-qty mr-10px">
+                  {% if moq_unit == "Sheet" %}
+                    {% if sheets %}
+                      {{ sheets[0].moq }}
+                    {% else %}
+                      1
+                    {% endif %}
+                  {% else %}
+                    {{ moq }}
+                  {% endif %}
+                </div>
                 <div class="fw-light moq-res-metric">{{ moq_unit }}</div>
               </div>
               <div class="d-flex mb-1">

@@ -103,7 +103,7 @@ def calculate():
     if data.get("printPrice"):
         print_price = data.get("printPrice")
 
-    moq = 1
+    moq = 0
     if data.get("moqQty"):
         moq = data.get("moqQty")
 
@@ -139,7 +139,7 @@ def calculate():
         res["placed_items"] += bin["rectangles"]
 
         if price_per == "sqr":
-            res["print_price"] += (math.prod(bin["sizes"]) / square_unit) * print_price
+            res["print_price"] = res["used_area"] * print_price
         else:
             res["print_price"] += print_price
 
@@ -154,7 +154,7 @@ def calculate():
             }
         )
 
-    if res["print_price"] < moq_price:
+    if res["print_price"] < moq_price and moq > 0:
         res["print_price"] = moq_price
 
     return jsonify(res)
