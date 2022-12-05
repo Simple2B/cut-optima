@@ -37,6 +37,7 @@ class RectPacker:
         self.result = {
             "not_placed_rectangles": [],
             "bins": [],
+            "max_y_coordinate": 0,
         }
 
     def add_bin(self, width: int, height: int):
