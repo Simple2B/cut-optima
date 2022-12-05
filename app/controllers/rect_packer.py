@@ -39,9 +39,10 @@ class RectPacker:
             "bins": [],
         }
 
+        self.bins_in_row = 1
+
     def reset(self):
         """Remove all results"""
-        self.packer = newPacker(pack_algo=guillotine.GuillotineBssfMaxas)
         self.result = {
             "not_placed_rectangles": [],
             "bins": [],
@@ -106,8 +107,14 @@ class RectPacker:
             )
         log(log.INFO, "Validation succeess")
 
-    def pack(self):
-        """Place rectangles on bin area and creating image"""
+    def pack(self, use_sheet_in_row: bool = False):
+        """Place rectangles on bin area and creating image
+
+        Args:
+            use_sheet_in_row (bool, optional): Extra sheet height will be added
+                to current sheet height. Defaults to False.
+        """
+
         log(log.INFO, "Prepare to pack rectangles")
 
         log(log.INFO, "Prepare to pack rectangles")
@@ -117,62 +124,74 @@ class RectPacker:
         ]
 
         color_chema = {}
-        for bin_sizes in self.bins:
-            log(log.INFO, "Init new packer instance")
-            self.packer = newPacker(pack_algo=self.pack_algo)
 
+        log(log.INFO, "Init new packer instance")
+        self.packer = newPacker(pack_algo=self.pack_algo)
+
+        if use_sheet_in_row:
             log(log.INFO, "Add bin")
-            self.packer.add_bin(bin_sizes[0], bin_sizes[1])
+            self.packer.add_bin(*self.bins[0])
 
-            log(log.INFO, "Add rectangles")
-            for rect in not_placed_rectangles:
-                rect = [
-                    rect[0] + self.blade_size * 2,
-                    rect[1] + self.blade_size * 2,
-                ]
-                self.packer.add_rect(rect[0], rect[1])
+        for bin_sizes in self.bins:
+            if not use_sheet_in_row:
+                log(log.INFO, "Add bin")
+                self.packer.add_bin(bin_sizes[0], bin_sizes[1])
 
-            log(log.INFO, "Pack rectangles")
-            self.packer.pack()
+        log(log.INFO, "Add rectangles")
+        for rect in not_placed_rectangles:
+            rect = [
+                rect[0] + self.blade_size * 2,
+                rect[1] + self.blade_size * 2,
+            ]
+            self.packer.add_rect(rect[0], rect[1])
 
-            for bin in self.packer:
-                log(log.INFO, "Generate result for bin [%s]", bin)
-                bin_result = {
-                    "sizes": [bin.width, bin.height],
-                    "rectangles": [],
-                    "used_area": 0,
-                    "wasted_area": 0,
-                    "image": None,
-                    "max_y_coordinate": 0,
-                }
-                for rect in bin:
-                    if bin_result["max_y_coordinate"] < rect.y + rect.height:
-                        bin_result["max_y_coordinate"] = rect.y + rect.height
-                    rect = sorted(
-                        [
-                            rect.width - self.blade_size * 2,
-                            rect.height - self.blade_size * 2,
-                        ]
-                    )
-                    bin_result["rectangles"].append(rect)
-                    not_placed_rectangles.remove(rect)
-                    bin_result["used_area"] += (rect[0] + self.blade_size * 2) * (
-                        rect[1] + self.blade_size * 2
-                    )
-                bin_result["wasted_area"] = (
-                    bin.width * bin.height - bin_result["used_area"]
+        log(log.INFO, "Pack rectangles")
+        self.packer.pack()
+
+        for bin in self.packer:
+            log(log.INFO, "Generate result for bin [%s]", bin)
+            bin_result = {
+                "sizes": [bin.width, bin.height],
+                "rectangles": [],
+                "used_area": 0,
+                "wasted_area": 0,
+                "image": None,
+                "max_y_coordinate": 0,
+            }
+            for rect in bin:
+                if bin_result["max_y_coordinate"] < rect.y + rect.height:
+                    bin_result["max_y_coordinate"] = rect.y + rect.height
+                rect = sorted(
+                    [
+                        rect.width - self.blade_size * 2,
+                        rect.height - self.blade_size * 2,
+                    ]
                 )
+                bin_result["rectangles"].append(rect)
+                not_placed_rectangles.remove(rect)
+                bin_result["used_area"] += (rect[0] + self.blade_size * 2) * (
+                    rect[1] + self.blade_size * 2
+                )
+            bin_result["wasted_area"] = bin.width * bin.height - bin_result["used_area"]
 
-                self.result["bins"].append(bin_result)
+            self.result["bins"].append(bin_result)
 
-                bin_result["image"] = self.generate_image_for_bin(bin, color_chema)
+            bin_result["image"] = self.generate_image_for_bin(bin, color_chema)
 
-            self.result["not_placed_rectangles"] = not_placed_rectangles
+        self.result["not_placed_rectangles"] = not_placed_rectangles
 
         if self.result["not_placed_rectangles"]:
-            self.bins.append(self.bins[0])
+            if use_sheet_in_row:
+                self.bins[0][1] = int(
+                    (self.bins[0][1] / self.bins_in_row) * (self.bins_in_row + 1)
+                )
+                self.bins_in_row += 1
+                self.pack_algo = guillotine.GuillotineBlsfSlas
+            else:
+                self.bins.append(self.bins[0])
+
             self.reset()
-            self.pack()
+            self.pack(use_sheet_in_row)
 
     def generate_image_for_bin(self, bin: object, color_chema: dict):
         """Generate image using bin data
