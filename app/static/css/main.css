@@ -253,6 +253,14 @@ input::-webkit-inner-spin-button {
   font-size: 10px;
 }
 
+.add-sheet-input {
+  width: 25%;
+}
+
+.add-sheet-input-group {
+  width: 50%;
+}
+
 @media screen and (min-width: 768px) {
   #navbar {
     display: flex;
@@ -301,6 +309,44 @@ input::-webkit-inner-spin-button {
 
   .result-img-data,
   .result-text-data {
+    width: 100%;
+  }
+
+  .settings-form {
+    width: 100% !important;
+  }
+
+  .add-sheet-form,
+  .sheet-price {
+    flex-direction: column;
+  }
+
+  .add-sheet-input {
+    width: 100%;
+    margin-right: 0px;
+  }
+
+  .add-sheet-size,
+  .delete-sheet-size {
+    margin-left: 0;
+  }
+
+  .add-sheet-size:after {
+    content: " Sheet";
+  }
+
+  .add-sheet-form > * {
+    margin-bottom: 5px;
+  }
+
+  .added-sheet-sizes > * {
+    flex-direction: column;
+  }
+  .added-sheet-sizes > * > div > * {
+    margin-right: 0;
+  }
+
+  .add-sheet-input-group {
     width: 100%;
   }
 }

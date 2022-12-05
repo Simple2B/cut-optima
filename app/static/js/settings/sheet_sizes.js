@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
   const sheetWidthInput = document.querySelector(".sheet-size-width");
   const sheetHeightInput = document.querySelector(".sheet-size-height");
   const sheetPriceInput = document.querySelector(".sheet-price");
+  const sheetMoqInput = document.querySelector(".sheet-moq");
   const addSheetBtn = document.querySelector(".add-sheet-size");
   const addedSheetSizesDiv = document.querySelector(".added-sheet-sizes");
 
@@ -45,35 +46,54 @@ document.addEventListener("DOMContentLoaded", (event) => {
     const sheetWidth = sheetWidthInput.value;
     const sheetHeight = sheetHeightInput.value;
     const sheetPrice = sheetPriceInput.value;
+    const sheetMoq = sheetMoqInput.value;
 
     const newSheetDiv = document.createElement("div");
-    newSheetDiv.setAttribute("class", "d-flex mb-2");
+    newSheetDiv.setAttribute("class", "d-flex justify-content-between mb-2");
     newSheetDiv.setAttribute("id", id);
     newSheetDiv.innerHTML = `
-        <input
-          class="form-control added-sheet-price mr-20px"
-          placeholder="Price"
-          type="number"
-          disabled
-          value=${parseFloat(sheetPrice)}
-        >
+        <div class="input-group add-sheet-input-group">
+          <span class="input-group-text" id="basic-addon3">Price</span>
+          <input
+            class="form-control added-sheet-price mr-20px"
+            placeholder="Price"
+            type="number"
+            disabled
+            value=${parseFloat(sheetPrice)}
+          >
+        </div>
 
-        <input
+        <div class="input-group add-sheet-input-group">
+          <span class="input-group-text" id="basic-addon3">MOQ</span>
+          <input
+            class="form-control added-sheet-moq mr-20px"
+            placeholder="MOQ"
+            type="number"
+            disabled
+            value=${parseInt(sheetMoq)}
+          >
+        </div>
+
+        <div class="d-flex">
+          <input
             class="form-control added-sheet-size-width"
             placeholder="Width"
             type="number"
             disabled
             value=${parseFloat(sheetWidth)}
-        >
-        <span class="input-group-text">x</span>
-        <input
-            class="form-control added-sheet-size-height"
-            placeholder="Height"
-            type="number"
-            disabled
-            value=${parseFloat(sheetHeight)}
-        >
-        <div class="btn rounded btn btn-light delete-sheet-size ml-10px">Delete</div>
+          >
+          <span class="input-group-text">x</span>
+          <input
+              class="form-control added-sheet-size-height"
+              placeholder="Height"
+              type="number"
+              disabled
+              value=${parseFloat(sheetHeight)}
+          >
+        </div>
+
+
+        <div class="btn rounded btn btn-danger delete-sheet-size ml-10px">Delete</div>
     `;
     addedSheetSizesDiv.appendChild(newSheetDiv);
 
@@ -85,12 +105,15 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
     sheetWidthInput.value = undefined;
     sheetHeightInput.value = undefined;
+    sheetPrice.value = undefined;
+    sheetMoq.value = undefined;
   };
 
   addSheetBtn.addEventListener("click", async () => {
     const sheetWidth = sheetWidthInput.value;
     const sheetHeight = sheetHeightInput.value;
     const sheetPrice = sheetPriceInput.value;
+    const sheetMoq = sheetMoqInput.value;
 
     if (!sheetWidth || !sheetHeight || !sheetPrice || sheetPrice < 0) {
       iziToast.error({
@@ -109,6 +132,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
         width: sheetWidth,
         height: sheetHeight,
         price: sheetPrice,
+        mq: sheetMoq,
       }),
     });
     if (res.status == 200) {
