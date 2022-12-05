@@ -7,28 +7,36 @@ from app.utils import generate_color_hex
 
 
 class RectPacker:
-    def __init__(self, blade_size: int = 0, is_bin_width_larger: bool = True):
+    def __init__(
+        self,
+        blade_size: int = 0,
+        is_bin_width_larger: bool = True,
+        is_sizes_equals: bool = False,
+    ):
         """Init RectPacker instance with rectpack.racker object to
         find the optimal arrangement of rectangles on bin area and show it
         on image
 
         Args:
             blade_size (int, optional): Value that will be added
-            to each side of rectangle. Defaults to 0.
+                to each side of rectangle. Defaults to 0.
+            is_bin_width_larger (bool, optional): Value to select correct pack_algo
+            is_sizes_equals (bool, optional): Adds 1 to width to make it
+                larger if sizes equals, to do correct calculations
         """
-        pack_algo = (
-            guillotine.GuillotineBssfMaxas
+        self.pack_algo = (
+            guillotine.GuillotineBlsfLas
             if is_bin_width_larger
-            else guillotine.GuillotineBssfMinas
+            else guillotine.GuillotineBlsfSlas
         )
-        self.packer = newPacker(pack_algo=pack_algo)
+
+        self.is_sizes_equals = is_sizes_equals
         self.bins = []
         self.rectangles = []
         self.blade_size = blade_size
         self.result = {
             "not_placed_rectangles": [],
             "bins": [],
-            "max_y_coordinate": 0,
         }
 
     def reset(self):
@@ -37,7 +45,6 @@ class RectPacker:
         self.result = {
             "not_placed_rectangles": [],
             "bins": [],
-            "max_y_coordinate": 0,
         }
 
     def add_bin(self, width: int, height: int):
@@ -87,7 +94,7 @@ class RectPacker:
                     rect[0] + self.blade_size * 2 <= bin[0]
                     and rect[1] + self.blade_size * 2 <= bin[1]
                 )
-            if not any(fit_in_bins):
+            if not all(fit_in_bins):
                 invalid_rectangles.append(rect)
 
         if invalid_rectangles:
@@ -103,53 +110,64 @@ class RectPacker:
         """Place rectangles on bin area and creating image"""
         log(log.INFO, "Prepare to pack rectangles")
 
-        for bin in self.bins:
-            self.packer.add_bin(*bin)
-        for rect in self.rectangles:
-            rect = [
-                rect[0] + self.blade_size * 2,
-                rect[1] + self.blade_size * 2,
-            ]
-            self.packer.add_rect(*rect)
-
         log(log.INFO, "Prepare to pack rectangles")
-        self.packer.pack()
 
         not_placed_rectangles = [
             sorted([float(rect[0]), float(rect[1])]) for rect in self.rectangles
         ]
 
         color_chema = {}
-        for bin in self.packer:
-            log(log.INFO, "Generate result for bin [%s]", bin)
-            bin_result = {
-                "sizes": [bin.width, bin.height],
-                "rectangles": [],
-                "used_area": 0,
-                "wasted_area": 0,
-                "image": None,
-            }
-            for rect in bin:
-                if self.result["max_y_coordinate"] < rect.y + rect.height:
-                    self.result["max_y_coordinate"] = rect.y + rect.height
-                rect = sorted(
-                    [
-                        rect.width - self.blade_size * 2,
-                        rect.height - self.blade_size * 2,
-                    ]
+        for bin_sizes in self.bins:
+            log(log.INFO, "Init new packer instance")
+            self.packer = newPacker(pack_algo=self.pack_algo)
+
+            log(log.INFO, "Add bin")
+            self.packer.add_bin(bin_sizes[0], bin_sizes[1])
+
+            log(log.INFO, "Add rectangles")
+            for rect in not_placed_rectangles:
+                rect = [
+                    rect[0] + self.blade_size * 2,
+                    rect[1] + self.blade_size * 2,
+                ]
+                self.packer.add_rect(rect[0], rect[1])
+
+            log(log.INFO, "Pack rectangles")
+            self.packer.pack()
+
+            for bin in self.packer:
+                log(log.INFO, "Generate result for bin [%s]", bin)
+                bin_result = {
+                    "sizes": [bin.width, bin.height],
+                    "rectangles": [],
+                    "used_area": 0,
+                    "wasted_area": 0,
+                    "image": None,
+                    "max_y_coordinate": 0,
+                }
+                for rect in bin:
+                    if bin_result["max_y_coordinate"] < rect.y + rect.height:
+                        bin_result["max_y_coordinate"] = rect.y + rect.height
+                    rect = sorted(
+                        [
+                            rect.width - self.blade_size * 2,
+                            rect.height - self.blade_size * 2,
+                        ]
+                    )
+                    bin_result["rectangles"].append(rect)
+                    not_placed_rectangles.remove(rect)
+                    bin_result["used_area"] += (rect[0] + self.blade_size * 2) * (
+                        rect[1] + self.blade_size * 2
+                    )
+                bin_result["wasted_area"] = (
+                    bin.width * bin.height - bin_result["used_area"]
                 )
-                bin_result["rectangles"].append(rect)
-                not_placed_rectangles.remove(rect)
-                bin_result["used_area"] += (rect[0] + self.blade_size * 2) * (
-                    rect[1] + self.blade_size * 2
-                )
-            bin_result["wasted_area"] = bin.width * bin.height - bin_result["used_area"]
 
-            self.result["bins"].append(bin_result)
+                self.result["bins"].append(bin_result)
 
-            bin_result["image"] = self.generate_image_for_bin(bin, color_chema)
+                bin_result["image"] = self.generate_image_for_bin(bin, color_chema)
 
-        self.result["not_placed_rectangles"] = not_placed_rectangles
+            self.result["not_placed_rectangles"] = not_placed_rectangles
 
         if self.result["not_placed_rectangles"]:
             self.bins.append(self.bins[0])
@@ -167,6 +185,8 @@ class RectPacker:
         """
         log(log.INFO, "Generate image for bin [%s]", bin)
 
+        if self.is_sizes_equals:
+            bin.width -= 1
         larger_side = max([bin.width, bin.height])
         scale = conf.RECT_PACK_IMG_MAX_SIDE_SIZE / larger_side
 

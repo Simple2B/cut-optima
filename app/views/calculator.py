@@ -69,9 +69,14 @@ def calculate():
     price_per = data.get("pricePer")
 
     first_bin = data["bins"][0]
+    is_sizes_equals = first_bin["size"][0] == first_bin["size"][1]
+    if is_sizes_equals:
+        # to make width larger side
+        first_bin["size"][0] += 1
     rect_packer = RectPacker(
         blade_size=data["bladeSize"],
         is_bin_width_larger=first_bin["size"][0] > first_bin["size"][1],
+        is_sizes_equals=is_sizes_equals,
     )
 
     for bin in data["bins"]:
@@ -115,16 +120,21 @@ def calculate():
         "bins": [],
     }
     for bin in rect_packer.result["bins"]:
+        if is_sizes_equals:
+            bin["sizes"][0] -= 1
         # res["used_area"] += bin["used_area"] / square_unit
         # wasted area = area - used area
         # res["wasted_area"] += bin["wasted_area"] / square_unit
 
         # wasted area calculated by max_y_coordinate * width
-        reduced_height = bin["sizes"][1] - rect_packer.result["max_y_coordinate"]
-        res["wasted_area"] = bin["sizes"][0] * reduced_height / square_unit
-        res["used_area"] = (
-            math.prod(bin["sizes"]) - (bin["sizes"][0] * reduced_height)
-        ) / square_unit
+        reduced_height = bin["sizes"][1] - bin["max_y_coordinate"]
+        if reduced_height <= 0:
+            reduced_height = bin["sizes"][1]
+        res["used_area"] += ((bin["sizes"][0] * bin["max_y_coordinate"])) / square_unit
+        if res["used_area"] != 1:
+            res["wasted_area"] += bin["sizes"][0] * reduced_height / square_unit
+        else:
+            res["wasted_area"] += 0
         res["placed_items"] += bin["rectangles"]
 
         if price_per == "sqr":

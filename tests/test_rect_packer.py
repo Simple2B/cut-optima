@@ -38,6 +38,7 @@ def test_basic_rect_packer_functionality(rect_packer: RectPacker):
         rect_packer.validate_rectangles()
 
     # validate with larger bin
+    rect_packer.bins = []
     rect_packer.add_bin(1500, 1500)
     rect_packer.validate_rectangles()
 
