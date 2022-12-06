@@ -1,4 +1,4 @@
-from rectpack import newPacker, skyline
+from rectpack import newPacker, skyline, PackingBin
 from PIL import Image, ImageDraw
 
 from config import BaseConfig as conf
@@ -126,7 +126,8 @@ class RectPacker:
         color_chema = {}
 
         log(log.INFO, "Init new packer instance")
-        self.packer = newPacker(pack_algo=self.pack_algo)
+        # PackingBin.Global too look good
+        self.packer = newPacker(pack_algo=self.pack_algo, bin_algo=PackingBin.BFF)
 
         if use_sheet_in_row:
             log(log.INFO, "Add bin")
