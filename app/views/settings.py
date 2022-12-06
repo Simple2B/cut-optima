@@ -37,6 +37,9 @@ def sheet_create():
     height = float(data.get("height")) if data.get("height") is not None else None
     price = float(data.get("price")) if data.get("price") is not None else 0
     moq = int(data.get("moq")) if data.get("moq") is not None else 1
+    use_in_row = (
+        bool(data.get("use_in_row")) if data.get("use_in_row") is not None else False
+    )
 
     if width is None or height is None:
         return jsonify({"message": "Width and height are required"}), 400
@@ -49,6 +52,7 @@ def sheet_create():
         height=height,
         price=price,
         moq=moq,
+        use_in_row=use_in_row,
     )
     sheet.save()
     return jsonify({"message": "success", "id": sheet.id})

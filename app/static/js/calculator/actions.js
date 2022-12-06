@@ -15,6 +15,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
   const meticSystemSelect = document.querySelector(".metic-system");
   const pricePerSelect = document.querySelector(".price-per");
   const moqQtyDiv = document.querySelector(".moq-qty");
+  const useSheetsInRowDiv = document.querySelector(".use-sheets-in-row");
 
   // output data
   const sheetSizeResDiv = document.querySelector(".sheet-size-res");
@@ -87,6 +88,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
     const meticSystem = meticSystemSelect.value;
     const pricePer = pricePerSelect.value;
     const moqQty = parseFloat(moqQtyDiv.innerHTML);
+    const useSheetsInRow = useSheetsInRowDiv.innerHTML === "True";
 
     console.log("bins", addedBins);
     console.log("rects", addedRects);
@@ -110,6 +112,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
         meticSystem: meticSystem,
         pricePer: pricePer,
         moqQty: moqQty,
+        useInRow: useSheetsInRow,
       }),
     });
     const resJson = await res.json();
@@ -123,7 +126,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
     }
     usageResQtyDiv.innerHTML = resJson.used_area.toFixed(2);
     usageMetricDiv.innerHTML = meticSystemMapping[meticSystem];
-    usageSheetQtyDiv.innerHTML = resJson.bins.length;
+    usageSheetQtyDiv.innerHTML = resJson.used_bins;
     availableResQtyDiv.innerHTML = resJson.wasted_area.toFixed(2);
     totalCostResDiv.innerHTML = resJson.print_price.toFixed(2);
     availableMetricResDiv.innerHTML = meticSystemMapping[meticSystem];

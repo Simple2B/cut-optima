@@ -3,8 +3,9 @@ document.addEventListener("DOMContentLoaded", (event) => {
   const priceInput = document.querySelector(".print-price");
   const costValueDiv = document.querySelector(".cost-value");
   const costMoqQtyDiv = document.querySelector(".moq-qty");
+  const useSheetsInRowDiv = document.querySelector(".use-sheets-in-row");
 
-  const setCurrentPrice = () => {
+  const setCurrentSettings = () => {
     const selectedElement = binSizeSelect.options[binSizeSelect.selectedIndex];
 
     if (selectedElement.hasAttribute("price")) {
@@ -15,12 +16,15 @@ document.addEventListener("DOMContentLoaded", (event) => {
       const moq = parseInt(selectedElement.getAttribute("moq"));
       costMoqQtyDiv.innerHTML = moq;
     }
+    const useInRow = selectedElement.getAttribute("use-in-row");
+    console.log("useInRow", useInRow);
+    useSheetsInRowDiv.innerHTML = useInRow;
   };
 
-  setCurrentPrice();
+  setCurrentSettings();
 
   binSizeSelect.addEventListener("change", () => {
     console.log("change");
-    setCurrentPrice();
+    setCurrentSettings();
   });
 });

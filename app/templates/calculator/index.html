@@ -13,6 +13,7 @@
             <option
               value="{{sheet.width}}x{{sheet.height}}"
               moq="{{sheet.moq}}"
+              use-in-row="{{sheet.use_in_row}}"
               {% if cost_per == "Sheet" %}price="{{ sheet.price }}"{% endif %}
             >
               {{sheet.width}}  x  {{sheet.height}}
@@ -197,6 +198,16 @@
                 <div class="fw-light mr-10px">Sheet Size:</div>
                 <div class="fw-light sheet-size-res"></div>
               </div>
+              <div class="d-flex mb-1">
+                <div class="fw-light mr-10px">Use Sheets In Row:</div>
+                <div class="fw-light use-sheets-in-row">
+                  {% if sheets %}
+                    {{ sheets[0].use_in_row }}
+                  {% else %}
+                    False
+                  {% endif %}
+                </div>
+              </div>
             </div>
           </div>
           <h6
@@ -282,7 +293,7 @@
   ></script>
 
   <script
-    src="{{ url_for('static', filename='js/calculator/sheet_price.js') }}"
+    src="{{ url_for('static', filename='js/calculator/sheet_settings.js') }}"
     type="text/javascript"
     defer
   ></script>

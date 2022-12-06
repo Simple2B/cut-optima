@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
   const sheetHeightInput = document.querySelector(".sheet-size-height");
   const sheetPriceInput = document.querySelector(".sheet-price");
   const sheetMoqInput = document.querySelector(".sheet-moq");
+  const useInRowInput = document.querySelector(".use-in-row-input");
   const addSheetBtn = document.querySelector(".add-sheet-size");
   const addedSheetSizesDiv = document.querySelector(".added-sheet-sizes");
 
@@ -47,11 +48,24 @@ document.addEventListener("DOMContentLoaded", (event) => {
     const sheetHeight = sheetHeightInput.value;
     const sheetPrice = sheetPriceInput.value;
     const sheetMoq = sheetMoqInput.value;
+    const useInRow = useInRowInput.checked;
 
     const newSheetDiv = document.createElement("div");
     newSheetDiv.setAttribute("class", "d-flex justify-content-between mb-2");
     newSheetDiv.setAttribute("id", id);
     newSheetDiv.innerHTML = `
+        <div class="input-group add-sheet-input-group">
+          <span class="input-group-text" id="basic-addon3">Allow use in row</span>
+          <div class="form-check form-switch d-flex align-items-center pl-50px border border-1 border-start-0 m-0 bg-color-disabled">
+            <input
+              class="form-check-input border-90 use-in-row-input"
+              type="checkbox"
+              ${useInRow && "checked"}
+              disabled
+            >
+          </div>
+        </div>
+
         <div class="input-group add-sheet-input-group">
           <span class="input-group-text" id="basic-addon3">Price</span>
           <input
@@ -114,6 +128,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
     const sheetHeight = sheetHeightInput.value;
     const sheetPrice = sheetPriceInput.value;
     const sheetMoq = sheetMoqInput.value;
+    const useInRow = useInRowInput.checked;
 
     if (!sheetWidth || !sheetHeight || !sheetPrice || sheetPrice < 0) {
       iziToast.error({
@@ -133,6 +148,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
         height: sheetHeight,
         price: sheetPrice,
         moq: sheetMoq,
+        use_in_row: useInRow,
       }),
     });
     if (res.status == 200) {

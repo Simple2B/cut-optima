@@ -34,17 +34,19 @@ class RectPacker:
         self.bins = []
         self.rectangles = []
         self.blade_size = blade_size
+        self.bins_in_row = 1
+
         self.result = {
             "not_placed_rectangles": [],
+            "used_bins": self.bins_in_row,
             "bins": [],
         }
-
-        self.bins_in_row = 1
 
     def reset(self):
         """Remove all results"""
         self.result = {
             "not_placed_rectangles": [],
+            "used_bins": self.bins_in_row,
             "bins": [],
         }
 
@@ -174,9 +176,9 @@ class RectPacker:
                 )
             bin_result["wasted_area"] = bin.width * bin.height - bin_result["used_area"]
 
-            self.result["bins"].append(bin_result)
-
             bin_result["image"] = self.generate_image_for_bin(bin, color_chema)
+
+            self.result["bins"].append(bin_result)
 
         self.result["not_placed_rectangles"] = not_placed_rectangles
 

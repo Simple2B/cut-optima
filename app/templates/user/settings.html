@@ -128,6 +128,13 @@
                   <div class="create-sheet-size mb-3">
                     <div class="d-flex add-sheet-form">
                       <div class="input-group add-sheet-input-group">
+                        <span class="input-group-text" id="basic-addon3">Allow use in row</span>
+                        <div class="form-check form-switch d-flex align-items-center pl-50px border border-1 border-start-0 m-0">
+                          <input class="form-check-input border-90 use-in-row-input" type="checkbox" value="y">
+                        </div>
+                      </div>
+
+                      <div class="input-group add-sheet-input-group">
                         <span class="input-group-text" id="basic-addon3">Price</span>
                         <input class="form-control sheet-price add-sheet-input mr-20px" placeholder="Price" type="number">
                       </div>
@@ -149,6 +156,21 @@
                   <div class="added-sheet-sizes">
                     {% for added_sheet in current_user.sheets %}
                       <div class="d-flex justify-content-between mb-2" id="{{ added_sheet.id }}">
+                        <div class="input-group add-sheet-input-group">
+                          <span class="input-group-text" id="basic-addon3">Allow use in row</span>
+                          <div class="form-check form-switch d-flex align-items-center pl-50px border border-1 border-start-0 m-0 bg-color-disabled">
+                            <input
+                              class="form-check-input border-90 use-in-row-input"
+                              type="checkbox"
+                              {% if added_sheet.use_in_row %}
+                                checked
+                              {% endif %}
+                              disabled
+                            >
+                          </div>
+                        </div>
+
+
                         <div class="input-group add-sheet-input-group">
                           <span class="input-group-text" id="basic-addon3">Price</span>
                           <input

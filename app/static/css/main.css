@@ -58,6 +58,10 @@ a {
   padding-left: 15px;
 }
 
+.pl-50px {
+  padding-left: 50px;
+}
+
 .ml-10px {
   margin-left: 10px;
 }
@@ -72,6 +76,10 @@ a {
 
 .mr-5px {
   margin-right: 5px;
+}
+
+.bg-color-disabled {
+  background-color: #e9ecef;
 }
 
 .hit_flash {
@@ -311,7 +319,9 @@ input::-webkit-inner-spin-button {
   .result-text-data {
     width: 100%;
   }
+}
 
+@media screen and (max-width: 1400px) {
   .settings-form {
     width: 100% !important;
   }

@@ -97,7 +97,9 @@ def calculate():
     except ValueError as e:
         return jsonify({"message": str(e)}), 400
 
-    rect_packer.pack()
+    use_in_row = data.get("useInRow")
+
+    rect_packer.pack(use_sheet_in_row=use_in_row)
 
     print_price = 0
     if data.get("printPrice"):
@@ -119,6 +121,7 @@ def calculate():
         "placed_items": [],
         "print_price": 0,
         "bins": [],
+        "used_bins": rect_packer.result["used_bins"],
     }
     for bin in rect_packer.result["bins"]:
         if is_sizes_equals:

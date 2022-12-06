@@ -13,6 +13,7 @@ class Sheet(db.Model, UserMixin, ModelMixin):
     height = db.Column(db.Float(), default=0)
     price = db.Column(db.Float(), default=0)
     moq = db.Column(db.Integer(), default=0)
+    use_in_row = db.Column(db.Boolean(), default=False)
 
     user = db.relationship("User")
 
