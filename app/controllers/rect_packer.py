@@ -25,7 +25,7 @@ class RectPacker:
                 larger if sizes equals, to do correct calculations
         """
         self.pack_algo = (
-            skyline.SkylineMwfWm if is_bin_width_larger else skyline.SkylineMwflWm
+            skyline.SkylineBl if is_bin_width_larger else skyline.SkylineBlWm
         )
 
         self.is_sizes_equals = is_sizes_equals
@@ -186,7 +186,7 @@ class RectPacker:
                     (self.bins[0][1] / self.bins_in_row) * (self.bins_in_row + 1)
                 )
                 self.bins_in_row += 1
-                self.pack_algo = skyline.SkylineMwflWm
+                self.pack_algo = skyline.SkylineBlWm
             else:
                 self.bins.append(self.bins[0])
 
