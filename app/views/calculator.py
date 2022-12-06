@@ -115,13 +115,19 @@ def calculate():
     if not square_unit:
         return jsonify({"message": "Incorrect metric system"}), 400
 
+    used_bins_count = (
+        rect_packer.result["used_bins"]
+        if len(rect_packer.result["bins"]) == 1
+        else len(rect_packer.result["bins"])
+    )
+
     res = {
         "used_area": 0,
         "wasted_area": 0,
         "placed_items": [],
         "print_price": 0,
         "bins": [],
-        "used_bins": rect_packer.result["used_bins"],
+        "used_bins": used_bins_count,
     }
     for bin in rect_packer.result["bins"]:
         if is_sizes_equals:
