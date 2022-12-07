@@ -12,16 +12,16 @@ blueprint = Blueprint("calculator", __name__)
 
 @blueprint.route("/calculator", methods=["GET"])
 def calculator():
-    moq = conf.MOQ
-    moq_unit = conf.MOQ_UNIT
-    cost = conf.COST
-    cost_per = conf.COST_PER
-    order_url = conf.ORDER_URL
-    order_enabled = conf.ORDER_ENABLED
-    cut_spacing = conf.CUT_SPACING
-    metric_system = conf.METRIC_SYSTEM
-    sheets = conf.SHEETS
-    currency = conf.CURRENCY
+    moq = ""
+    moq_unit = ""
+    cost = ""
+    cost_per = ""
+    order_url = ""
+    order_enabled = False
+    cut_spacing = 0.5
+    metric_system = "centimeter"
+    sheets = None
+    currency = conf.CURRENCY_NAME_TO_SYMBOL["dollar"]
 
     setup_id = request.args.get("setup_id")
     if setup_id:
