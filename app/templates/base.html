@@ -32,7 +32,7 @@
       <!-- Navigation -->
       <nav class="navbar navbar-light navbar-expand-md bg-light">
         <div class="container">
-          <a class="navbar-brand" href="{{ url_for('main.index') }}"
+          <a class="navbar-brand" href="{{ url_for("calculator.calculator", setup_id=current_user.id) }}"
             >{{ config.APP_NAME }}</a
           >
           <button
@@ -44,9 +44,14 @@
           </button>
           <div class="navbar-collapse collapse" id="navbar">
             <ul class="navbar-nav">
+              {% if not current_user.is_anonymous %}
+              <li class="nav-item">
+                <a class="nav-link" href="{{ url_for("calculator.calculator", setup_id=current_user.id) }}">Calculator</a>
+              </li>
               <li class="nav-item">
                 <a class="nav-link" href="{{ url_for("settings.settings") }}">Settings</a>
               </li>
+              {% endif %}
             </ul>
             <!-- Login/Logout -->
             <ul class="navbar-nav ml-auto">

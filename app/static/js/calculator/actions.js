@@ -2,77 +2,89 @@
 document.addEventListener("DOMContentLoaded", (event) => {
   // millimeters in different metric systems
   const meticSystemMapping = {
-    10: "centimeter",
-    25.4: "inch",
+    cm: "M",
+    in: "FT",
   };
 
-  const cleanAllBtn = document.querySelector(".clean-all-btn");
   const calculateBtn = document.querySelector(".calculate-btn");
-  const binsResultsDiv = document.querySelector(".bins-results");
   const imagesResultDiv = document.querySelector(".images-result");
 
   // input data
-  const addedBinsDiv = document.querySelector(".added-bins");
-  const addedRectsDiv = document.querySelector(".added-rects");
   const bladeSizeInput = document.querySelector(".blade-size");
   const printPriceInput = document.querySelector(".print-price");
   const meticSystemSelect = document.querySelector(".metic-system");
 
   // output data
-  const usedSheetsResInput = document.querySelector(".res-used-sheets");
-  const usedAreaResInput = document.querySelector(".res-used-area");
-  const wastedAreaResInput = document.querySelector(".res-wasted-area");
-  const placedItemResInput = document.querySelector(".res-placed-item");
-  const printPriceResInput = document.querySelector(".res-print-price");
-
-  cleanAllBtn.addEventListener("click", () => {
-    iziToast.success({
-      title: "Success",
-      message: "Clean",
-    });
-
-    addedBinsDiv.innerHTML = "";
-    addedRectsDiv.innerHTML = "";
-    bladeSizeInput.value = 0;
-    printPriceInput.value = 0;
-    meticSystemSelect.disabled = false;
-  });
+  const metricResDiv = document.querySelector(".metric-res");
+  const sheetSizeResDiv = document.querySelector(".sheet-size-res");
+  const usageResQtyDiv = document.querySelector(".usage-res-qty");
+  const usageMetricResDiv = document.querySelector(".usage-metric-res");
+  const usageMetricDiv = document.querySelector(".usage-metric");
+  const availableResQtyDiv = document.querySelector(".available-res-qty");
+  const availableResPerUnitDiv = document.querySelector(
+    ".available-res-per-unit"
+  );
+  const availableMetricResDiv = document.querySelector(".available-metric-res");
+  const totalCostResDiv = document.querySelector(".total-cost-res");
+  const costResDiv = document.querySelector(".cost-res");
 
   calculateBtn.addEventListener("click", async () => {
-    binsResultsDiv.innerHTML = "";
+    // binsResultsDiv.innerHTML = "";
     imagesResultDiv.innerHTML = "";
+    let addedBins = [];
+    let binWidth = 0;
+    let binHeight = 0;
 
-    const addedBins = [];
-    const addedRects = [];
-    const bladeSize = parseFloat(bladeSizeInput.value);
-    const printPrice = parseFloat(printPriceInput.value);
-    const meticSystem = meticSystemMapping[parseFloat(meticSystemSelect.value)];
-
-    for (const addedBinDiv of addedBinsDiv.children) {
-      const widthInput = addedBinDiv.querySelector(".added-bin-width");
-      const heightInput = addedBinDiv.querySelector(".added-bin-height");
-      const picsInput = addedBinDiv.querySelector(".added-bin-quantity");
-      const width = parseFloat(widthInput.value);
-      const height = parseFloat(heightInput.value);
-      const pics = parseInt(picsInput.value);
-      addedBins.push({
-        size: [width, height],
-        pics: pics,
-      });
+    const binSizeInput = document.querySelector(".bin-size-input");
+    if (binSizeInput.tagName === "DIV") {
+      const binSizeWidhtInput = binSizeInput.querySelector(".bin-width");
+      binWidth = parseFloat(binSizeWidhtInput.value);
+      const binSizeHeightInput = binSizeInput.querySelector(".bin-height");
+      binHeight = parseFloat(binSizeHeightInput.value);
+    } else {
+      const binSizeInputValue = binSizeInput.value;
+      const splitedValue = binSizeInputValue.split("x");
+      binWidth = parseFloat(splitedValue[0]);
+      binHeight = parseFloat(splitedValue[1]);
     }
 
-    for (const addedRectDiv of addedRectsDiv.children) {
-      const widthInput = addedRectDiv.querySelector(".added-rect-width");
-      const heightInput = addedRectDiv.querySelector(".added-rect-height");
-      const picsInput = addedRectDiv.querySelector(".added-rect-quantity");
+    if (!binWidth || !binHeight || binWidth < 1 || binHeight < 1) {
+      iziToast.error({
+        message: "Incorrect sheet sizes",
+      });
+      return;
+    }
+
+    addedBins.push({
+      size: [binWidth, binHeight],
+      pics: 1,
+    });
+
+    const addedRects = [];
+
+    const addedRectDivs = document.querySelectorAll(".add-rect-form");
+    for (const addedRectDiv of addedRectDivs) {
+      const widthInput = addedRectDiv.querySelector(".rect-width");
+      const heightInput = addedRectDiv.querySelector(".rect-height");
+      const picsInput = addedRectDiv.querySelector(".rect-qty");
       const width = parseFloat(widthInput.value);
       const height = parseFloat(heightInput.value);
       const pics = parseInt(picsInput.value);
+      if (!width || !height || width < 1 || height < 1) {
+        iziToast.error({
+          message: "Incorrect artwork sizes",
+        });
+        return;
+      }
       addedRects.push({
         size: [width, height],
         pics: pics,
       });
     }
+
+    const bladeSize = parseFloat(bladeSizeInput.value);
+    const printPrice = parseFloat(printPriceInput.value);
+    const meticSystem = meticSystemSelect.value;
 
     console.log("bins", addedBins);
     console.log("rects", addedRects);
@@ -104,66 +116,22 @@ document.addEventListener("DOMContentLoaded", (event) => {
       return;
     }
 
-    usedSheetsResInput.value = resJson.bins.length;
-    usedAreaResInput.value = resJson.used_area;
-    wastedAreaResInput.value = resJson.wasted_area;
-    placedItemResInput.value = resJson.placed_items.length;
-    printPriceResInput.value = resJson.print_price;
+    metricResDiv.innerHTML = meticSystem;
+    usageResQtyDiv.innerHTML = resJson.used_area.toFixed(2);
+    usageMetricResDiv.innerHTML = "SQR";
+    usageMetricDiv.innerHTML = meticSystemMapping[meticSystem];
+
+    availableResQtyDiv.innerHTML = resJson.wasted_area.toFixed(2);
+    totalCostResDiv.innerHTML = resJson.print_price.toFixed(2) + "$";
+    availableMetricResDiv.innerHTML = meticSystemMapping[meticSystem];
+    availableResPerUnitDiv.innerHTML = "SQR";
+    costResDiv.innerHTML = printPriceInput.value + "$";
 
     for (let bin of resJson.bins) {
-      var binResultDiv = document.createElement("div");
-      binResultDiv.setAttribute("class", "bin-result pl-15px");
-
-      binResultDiv.innerHTML = `
-      <div class="bin-result pl-15px">
-        <h6 class="calculator-block-title p-1 mb-1">Sheet ${bin.sizes[0]}x${bin.sizes[1]}</h6>
-        <div class="mt-1">
-          <div class="d-flex mb-1">
-            <span class="input-group-text">Used area</span>
-            <input
-              class="form-control res-used-sheets"
-              placeholder="Used area"
-              value="${bin.used_area}"
-              type="number"
-              disabled
-            />
-          </div>
-          <div class="d-flex mb-1">
-            <span class="input-group-text">Wasted area</span>
-            <input
-              class="form-control res-wasted-area"
-              placeholder="Wasted area"
-              value="${bin.wasted_area}"
-              type="number"
-              disabled
-            />
-          </div>
-          <div class="d-flex mb-1">
-            <span class="input-group-text">Placed items</span>
-            <input
-              class="form-control res-placed-item"
-              placeholder="Placed items"
-              value="${bin.placed_items.length}"
-              type="number"
-              disabled
-            />
-          </div>
-          <div class="d-flex mb-1">
-            <span class="input-group-text">Print price</span>
-            <input
-              class="form-control res-print-price"
-              placeholder="Print price"
-              value="${bin.print_price}"
-              type="number"
-              disabled
-            />
-          </div>
-        </div>
-      </div>
-      `;
-      binsResultsDiv.appendChild(binResultDiv);
-
       var imgResultDiv = document.createElement("div");
+
+      sheetSizeResDiv.innerHTML = `${bin.sizes[0]}x${bin.sizes[1]}`;
+
       imgResultDiv.setAttribute(
         "class",
         "mt-3 d-flex flex-column align-items-center"

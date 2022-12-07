@@ -67,7 +67,7 @@ def test_calculate(client):
         ],
         "bladeSize": 2,
         "printPrice": 15.1,
-        "meticSystem": "centimeter",
+        "meticSystem": "cm",
     }
 
     response = client.post(

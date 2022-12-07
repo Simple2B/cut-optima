@@ -30,6 +30,10 @@ a {
   width: 10%;
 }
 
+.w-17 {
+  width: 17%;
+}
+
 .h-42px {
   height: 42px;
 }
@@ -52,6 +56,14 @@ a {
 
 .ml-10px {
   margin-left: 10px;
+}
+
+.mr-10px {
+  margin-right: 10px;
+}
+
+.mr-5px {
+  margin-right: 5px;
 }
 
 .hit_flash {
@@ -135,7 +147,7 @@ a {
 }
 
 .calculator-l-side {
-  width: 25%;
+  width: 35%;
   /* margin-left: 15px; */
 }
 .calculator-r-side {
@@ -213,6 +225,7 @@ input::-webkit-inner-spin-button {
 
 .result-img-data {
   width: 70%;
+  background: #e7e7e7;
 }
 .result-text-data {
   width: 30%;

@@ -7,6 +7,7 @@ class BaseConfig(object):
     """Base configuration."""
 
     APP_NAME = "Cost Calc"
+
     DEBUG_TB_ENABLED = False
     SECRET_KEY = os.environ.get(
         "SECRET_KEY", "Ensure you set a secret key, this is important!"
@@ -33,8 +34,8 @@ class BaseConfig(object):
     ]
 
     METRIC_TO_SQR_UNIT_VALUE = {
-        "centimeter": 100 * 100,
-        "inch": 12 * 12,
+        "cm": 100 * 100,
+        "in": 12 * 12,
     }
 
     # colors
@@ -43,6 +44,17 @@ class BaseConfig(object):
     COLOR_GREY = "#efe6e6"
 
     RECT_PACK_IMG_MAX_SIDE_SIZE = 1024
+
+    # default calculator settings
+    MOQ = ""
+    MOQ_UNIT = ""
+    COST = ""
+    COST_PER = ""
+    ORDER_URL = ""
+    ORDER_ENABLED = False
+    CUT_SPACING = 0.5
+    METRIC_SYSTEM = None
+    SHEETS = None
 
     @staticmethod
     def configure(app):

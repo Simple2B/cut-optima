@@ -9,9 +9,10 @@ ENV PYTHONUNBUFFERED 1
 ENV PYTHONHASHSEED random
 ENV PIP_NO_CACHE_DIR off
 ENV PIP_DISABLE_PIP_VERSION_CHECK on
+ENV PGET_POETRY_IGNORE_DEPRECATION 1
 
 # install poetry
-RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
+RUN pip install poetry
 ENV PATH="${PATH}:/root/.poetry/bin"
 COPY poetry.lock .
 COPY pyproject.toml .
