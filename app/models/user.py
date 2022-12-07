@@ -23,6 +23,11 @@ class User(db.Model, UserMixin, ModelMixin):
         centimeter = "centimeter"
         inch = "inch"
 
+    class Currency(enum.Enum):
+        dollar = "dollar"
+        pound = "pound"
+        euro = "euro"
+
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(60), unique=True, nullable=False)
     email = db.Column(db.String(255), unique=True, nullable=False)
@@ -40,6 +45,7 @@ class User(db.Model, UserMixin, ModelMixin):
     cut_spacing = db.Column(db.Float(), default=0.5)
     is_enabled_buy_btn = db.Column(db.Boolean, default=False)
     buy_url = db.Column(db.String(255), nullable=True)
+    currency = db.Column(Enum(Currency), default=Currency.dollar)
 
     sheets = db.relationship("Sheet", viewonly=True)
 

@@ -13,20 +13,21 @@ document.addEventListener("DOMContentLoaded", (event) => {
   const bladeSizeInput = document.querySelector(".blade-size");
   const printPriceInput = document.querySelector(".print-price");
   const meticSystemSelect = document.querySelector(".metic-system");
+  const pricePerSelect = document.querySelector(".price-per");
+  const moqQtyDiv = document.querySelector(".moq-qty");
+  const useSheetsInRowDiv = document.querySelector(".use-sheets-in-row");
 
   // output data
-  const metricResDiv = document.querySelector(".metric-res");
   const sheetSizeResDiv = document.querySelector(".sheet-size-res");
   const usageResQtyDiv = document.querySelector(".usage-res-qty");
-  const usageMetricResDiv = document.querySelector(".usage-metric-res");
+  const usageSheetQtyDiv = document.querySelector(".usage-sheet-qty");
   const usageMetricDiv = document.querySelector(".usage-metric");
   const availableResQtyDiv = document.querySelector(".available-res-qty");
-  const availableResPerUnitDiv = document.querySelector(
-    ".available-res-per-unit"
-  );
+  const costPerDiv = document.querySelector(".cost-per");
   const availableMetricResDiv = document.querySelector(".available-metric-res");
   const totalCostResDiv = document.querySelector(".total-cost-res");
-  const costResDiv = document.querySelector(".cost-res");
+  const costValueDiv = document.querySelector(".cost-value");
+  const placedRectsDiv = document.querySelector(".placed-rects");
 
   calculateBtn.addEventListener("click", async () => {
     // binsResultsDiv.innerHTML = "";
@@ -85,12 +86,17 @@ document.addEventListener("DOMContentLoaded", (event) => {
     const bladeSize = parseFloat(bladeSizeInput.value);
     const printPrice = parseFloat(printPriceInput.value);
     const meticSystem = meticSystemSelect.value;
+    const pricePer = pricePerSelect.value;
+    const moqQty = parseFloat(moqQtyDiv.innerHTML);
+    const useSheetsInRow = useSheetsInRowDiv.innerHTML === "True";
 
     console.log("bins", addedBins);
     console.log("rects", addedRects);
     console.log("bladeSize", bladeSize);
     console.log("printPrice", printPrice);
     console.log("meticSystem", meticSystem);
+    console.log("pricePer", pricePer);
+    console.log("moqQty", moqQty);
 
     const res = await fetch(`/calculate`, {
       credentials: "include",
@@ -104,6 +110,9 @@ document.addEventListener("DOMContentLoaded", (event) => {
         bladeSize: bladeSize,
         printPrice: printPrice,
         meticSystem: meticSystem,
+        pricePer: pricePer,
+        moqQty: moqQty,
+        useInRow: useSheetsInRow,
       }),
     });
     const resJson = await res.json();
@@ -115,17 +124,15 @@ document.addEventListener("DOMContentLoaded", (event) => {
       });
       return;
     }
-
-    metricResDiv.innerHTML = meticSystem;
     usageResQtyDiv.innerHTML = resJson.used_area.toFixed(2);
-    usageMetricResDiv.innerHTML = "SQR";
     usageMetricDiv.innerHTML = meticSystemMapping[meticSystem];
-
+    usageSheetQtyDiv.innerHTML = resJson.used_bins;
     availableResQtyDiv.innerHTML = resJson.wasted_area.toFixed(2);
-    totalCostResDiv.innerHTML = resJson.print_price.toFixed(2) + "$";
+    totalCostResDiv.innerHTML = resJson.print_price.toFixed(2);
     availableMetricResDiv.innerHTML = meticSystemMapping[meticSystem];
-    availableResPerUnitDiv.innerHTML = "SQR";
-    costResDiv.innerHTML = printPriceInput.value + "$";
+    costPerDiv.innerHTML = pricePer.toUpperCase();
+    costValueDiv.innerHTML = printPriceInput.value;
+    placedRectsDiv.innerHTML = resJson.placed_items.length + " Artworks";
 
     for (let bin of resJson.bins) {
       var imgResultDiv = document.createElement("div");
@@ -138,10 +145,12 @@ document.addEventListener("DOMContentLoaded", (event) => {
       );
       imgResultDiv.innerHTML = `
       <h5 class="mb-0">Sheet ${bin.sizes[0]}x${bin.sizes[1]}</h5>
-      <img class="w-75 border border-2 rounded test-img"
-        src="data:image/png;base64,${bin.image}"
-        alt="calculator-result-img"
-      >
+      <div class="w-75 d-flex justify-content-center">
+        <img class="border border-2 rounded img-sizes"
+          src="data:image/png;base64,${bin.image}"
+          alt="calculator-result-img"
+        >
+      </div>
       `;
       console.log("imgResultDiv", imgResultDiv);
 

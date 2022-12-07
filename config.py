@@ -38,6 +38,12 @@ class BaseConfig(object):
         "in": 12 * 12,
     }
 
+    CURRENCY_NAME_TO_SYMBOL = {
+        "dollar": "$",
+        "pound": "£",
+        "euro": "€",
+    }
+
     # colors
     COLOR_WHITE = "white"
     COLOR_BLACK = "black"
@@ -55,6 +61,7 @@ class BaseConfig(object):
     CUT_SPACING = 0.5
     METRIC_SYSTEM = None
     SHEETS = None
+    CURRENCY = CURRENCY_NAME_TO_SYMBOL["dollar"]
 
     @staticmethod
     def configure(app):

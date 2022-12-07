@@ -2,6 +2,9 @@
 document.addEventListener("DOMContentLoaded", (event) => {
   const sheetWidthInput = document.querySelector(".sheet-size-width");
   const sheetHeightInput = document.querySelector(".sheet-size-height");
+  const sheetPriceInput = document.querySelector(".sheet-price");
+  const sheetMoqInput = document.querySelector(".sheet-moq");
+  const useInRowInput = document.querySelector(".use-in-row-input");
   const addSheetBtn = document.querySelector(".add-sheet-size");
   const addedSheetSizesDiv = document.querySelector(".added-sheet-sizes");
 
@@ -43,27 +46,68 @@ document.addEventListener("DOMContentLoaded", (event) => {
   const addSheetToFront = (id) => {
     const sheetWidth = sheetWidthInput.value;
     const sheetHeight = sheetHeightInput.value;
+    const sheetPrice = sheetPriceInput.value;
+    const sheetMoq = sheetMoqInput.value;
+    const useInRow = useInRowInput.checked;
 
     const newSheetDiv = document.createElement("div");
-    newSheetDiv.setAttribute("class", "d-flex mb-2");
+    newSheetDiv.setAttribute("class", "d-flex justify-content-between mb-2");
     newSheetDiv.setAttribute("id", id);
     newSheetDiv.innerHTML = `
-        <input
+        <div class="input-group add-sheet-input-group">
+          <span class="input-group-text" id="basic-addon3">Allow use in row</span>
+          <div class="form-check form-switch d-flex align-items-center pl-50px border border-1 border-start-0 m-0 bg-color-disabled">
+            <input
+              class="form-check-input border-90 use-in-row-input"
+              type="checkbox"
+              ${useInRow && "checked"}
+              disabled
+            >
+          </div>
+        </div>
+
+        <div class="input-group add-sheet-input-group">
+          <span class="input-group-text" id="basic-addon3">Price</span>
+          <input
+            class="form-control added-sheet-price mr-20px"
+            placeholder="Price"
+            type="number"
+            disabled
+            value=${parseFloat(sheetPrice)}
+          >
+        </div>
+
+        <div class="input-group add-sheet-input-group">
+          <span class="input-group-text" id="basic-addon3">MOQ</span>
+          <input
+            class="form-control added-sheet-moq mr-20px"
+            placeholder="MOQ"
+            type="number"
+            disabled
+            value=${parseInt(sheetMoq)}
+          >
+        </div>
+
+        <div class="d-flex">
+          <input
             class="form-control added-sheet-size-width"
             placeholder="Width"
             type="number"
             disabled
             value=${parseFloat(sheetWidth)}
-        >
-        <span class="input-group-text">x</span>
-        <input
-            class="form-control added-sheet-size-height"
-            placeholder="Height"
-            type="number"
-            disabled
-            value=${parseFloat(sheetHeight)}
-        >
-        <div class="btn rounded btn btn-light delete-sheet-size ml-10px">Delete</div>
+          >
+          <span class="input-group-text">x</span>
+          <input
+              class="form-control added-sheet-size-height"
+              placeholder="Height"
+              type="number"
+              disabled
+              value=${parseFloat(sheetHeight)}
+          >
+        </div>
+
+
+        <div class="btn rounded btn btn-danger delete-sheet-size ml-10px">Delete</div>
     `;
     addedSheetSizesDiv.appendChild(newSheetDiv);
 
@@ -75,11 +119,23 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
     sheetWidthInput.value = undefined;
     sheetHeightInput.value = undefined;
+    sheetPrice.value = undefined;
+    sheetMoq.value = undefined;
   };
 
   addSheetBtn.addEventListener("click", async () => {
     const sheetWidth = sheetWidthInput.value;
     const sheetHeight = sheetHeightInput.value;
+    const sheetPrice = sheetPriceInput.value;
+    const sheetMoq = sheetMoqInput.value;
+    const useInRow = useInRowInput.checked;
+
+    if (!sheetWidth || !sheetHeight || !sheetPrice || sheetPrice < 0) {
+      iziToast.error({
+        message: "Invalid new sheet data",
+      });
+      return;
+    }
 
     const res = await fetch(`/settings/sheet/create`, {
       credentials: "include",
@@ -90,6 +146,9 @@ document.addEventListener("DOMContentLoaded", (event) => {
       body: JSON.stringify({
         width: sheetWidth,
         height: sheetHeight,
+        price: sheetPrice,
+        moq: sheetMoq,
+        use_in_row: useInRow,
       }),
     });
     if (res.status == 200) {

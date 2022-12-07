@@ -4,6 +4,26 @@ document.addEventListener("DOMContentLoaded", (event) => {
   const rectRemoveBtn = document.querySelector(".rect-remove-last-btn");
   const addRectForm = document.querySelector(".add-rect-form");
   const addedRectsDiv = document.querySelector(".added-rects");
+  const totalRectsSpan = document.querySelector(".total-rects");
+
+  const calculateTotalRestsQty = () => {
+    const rectQtyInputs = document.querySelectorAll(".rect-qty");
+    let totalRestsQty = 0;
+    rectQtyInputs.forEach((el) => {
+      if (parseInt(el.value)) {
+        totalRestsQty = totalRestsQty + parseInt(el.value);
+      }
+    });
+    totalRectsSpan.innerHTML = totalRestsQty;
+    console.log("totalRestsQty", totalRestsQty);
+  };
+
+  const rectQtyInputs = document.querySelectorAll(".rect-qty");
+  rectQtyInputs.forEach((el) => {
+    el.addEventListener("input", () => {
+      calculateTotalRestsQty();
+    });
+  });
 
   rectRemoveBtn.addEventListener("click", () => {
     const elements = document.querySelectorAll(".add-rect-form");
@@ -17,6 +37,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
     iziToast.success({
       message: "Removed",
     });
+    calculateTotalRestsQty();
   });
 
   rectAddBtn.addEventListener("click", () => {
@@ -28,6 +49,10 @@ document.addEventListener("DOMContentLoaded", (event) => {
     addedRectsDiv.appendChild(cloneAddRectForm);
     iziToast.success({
       message: "Added",
+    });
+    const rectQtyInputs = document.querySelectorAll(".rect-qty");
+    rectQtyInputs[rectQtyInputs.length - 1].addEventListener("input", () => {
+      calculateTotalRestsQty();
     });
   });
 });

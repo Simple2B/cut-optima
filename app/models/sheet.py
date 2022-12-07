@@ -11,6 +11,9 @@ class Sheet(db.Model, UserMixin, ModelMixin):
     created_by = db.Column(db.Integer, db.ForeignKey("users.id"))
     width = db.Column(db.Float(), default=0)
     height = db.Column(db.Float(), default=0)
+    price = db.Column(db.Float(), default=0)
+    moq = db.Column(db.Integer(), default=0)
+    use_in_row = db.Column(db.Boolean(), default=False)
 
     user = db.relationship("User")
 
