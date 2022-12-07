@@ -61,6 +61,7 @@ class BaseConfig(object):
     CUT_SPACING = 0.5
     METRIC_SYSTEM = None
     SHEETS = None
+    CURRENCY = CURRENCY_NAME_TO_SYMBOL["dollar"]
 
     @staticmethod
     def configure(app):

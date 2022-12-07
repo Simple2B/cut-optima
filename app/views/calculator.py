@@ -21,6 +21,7 @@ def calculator():
     cut_spacing = conf.CUT_SPACING
     metric_system = conf.METRIC_SYSTEM
     sheets = conf.SHEETS
+    currency = conf.CURRENCY
 
     setup_id = request.args.get("setup_id")
     if setup_id:
