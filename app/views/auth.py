@@ -30,8 +30,8 @@ def register():
         url = url_for(
             "auth.password_recovery",
             reset_password_uid=user.reset_password_uid,
+            _external=True,
         )
-        url = f"http://{conf.DOMAIN}{url}"
 
         msg.html = render_template(
             "email/register.html",
@@ -106,8 +106,8 @@ def reset_password():
             url = url_for(
                 "auth.password_recovery",
                 reset_password_uid=user.reset_password_uid,
+                _external=True,
             )
-            url = f"http://{conf.DOMAIN}{url}"
 
             msg.html = render_template(
                 "email/reset_password.html",

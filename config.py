@@ -7,7 +7,6 @@ class BaseConfig(object):
     """Base configuration."""
 
     APP_NAME = "Cost Calc"
-    DOMAIN = os.environ.get("DOMAIN")
 
     DEBUG_TB_ENABLED = False
     SECRET_KEY = os.environ.get(
@@ -51,6 +50,17 @@ class BaseConfig(object):
     COLOR_GREY = "#efe6e6"
 
     RECT_PACK_IMG_MAX_SIDE_SIZE = 1024
+
+    # default calculator settings
+    MOQ = ""
+    MOQ_UNIT = ""
+    COST = ""
+    COST_PER = ""
+    ORDER_URL = ""
+    ORDER_ENABLED = False
+    CUT_SPACING = 0.5
+    METRIC_SYSTEM = None
+    SHEETS = None
 
     @staticmethod
     def configure(app):
