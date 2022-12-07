@@ -72,7 +72,7 @@ def calculate():
     first_bin = data["bins"][0]
     is_sizes_equals = first_bin["size"][0] == first_bin["size"][1]
     if is_sizes_equals:
-        # to make width larger side
+        # to make width as larger side if sizes equals
         first_bin["size"][0] += 1
     rect_packer = RectPacker(
         blade_size=data["bladeSize"],
@@ -132,9 +132,6 @@ def calculate():
     for bin in rect_packer.result["bins"]:
         if is_sizes_equals:
             bin["sizes"][0] -= 1
-        # res["used_area"] += bin["used_area"] / square_unit
-        # wasted area = area - used area
-        # res["wasted_area"] += bin["wasted_area"] / square_unit
 
         # wasted area calculated by max_y_coordinate * width
         reduced_height = bin["sizes"][1] - bin["max_y_coordinate"]
