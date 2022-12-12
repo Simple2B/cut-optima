@@ -49,7 +49,7 @@ class BaseConfig(object):
     COLOR_BLACK = "black"
     COLOR_GREY = "#efe6e6"
 
-    RECT_PACK_IMG_MAX_SIDE_SIZE = 2024
+    RECT_PACK_IMG_MAX_SIDE_SIZE = 1024
 
     # default calculator settings
     MOQ = ""
