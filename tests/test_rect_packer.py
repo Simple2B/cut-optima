@@ -47,8 +47,6 @@ def test_basic_rect_packer_functionality(rect_packer: RectPacker):
     result = rect_packer.result
 
     for bin in result["bins"]:
-        assert "image" in bin
-        assert bin["image"]
         assert "sizes" in bin
         assert bin["sizes"] in rect_packer.bins
         assert "placed_items" in bin
@@ -81,8 +79,6 @@ def test_with_summary_rects_area_larger_than_bin_area(rect_packer: RectPacker):
     result = rect_packer.result
 
     for bin in result["bins"]:
-        assert "image" in bin
-        assert bin["image"]
         assert "sizes" in bin
         assert bin["sizes"] in rect_packer.bins
         assert "placed_items" in bin
