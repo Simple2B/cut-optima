@@ -1,10 +1,8 @@
-import math
-
 from flask import Blueprint, render_template, request, jsonify
+from rectpack import skyline
 
 from config import BaseConfig as conf
 from app.controllers import RectPacker
-from app.utils import serve_pil_image
 from app.models import User
 
 blueprint = Blueprint("calculator", __name__)
@@ -67,17 +65,29 @@ def calculate():
         return jsonify({"message": "Invalid metic system"}), 400
 
     metic_system = data.get("meticSystem")
+    square_unit = conf.METRIC_TO_SQR_UNIT_VALUE.get(metic_system)
+    if not square_unit:
+        return jsonify({"message": "Incorrect metric system"}), 400
+
+    print_price = data.get("printPrice") if data.get("printPrice") else 0
+    moq = data.get("moqQty") if data.get("moqQty") else 0
+
     price_per = data.get("pricePer")
+    blade_size = data["bladeSize"]
 
     first_bin = data["bins"][0]
     is_sizes_equals = first_bin["size"][0] == first_bin["size"][1]
     if is_sizes_equals:
         # to make width as larger side if sizes equals
         first_bin["size"][0] += 1
+
     rect_packer = RectPacker(
-        blade_size=data["bladeSize"],
-        is_bin_width_larger=first_bin["size"][0] > first_bin["size"][1],
+        blade_size=blade_size / 2,
         is_sizes_equals=is_sizes_equals,
+        square_unit=square_unit,
+        price_per=price_per,
+        print_price=print_price,
+        moq=moq,
     )
 
     for bin in data["bins"]:
@@ -99,68 +109,13 @@ def calculate():
 
     use_in_row = data.get("useInRow")
 
-    rect_packer.pack(use_sheet_in_row=use_in_row)
+    results = {}
+    for pack_algo in [skyline.SkylineMwflWm, skyline.SkylineMwfWm]:
+        rect_packer.reset()
+        rect_packer.pack(use_sheet_in_row=use_in_row, pack_algo=pack_algo)
+        result = rect_packer.result
+        results[result["used_area"]] = result
 
-    print_price = 0
-    if data.get("printPrice"):
-        print_price = data.get("printPrice")
+    min_used_area = min(results.keys())
 
-    moq = 0
-    if data.get("moqQty"):
-        moq = data.get("moqQty")
-
-    moq_price = print_price * moq
-
-    square_unit = conf.METRIC_TO_SQR_UNIT_VALUE.get(metic_system)
-    if not square_unit:
-        return jsonify({"message": "Incorrect metric system"}), 400
-
-    used_bins_count = (
-        rect_packer.result["used_bins"]
-        if len(rect_packer.result["bins"]) == 1
-        else len(rect_packer.result["bins"])
-    )
-
-    res = {
-        "used_area": 0,
-        "wasted_area": 0,
-        "placed_items": [],
-        "print_price": 0,
-        "bins": [],
-        "used_bins": used_bins_count,
-    }
-    for bin in rect_packer.result["bins"]:
-        if is_sizes_equals:
-            bin["sizes"][0] -= 1
-
-        # wasted area calculated by max_y_coordinate * width
-        reduced_height = bin["sizes"][1] - bin["max_y_coordinate"]
-        if reduced_height <= 0:
-            reduced_height = bin["sizes"][1]
-        res["used_area"] += ((bin["sizes"][0] * bin["max_y_coordinate"])) / square_unit
-        if res["used_area"] != 1:
-            res["wasted_area"] += bin["sizes"][0] * reduced_height / square_unit
-        else:
-            res["wasted_area"] += 0
-        res["placed_items"] += bin["rectangles"]
-
-        if price_per == "sqr":
-            res["print_price"] = res["used_area"] * print_price
-        else:
-            res["print_price"] += print_price
-
-        res["bins"].append(
-            {
-                "sizes": bin["sizes"],
-                "used_area": bin["used_area"],
-                "wasted_area": bin["wasted_area"],
-                "placed_items": bin["rectangles"],
-                "print_price": (math.prod(bin["sizes"]) / square_unit) * print_price,
-                "image": serve_pil_image(bin["image"]),
-            }
-        )
-
-    if res["print_price"] < moq_price and moq > 0:
-        res["print_price"] = moq_price
-
-    return jsonify(res)
+    return jsonify(results[min_used_area])
