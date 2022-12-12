@@ -6,7 +6,6 @@ from PIL import Image, ImageDraw
 from config import BaseConfig as conf
 from app.logger import log
 from app.utils import generate_color_hex
-from app.utils import serve_pil_image
 
 
 class RectPacker:
@@ -94,7 +93,7 @@ class RectPacker:
                     "placed_items": bin["rectangles"],
                     "print_price": (math.prod(bin["sizes"]) / self.square_unit)
                     * self.print_price,
-                    "image": serve_pil_image(bin["image"]),
+                    "bin": bin["bin"],
                 }
             )
 
@@ -192,8 +191,6 @@ class RectPacker:
             sorted([float(rect[0]), float(rect[1])]) for rect in self.rectangles
         ]
 
-        color_chema = {}
-
         log(log.INFO, "Init new packer instance")
         # PackingBin.Global too look good
         self.packer = newPacker(pack_algo=pack_algo, bin_algo=PackingBin.BFF)
@@ -222,7 +219,9 @@ class RectPacker:
             bin.width -= self.blade_size * 2
             bin.height -= self.blade_size * 2
             log(log.INFO, "Generate result for bin [%s]", bin)
+
             bin_result = {
+                "bin": bin,
                 "sizes": [
                     bin.width,
                     bin.height,
@@ -257,19 +256,17 @@ class RectPacker:
                     rect[1] + self.blade_size * 2
                 )
             bin_result["wasted_area"] = bin.width * bin.height - bin_result["used_area"]
-
-            bin_result["image"] = self.generate_image_for_bin(bin, color_chema)
-
             self._result["bins"].append(bin_result)
 
         self._result["not_placed_rectangles"] = not_placed_rectangles
 
         if self._result["not_placed_rectangles"]:
             if use_sheet_in_row:
+                self.bins[0][1] -= self.blade_size * 2
                 self.bins[0][1] = int(
                     ((self.bins[0][1]) / self.bins_in_row) * (self.bins_in_row + 1)
                 )
-                self.bins[0][1] -= self.blade_size * 2
+                self.bins[0][1] += self.blade_size * 2
                 self.bins_in_row += 1
             else:
                 self.bins.append(self.bins[0])
@@ -300,10 +297,11 @@ class RectPacker:
         img_draw = ImageDraw.Draw(img)
 
         for rect in bin:
-            rect_color = color_chema.get(str([rect.width, rect.height]))
+            rect_in_color_chema = str(sorted([rect.width, rect.height]))
+            rect_color = color_chema.get(rect_in_color_chema)
             if not rect_color:
                 color = generate_color_hex()
-                color_chema[str([rect.width, rect.height])] = color
+                color_chema[rect_in_color_chema] = color
                 rect_color = color
 
             rectangle = [

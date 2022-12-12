@@ -1,9 +1,11 @@
 from flask import Blueprint, render_template, request, jsonify
-from rectpack import skyline
+from rectpack import skyline, guillotine
 
 from config import BaseConfig as conf
 from app.controllers import RectPacker
 from app.models import User
+from app.utils import serve_pil_image
+from app.logger import log
 
 blueprint = Blueprint("calculator", __name__)
 
@@ -57,6 +59,8 @@ def calculator():
 def calculate():
     data = request.json
 
+    log(log.INFO, "Validate required data [%s]", data)
+
     if not data.get("bins"):
         return jsonify({"message": "Bin(s) not found"}), 400
     elif not data.get("rectangles"):
@@ -64,6 +68,7 @@ def calculate():
     elif data.get("meticSystem") not in ["cm", "in"]:
         return jsonify({"message": "Invalid metic system"}), 400
 
+    log(log.INFO, "Calculate and validate square_unit")
     metic_system = data.get("meticSystem")
     square_unit = conf.METRIC_TO_SQR_UNIT_VALUE.get(metic_system)
     if not square_unit:
@@ -81,6 +86,7 @@ def calculate():
         # to make width as larger side if sizes equals
         first_bin["size"][0] += 1
 
+    log(log.INFO, "Init RectPacker")
     rect_packer = RectPacker(
         blade_size=blade_size / 2,
         is_sizes_equals=is_sizes_equals,
@@ -90,12 +96,14 @@ def calculate():
         moq=moq,
     )
 
+    log(log.INFO, "Add bins to RectPacker instance")
     for bin in data["bins"]:
         for _ in range(bin["pics"]):
             width = bin["size"][0]
             height = bin["size"][1]
             rect_packer.add_bin(width, height)
 
+    log(log.INFO, "Add rects to RectPacker instance")
     for rect in data["rectangles"]:
         for _ in range(rect["pics"]):
             width = rect["size"][0]
@@ -103,6 +111,7 @@ def calculate():
             rect_packer.add_rectangle(width, height)
 
     try:
+        log(log.INFO, "Validate added data to RectPacker instance")
         rect_packer.validate_rectangles()
     except ValueError as e:
         return jsonify({"message": str(e)}), 400
@@ -110,12 +119,35 @@ def calculate():
     use_in_row = data.get("useInRow")
 
     results = {}
-    for pack_algo in [skyline.SkylineMwflWm, skyline.SkylineMwfWm]:
+    log(log.INFO, "Start find the best packing algo")
+    for pack_algo in [
+        skyline.SkylineBl,
+        skyline.SkylineBlWm,
+        skyline.SkylineMwf,
+        skyline.SkylineMwfl,
+        skyline.SkylineMwfWm,
+        skyline.SkylineMwflWm,
+        guillotine.GuillotineBssfMaxas,
+        guillotine.GuillotineBssfMinas,
+        guillotine.GuillotineBlsfMinas,
+        guillotine.GuillotineBafMaxas,
+        guillotine.GuillotineBafMinas,
+    ]:
+        log(log.INFO, "Generate sesult using [%s] algo", pack_algo)
         rect_packer.reset()
         rect_packer.pack(use_sheet_in_row=use_in_row, pack_algo=pack_algo)
         result = rect_packer.result
         results[result["used_area"]] = result
 
+    log(log.INFO, "Find the best result")
     min_used_area = min(results.keys())
 
-    return jsonify(results[min_used_area])
+    result = results[min_used_area]
+    color_schema = {}
+    log(log.INFO, "Generate images for results")
+    for bin in result["bins"]:
+        image = rect_packer.generate_image_for_bin(bin["bin"], color_schema)
+        bin["image"] = serve_pil_image(image)
+        del bin["bin"]
+
+    return jsonify(result)
