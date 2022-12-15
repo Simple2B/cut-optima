@@ -83,7 +83,7 @@ class RectPacker:
             if self.price_per == "sqr":
                 res["print_price"] = res["used_area"] * self.print_price
             else:
-                res["print_price"] += self.print_price
+                res["print_price"] = self.print_price * self.bins_in_row
 
             res["bins"].append(
                 {
