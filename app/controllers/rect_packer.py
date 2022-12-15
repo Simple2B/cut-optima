@@ -289,6 +289,7 @@ class RectPacker:
             bin.width -= 1
         larger_side = max([bin.width, bin.height])
         scale = conf.RECT_PACK_IMG_MAX_SIDE_SIZE / larger_side
+        scale *= max([bin.width, bin.height]) / min([bin.width, bin.height])
 
         bin_width = int(bin.width * scale)
         bin_height = int(bin.height * scale)
