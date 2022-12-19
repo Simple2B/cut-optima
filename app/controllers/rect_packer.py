@@ -340,6 +340,4 @@ class RectPacker:
         shape = [(bin_width - 1, bin_height - 1), 0, 0]
         img_draw.rectangle(shape, outline=conf.COLOR_BLACK)
 
-        img_draw.line((0, bin_height / 2, bin_width, bin_height / 2), fill=128)
-
         return img
