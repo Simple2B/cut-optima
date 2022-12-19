@@ -147,20 +147,33 @@ def calculate():
         guillotine.GuillotineBafMinas,
     ]:
         log(log.INFO, "Generate sesult using [%s] algo", pack_algo)
-        rect_packer.reset()
+        rect_packer.reset(bins_in_row=1, reset_bin_sizes=True)
         rect_packer.pack(use_sheet_in_row=use_in_row, pack_algo=pack_algo)
         result = rect_packer.result
-        results[result["used_area"]] = result
+        result["algo"] = str(pack_algo)
+
+        used_area = result["used_area"]
+        if not results.get(used_area):
+            results[used_area] = []
+        results[used_area].append(result)
 
     log(log.INFO, "Find the best result")
     min_used_area = min(results.keys())
 
-    result = results[min_used_area]
+    best_results = results[min_used_area]
+    best_results = sorted(
+        best_results,
+        key=lambda res: (res["wasted_area"], res["used_bins"]),
+        reverse=True,
+    )
+
+    result = best_results[0]
     color_schema = {}
     log(log.INFO, "Generate images for results")
     for bin in result["bins"]:
         image = rect_packer.generate_image_for_bin(bin["bin"], color_schema)
         bin["image"] = serve_pil_image(image)
         del bin["bin"]
+    del result["algo"]
 
     return jsonify(result)
