@@ -1,7 +1,7 @@
 import math
 from copy import deepcopy
 
-from rectpack import newPacker, skyline, PackingBin, pack_algo
+from rectpack import newPacker, skyline, PackingBin, pack_algo, SORT_SSIDE
 from PIL import Image, ImageDraw
 
 from config import BaseConfig as conf
@@ -200,7 +200,9 @@ class RectPacker:
 
         log(log.INFO, "Init new packer instance")
         # PackingBin.Global too look good
-        self.packer = newPacker(pack_algo=pack_algo, bin_algo=PackingBin.BFF)
+        self.packer = newPacker(
+            pack_algo=pack_algo, bin_algo=PackingBin.BFF, sort_algo=SORT_SSIDE
+        )
 
         if use_sheet_in_row:
             log(log.INFO, "Add bin")
