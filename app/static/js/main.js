@@ -12,6 +12,8 @@ const validateInput = (input) => {
   console.log("value", value);
   if (value < 0) {
     input.value = value * -1;
+  } else if (value === "NaN") {
+    input.value = 0;
   } else {
     input.value = value;
   }
@@ -21,6 +23,8 @@ const validateInputInt = (input) => {
   const value = parseInt(input.value);
   if (value < 0) {
     input.value = value * -1;
+  } else if (value === "NaN") {
+    input.value = 0;
   } else {
     input.value = value;
   }
