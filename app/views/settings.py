@@ -36,7 +36,7 @@ def sheet_create():
     width = float(data.get("width")) if data.get("width") is not None else None
     height = float(data.get("height")) if data.get("height") is not None else None
     price = float(data.get("price")) if data.get("price") is not None else 0
-    moq = int(data.get("moq")) if data.get("moq") is not None else 1
+    moq = int(data.get("moq")) if data.get("moq") not in ["", None] else 1
     use_in_row = (
         bool(data.get("use_in_row")) if data.get("use_in_row") is not None else False
     )

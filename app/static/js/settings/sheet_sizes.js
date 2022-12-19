@@ -8,6 +8,25 @@ document.addEventListener("DOMContentLoaded", (event) => {
   const addSheetBtn = document.querySelector(".add-sheet-size");
   const addedSheetSizesDiv = document.querySelector(".added-sheet-sizes");
 
+  let sheetWidth = sheetWidthInput.value;
+  let sheetHeight = sheetHeightInput.value;
+  let sheetPrice = sheetPriceInput.value;
+  let sheetMoq = sheetMoqInput.value;
+  let useInRow = useInRowInput.checked;
+
+  const getDataFromInputs = () => {
+    sheetWidth = sheetWidthInput.value;
+    sheetHeight = sheetHeightInput.value;
+    sheetPrice = sheetPriceInput.value;
+    sheetMoq = sheetMoqInput.value;
+    useInRow = useInRowInput.checked;
+
+    if (sheetMoq === "" || sheetMoq <= 0) {
+      sheetMoq = 1;
+      console.log(" sheetMoq = 1;");
+    }
+  };
+
   const deleteSheetSize = async (e) => {
     const elementToDelete = e.target.parentNode;
     console.log(elementToDelete.id);
@@ -44,11 +63,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
   });
 
   const addSheetToFront = (id) => {
-    const sheetWidth = sheetWidthInput.value;
-    const sheetHeight = sheetHeightInput.value;
-    const sheetPrice = sheetPriceInput.value;
-    const sheetMoq = sheetMoqInput.value;
-    const useInRow = useInRowInput.checked;
+    getDataFromInputs();
 
     const newSheetDiv = document.createElement("div");
     newSheetDiv.setAttribute("class", "d-flex justify-content-between mb-2");
@@ -124,11 +139,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
   };
 
   addSheetBtn.addEventListener("click", async () => {
-    const sheetWidth = sheetWidthInput.value;
-    const sheetHeight = sheetHeightInput.value;
-    const sheetPrice = sheetPriceInput.value;
-    const sheetMoq = sheetMoqInput.value;
-    const useInRow = useInRowInput.checked;
+    getDataFromInputs();
 
     if (!sheetWidth || !sheetHeight || !sheetPrice || sheetPrice < 0) {
       iziToast.error({
