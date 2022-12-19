@@ -164,7 +164,6 @@ def calculate():
     best_results = sorted(
         best_results,
         key=lambda res: (res["wasted_area"], res["used_bins"]),
-        reverse=True,
     )
 
     result = best_results[0]
