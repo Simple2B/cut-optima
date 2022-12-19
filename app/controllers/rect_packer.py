@@ -1,4 +1,5 @@
 import math
+from copy import deepcopy
 
 from rectpack import newPacker, skyline, PackingBin, pack_algo
 from PIL import Image, ImageDraw
@@ -37,6 +38,10 @@ class RectPacker:
         self.price_per = price_per
         self.print_price = print_price
         self.moq = moq
+
+        # data for reset
+        self._bins = []
+        self._rectangles = []
 
         self._result = {
             "not_placed_rectangles": [],
@@ -102,13 +107,16 @@ class RectPacker:
 
         return res
 
-    def reset(self):
+    def reset(self, bins_in_row=1, reset_bin_sizes=False):
         """Remove all results"""
         self._result = {
             "not_placed_rectangles": [],
-            "used_bins": self.bins_in_row,
+            "used_bins": bins_in_row,
             "bins": [],
         }
+        self.bins_in_row = bins_in_row
+        if reset_bin_sizes:
+            self.bins = deepcopy(self._bins)
 
     def add_bin(self, width: int, height: int):
         """Add bin to bins list
@@ -121,6 +129,7 @@ class RectPacker:
         height += self.blade_size * 2
         log(log.INFO, "Add bin [%s]", [width, height])
         self.bins.append([width, height])
+        self._bins = deepcopy(self.bins)
 
     def add_rectangle(self, width: int, height: int):
         """Add rectangle to rectangles list
@@ -185,8 +194,6 @@ class RectPacker:
 
         log(log.INFO, "Prepare to pack rectangles")
 
-        log(log.INFO, "Prepare to pack rectangles")
-
         not_placed_rectangles = [
             sorted([float(rect[0]), float(rect[1])]) for rect in self.rectangles
         ]
@@ -198,9 +205,8 @@ class RectPacker:
         if use_sheet_in_row:
             log(log.INFO, "Add bin")
             self.packer.add_bin(*self.bins[0])
-
-        for bin_sizes in self.bins:
-            if not use_sheet_in_row:
+        else:
+            for bin_sizes in self.bins:
                 log(log.INFO, "Add bin")
                 self.packer.add_bin(bin_sizes[0], bin_sizes[1])
 
@@ -271,8 +277,8 @@ class RectPacker:
             else:
                 self.bins.append(self.bins[0])
 
-            self.reset()
-            self.pack(use_sheet_in_row)
+            self.reset(self.bins_in_row)
+            self.pack(use_sheet_in_row, pack_algo)
 
     def generate_image_for_bin(self, bin: object, color_chema: dict):
         """Generate image using bin data
@@ -333,5 +339,7 @@ class RectPacker:
 
         shape = [(bin_width - 1, bin_height - 1), 0, 0]
         img_draw.rectangle(shape, outline=conf.COLOR_BLACK)
+
+        img_draw.line((0, bin_height / 2, bin_width, bin_height / 2), fill=128)
 
         return img
