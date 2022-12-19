@@ -21,10 +21,31 @@ document.addEventListener("DOMContentLoaded", (event) => {
     sheetMoq = sheetMoqInput.value;
     useInRow = useInRowInput.checked;
 
-    if (sheetMoq === "" || sheetMoq <= 0) {
+    if (sheetPrice === "" || sheetPrice === "NaN" || sheetPrice <= 0) {
+      sheetPrice = 0;
+      console.log(" sheetPrice = 0;");
+    }
+
+    if (sheetMoq === "" || sheetMoq === "NaN" || sheetMoq <= 0) {
       sheetMoq = 1;
       console.log(" sheetMoq = 1;");
     }
+  };
+
+  const validateDataFromInputs = () => {
+    let isValid = true;
+    if (!sheetWidth || sheetWidth == "NaN" || sheetWidth < 0) {
+      iziToast.error({
+        message: "Invalid new sheet width",
+      });
+    }
+    if (!sheetHeight || sheetHeight == "NaN" || sheetHeight < 0) {
+      iziToast.error({
+        message: "Invalid new sheet height",
+      });
+    }
+
+    return isValid;
   };
 
   const deleteSheetSize = async (e) => {
@@ -141,10 +162,8 @@ document.addEventListener("DOMContentLoaded", (event) => {
   addSheetBtn.addEventListener("click", async () => {
     getDataFromInputs();
 
-    if (!sheetWidth || !sheetHeight || !sheetPrice || sheetPrice < 0) {
-      iziToast.error({
-        message: "Invalid new sheet data",
-      });
+    isValidData = validateDataFromInputs();
+    if (!isValidData) {
       return;
     }
 
