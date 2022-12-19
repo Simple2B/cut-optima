@@ -69,8 +69,8 @@ document.addEventListener("DOMContentLoaded", (event) => {
     newSheetDiv.setAttribute("class", "d-flex justify-content-between mb-2");
     newSheetDiv.setAttribute("id", id);
     newSheetDiv.innerHTML = `
-        <div class="input-group add-sheet-input-group">
-          <span class="input-group-text" id="basic-addon3">Allow use in row</span>
+        <div class="input-group add-sheet-input-group w-50">
+          <span class="input-group-text" id="basic-addon3">Continuous sheet/row</span>
           <div class="form-check form-switch d-flex align-items-center pl-50px border border-1 border-start-0 m-0 bg-color-disabled">
             <input
               class="form-check-input border-90 use-in-row-input"
@@ -81,10 +81,10 @@ document.addEventListener("DOMContentLoaded", (event) => {
           </div>
         </div>
 
-        <div class="input-group add-sheet-input-group">
+        <div class="input-group add-sheet-input-group w-50">
           <span class="input-group-text" id="basic-addon3">Price</span>
           <input
-            class="form-control added-sheet-price mr-20px"
+            class="form-control added-sheet-price mr-10px"
             placeholder="Price"
             type="number"
             disabled
@@ -92,10 +92,10 @@ document.addEventListener("DOMContentLoaded", (event) => {
           >
         </div>
 
-        <div class="input-group add-sheet-input-group">
+        <div class="input-group add-sheet-input-group w-33">
           <span class="input-group-text" id="basic-addon3">MOQ</span>
           <input
-            class="form-control added-sheet-moq mr-20px"
+            class="form-control added-sheet-moq mr-10px"
             placeholder="MOQ"
             type="number"
             disabled
@@ -105,7 +105,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
         <div class="d-flex">
           <input
-            class="form-control added-sheet-size-width"
+            class="form-control added-sheet-size-width w-50"
             placeholder="Width"
             type="number"
             disabled
@@ -113,7 +113,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
           >
           <span class="input-group-text">x</span>
           <input
-              class="form-control added-sheet-size-height"
+              class="form-control added-sheet-size-height w-50"
               placeholder="Height"
               type="number"
               disabled

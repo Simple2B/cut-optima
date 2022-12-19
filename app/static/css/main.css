@@ -34,6 +34,10 @@ a {
   width: 17%;
 }
 
+.w-33 {
+  width: 33% !important;
+}
+
 .w-90 {
   width: 90%;
 }
@@ -266,10 +270,6 @@ input::-webkit-inner-spin-button {
   width: 25%;
 }
 
-.add-sheet-input-group {
-  width: 50%;
-}
-
 @media screen and (min-width: 768px) {
   #navbar {
     display: flex;
@@ -358,6 +358,6 @@ input::-webkit-inner-spin-button {
   }
 
   .add-sheet-input-group {
-    width: 100%;
+    width: 100% !important;
   }
 }
