@@ -199,7 +199,7 @@ class RectPacker:
         ]
 
         log(log.INFO, "Init new packer instance")
-        # PackingBin.Global too look good
+        # PackingBin.Global looks good too
         self.packer = newPacker(
             pack_algo=pack_algo, bin_algo=PackingBin.BFF, sort_algo=SORT_SSIDE
         )
