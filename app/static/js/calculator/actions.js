@@ -74,7 +74,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
       const width = parseFloat(widthInput.value);
       const height = parseFloat(heightInput.value);
       const pics = parseInt(picsInput.value);
-      if (!width || !height || width < 1 || height < 1) {
+      if (!width || !height || width <= 0 || height <= 0) {
         iziToast.error({
           message: "Incorrect artwork sizes",
         });
@@ -128,6 +128,14 @@ document.addEventListener("DOMContentLoaded", (event) => {
       });
       return;
     }
+
+    if (res.status === 500) {
+      iziToast.error({
+        position: "bottomRight",
+        title: "Calculation Error",
+      });
+    }
+
     const resJson = await res.json();
     if (res.status !== 200) {
       iziToast.error({
