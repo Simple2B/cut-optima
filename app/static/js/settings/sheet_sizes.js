@@ -90,7 +90,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
     newSheetDiv.setAttribute("class", "d-flex justify-content-between mb-2");
     newSheetDiv.setAttribute("id", id);
     newSheetDiv.innerHTML = `
-        <div class="input-group add-sheet-input-group w-50">
+        <div class="input-group add-sheet-input-group w-50 сontinuous-sheet-row-block">
           <span class="input-group-text" id="basic-addon3">Continuous sheet/row</span>
           <div class="form-check form-switch d-flex align-items-center pl-50px border border-1 border-start-0 m-0 bg-color-disabled">
             <input
@@ -102,7 +102,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
           </div>
         </div>
 
-        <div class="input-group add-sheet-input-group w-50">
+        <div class="input-group add-sheet-input-group w-50 sheet-price-block">
           <span class="input-group-text" id="basic-addon3">Price</span>
           <input
             class="form-control added-sheet-price mr-10px"
@@ -113,7 +113,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
           >
         </div>
 
-        <div class="input-group add-sheet-input-group w-33">
+        <div class="input-group add-sheet-input-group w-33 sheet-moq-block">
           <span class="input-group-text" id="basic-addon3">MOQ</span>
           <input
             class="form-control added-sheet-moq mr-10px"
@@ -124,7 +124,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
           >
         </div>
 
-        <div class="d-flex">
+        <div class="d-flex sheet-size-inputs-block">
           <input
             class="form-control added-sheet-size-width w-50"
             placeholder="Width"

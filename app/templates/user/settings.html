@@ -4,6 +4,10 @@
     <h3 class="text-center">Settings</h3>
     <div class="d-flex justify-content-center">
       <div class="settings-form p2 w-75">
+        <div class="settings-tabs d-flex justify-content-around">
+          <div class="btn btn-outline-primary rounded settings-sheet">Settings for Sheets</div>
+          <div class="btn btn-outline-primary rounded settings-sqr">Settings for SQRs</div>
+        </div>
         <div class="card-body">
           <form
             class="form"
@@ -32,7 +36,7 @@
               {% endfor %}
             </div>
 
-            <div class="mb-3">
+            <div class="mb-3 print-price-block">
               <label for="print_price" class="form-label"
                 >{{form.print_price.label}}</label
               >
@@ -97,8 +101,8 @@
               <small class="text-danger">{{error}}</small> {% endfor %}
             </div>
 
-            <div class="mb-3">
-              <label for="imoq" class="form-label">{{form.moq.label}}</label>
+            <div class="mb-3 moq-sqr-block">
+              <label for="moq" class="form-label">{{form.moq.label}}</label>
               {{form.moq(class="form-control", id="moq", value=current_user.moq, type="number")}}
               {% for error in form.errors.moq %}
               <small class="text-danger">{{error}}</small> {% endfor %}
@@ -123,28 +127,28 @@
 
             <div class="mb-3">
               <label  class="form-label">Sheets Sizes</label>
-              <div class="d-flex justify-content-center">
-                <div class="sheet-sizes p2 w-100">
+              <div class="d-flex justify-content-center ">
+                <div class="sheet-sizes p2 w-100 hide-sheet-price-blocks">
                   <div class="create-sheet-size mb-3">
                     <div class="d-flex add-sheet-form">
-                      <div class="input-group add-sheet-input-group w-50">
+                      <div class="input-group add-sheet-input-group w-50 сontinuous-sheet-row-block">
                         <span class="input-group-text" id="basic-addon3">Continuous sheet/row</span>
                         <div class="form-check form-switch d-flex align-items-center pl-50px border border-1 border-start-0 m-0">
                           <input class="form-check-input border-90 use-in-row-input" type="checkbox" value="y">
                         </div>
                       </div>
 
-                      <div class="input-group add-sheet-input-group w-50">
+                      <div class="input-group add-sheet-input-group w-50 sheet-price-block">
                         <span class="input-group-text" id="basic-addon3">Price</span>
                         <input class="form-control sheet-price add-sheet-input mr-20px" placeholder="Price" type="number" step="any">
                       </div>
 
-                      <div class="input-group add-sheet-input-group w-33">
+                      <div class="input-group add-sheet-input-group w-33 sheet-moq-block">
                         <span class="input-group-text" id="basic-addon3">MOQ</span>
                         <input class="form-control sheet-moq add-sheet-input mr-20px" placeholder="MOQ" type="number" step="any">
                       </div>
 
-                      <div class="d-flex">
+                      <div class="d-flex sheet-size-inputs-block">
                         <input class="form-control sheet-size-width" placeholder="Width" type="number" step="any">
                         <span class="input-group-text">x</span>
                         <input class="form-control sheet-size-height" placeholder="Height" type="number" step="any">
@@ -156,7 +160,7 @@
                   <div class="added-sheet-sizes">
                     {% for added_sheet in current_user.sheets %}
                       <div class="d-flex justify-content-between mb-2" id="{{ added_sheet.id }}">
-                        <div class="input-group add-sheet-input-group w-50">
+                        <div class="input-group add-sheet-input-group w-50 сontinuous-sheet-row-block">
                           <span class="input-group-text" id="basic-addon3">Continuous sheet/row</span>
                           <div class="form-check form-switch d-flex align-items-center pl-50px border border-1 border-start-0 m-0 bg-color-disabled">
                             <input
@@ -171,7 +175,7 @@
                         </div>
 
 
-                        <div class="input-group add-sheet-input-group w-50">
+                        <div class="input-group add-sheet-input-group w-50 sheet-price-block">
                           <span class="input-group-text" id="basic-addon3">Price</span>
                           <input
                             class="form-control added-sheet-price mr-10px"
@@ -182,7 +186,7 @@
                           >
                         </div>
 
-                        <div class="input-group add-sheet-input-group w-33">
+                        <div class="input-group add-sheet-input-group w-33 sheet-moq-block">
                           <span class="input-group-text" id="basic-addon3">MOQ</span>
                           <input
                             class="form-control added-sheet-moq mr-10px"
@@ -193,7 +197,7 @@
                           >
                         </div>
 
-                        <div class="d-flex">
+                        <div class="d-flex sheet-size-inputs-block">
                           <input
                             class="form-control added-sheet-size-width"
                             placeholder="Width"
@@ -250,6 +254,11 @@
 
 <script
   src="{{ url_for('static', filename='js/settings/sheet_sizes.js') }}"
+  type="text/javascript"
+></script>
+
+<script
+  src="{{ url_for('static', filename='js/settings/tabs.js') }}"
   type="text/javascript"
 ></script>
 

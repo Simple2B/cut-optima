@@ -270,6 +270,26 @@ input::-webkit-inner-spin-button {
   width: 25%;
 }
 
+.hide-sheet-price-blocks > * .sheet-price-block {
+  display: none;
+}
+
+.hide-sheet-price-blocks > * .sheet-moq-block {
+  display: none;
+}
+
+.hide-sheet-price-blocks > * .сontinuous-sheet-row-block {
+  width: 33% !important;
+}
+
+.hide-sheet-price-blocks > * .add-sheet-form {
+  justify-content: space-between;
+}
+
+.hide-sheet-price-blocks > * .sheet-size-inputs-block {
+  width: 75% !important;
+}
+
 @media screen and (min-width: 768px) {
   #navbar {
     display: flex;
@@ -288,6 +308,14 @@ input::-webkit-inner-spin-button {
     width: 100% !important;
   }
   .calculator-r-side {
+    width: 100% !important;
+  }
+
+  .hide-sheet-price-blocks > * .сontinuous-sheet-row-block {
+    width: 100% !important;
+  }
+
+  .hide-sheet-price-blocks > * .sheet-size-inputs-block {
     width: 100% !important;
   }
 }
