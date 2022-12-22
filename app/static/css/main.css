@@ -186,38 +186,6 @@ a {
   outline: grey 1px solid;
 }
 
-/* input sufix */
-/* prepare wrapper element */
-.input-sufix-block {
-  display: inline-block;
-  position: relative;
-}
-.input-sufix-block input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-/* Firefox */
-.input-sufix-block input[type="number"] {
-  -moz-appearance: textfield;
-}
-
-/* position the unit to the right of the wrapper */
-.input-sufix-block::after {
-  position: absolute;
-  top: 0px;
-  right: 0.5em;
-  transition: all 0.05s ease-in-out;
-}
-
-/* handle Firefox (arrows always shown) */
-@supports (-moz-appearance: none) {
-  .input-sufix-block::after {
-    right: 1.5em;
-  }
-}
-
 .added-bins th,
 .added-rects th {
   padding: 0;

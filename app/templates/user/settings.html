@@ -20,7 +20,7 @@
               <label for="metric_system" class="form-label"
                 >{{form.metric_system.label}}</label
               >
-              <select class="form-control" id="metric_system" name="metric_system" required="">
+              <select class="form-select" id="metric_system" name="metric_system" required="">
                 {% for choices in form.metric_system.choices %}
                   <option
                     value="{{ choices[0] }}"
@@ -57,7 +57,7 @@
               <label for="currency" class="form-label"
                 >{{form.currency.label}}</label
               >
-              <select class="form-control" id="currency" name="currency" required="">
+              <select class="form-select" id="currency" name="currency" required="">
                 {% for choices in form.currency.choices %}
                   <option
                     value="{{ choices[0] }}"
@@ -78,7 +78,7 @@
                 >{{form.is_price_per.label}}</label
               >
               <select
-                class="form-control"
+                class="form-select"
                 id="is_price_per"
                 name="is_price_per"
                 required=""
