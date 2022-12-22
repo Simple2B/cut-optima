@@ -25,17 +25,13 @@ document.addEventListener("DOMContentLoaded", (event) => {
   };
 
   tabSheetsBtn.addEventListener("click", () => {
-    tabSqrsBtn.classList.remove("btn-primary");
-    tabSqrsBtn.classList.add("btn-outline-primary");
-    tabSheetsBtn.classList.remove("btn-outline-primary");
-    tabSheetsBtn.classList.add("btn-primary");
+    tabSqrsBtn.classList.remove("selected-tab-btn");
+    tabSheetsBtn.classList.add("selected-tab-btn");
     showSheetsSettings();
   });
   tabSqrsBtn.addEventListener("click", () => {
-    tabSqrsBtn.classList.add("btn-primary");
-    tabSqrsBtn.classList.remove("btn-outline-primary");
-    tabSheetsBtn.classList.add("btn-outline-primary");
-    tabSheetsBtn.classList.remove("btn-primary");
+    tabSqrsBtn.classList.add("selected-tab-btn");
+    tabSheetsBtn.classList.remove("selected-tab-btn");
     showSqrsSettings();
   });
 });

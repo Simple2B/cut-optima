@@ -5,8 +5,8 @@
     <div class="d-flex justify-content-center">
       <div class="settings-form p2 w-75">
         <div class="settings-tabs d-flex justify-content-around">
-          <div class="btn btn-outline-primary rounded settings-sheet">Settings for Sheets</div>
-          <div class="btn btn-outline-primary rounded settings-sqr">Settings for SQRs</div>
+          <div class="btn w-50 setting-tab-btn settings-sheet">Settings for Sheets</div>
+          <div class="btn w-50 setting-tab-btn settings-sqr">Settings for SQRs</div>
         </div>
         <div class="card-body">
           <form
@@ -26,7 +26,7 @@
                     value="{{ choices[0] }}"
                     {% if current_user.metric_system.value == choices[0] %}selected{% endif %}
                   >
-                    {{ choices[0].title() }}
+                    {{ choices[0].title().replace("Centimeter", "Centimetre") }}
                   </option>
                 {% endfor %}
               </select>

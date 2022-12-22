@@ -258,6 +258,14 @@ a {
   width: 75% !important;
 }
 
+.setting-tab-btn:hover {
+  background: lightgray;
+}
+
+.selected-tab-btn {
+  background: lightgray;
+}
+
 @media screen and (min-width: 768px) {
   #navbar {
     display: flex;
