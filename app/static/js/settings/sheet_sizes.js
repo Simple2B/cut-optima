@@ -91,7 +91,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
     newSheetDiv.setAttribute("id", id);
     newSheetDiv.innerHTML = `
         <div class="input-group add-sheet-input-group w-50 сontinuous-sheet-row-block">
-          <span class="input-group-text" id="basic-addon3">Continuous sheet/row</span>
+          <span class="input-group-text" id="basic-addon3">Continuous sheet/roll</span>
           <div class="form-check form-switch d-flex align-items-center pl-50px border border-1 border-start-0 m-0 bg-color-disabled">
             <input
               class="form-check-input border-90 use-in-row-input"
