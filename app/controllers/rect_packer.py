@@ -1,7 +1,7 @@
 import math
 from copy import deepcopy
 
-from rectpack import newPacker, skyline, PackingBin, pack_algo, SORT_SSIDE
+from rectpack import newPacker, skyline, PackingBin, pack_algo, SORT_AREA
 from PIL import Image, ImageDraw
 
 from config import BaseConfig as conf
@@ -182,6 +182,7 @@ class RectPacker:
 
     def pack(
         self,
+        sort_algo=SORT_AREA,
         use_sheet_in_row: bool = False,
         pack_algo: pack_algo.PackingAlgorithm = skyline.SkylineMwflWm,
     ):
@@ -191,6 +192,29 @@ class RectPacker:
             use_sheet_in_row (bool, optional): Extra sheet height will be added
                 to current sheet height. Defaults to False.
         """
+        log(log.INFO, "Check if pack algo")
+        bin = self.bins[0]
+        pack_algo_name = str(pack_algo.__name__).lower()
+        if bin[0] < bin[1] and (
+            pack_algo_name.endswith("llas")
+            or pack_algo_name.endswith("flas")
+            or pack_algo_name.endswith("maxas")
+        ):
+            log(
+                log.INFO,
+                "Pack algo is not the best for this sheet orientation. Skip pack algo",
+            )
+            return
+        elif bin[0] > bin[1] and (
+            pack_algo_name.endswith("slas")
+            or pack_algo_name.endswith("fsas")
+            or pack_algo_name.endswith("minas")
+        ):
+            log(
+                log.INFO,
+                "Pack algo is not the best for this sheet orientation. Skip pack algo",
+            )
+            return
 
         log(log.INFO, "Prepare to pack rectangles")
 
@@ -201,7 +225,9 @@ class RectPacker:
         log(log.INFO, "Init new packer instance")
         # PackingBin.Global looks good too
         self.packer = newPacker(
-            pack_algo=pack_algo, bin_algo=PackingBin.BFF, sort_algo=SORT_SSIDE
+            pack_algo=pack_algo,
+            bin_algo=PackingBin.BFF,
+            sort_algo=sort_algo,
         )
 
         if use_sheet_in_row:
@@ -280,7 +306,7 @@ class RectPacker:
                 self.bins.append(self.bins[0])
 
             self.reset(self.bins_in_row)
-            self.pack(use_sheet_in_row, pack_algo)
+            self.pack(sort_algo, use_sheet_in_row, pack_algo)
 
     def generate_image_for_bin(self, bin: object, color_chema: dict):
         """Generate image using bin data

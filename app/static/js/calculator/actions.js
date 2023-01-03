@@ -29,9 +29,12 @@ document.addEventListener("DOMContentLoaded", (event) => {
   const costValueDiv = document.querySelector(".cost-value");
   const placedRectsDiv = document.querySelector(".placed-rects");
 
+  const totalRectsDiv = document.querySelector(".total-rects");
+
   calculateBtn.addEventListener("click", async () => {
     iziToast.info({
       message: "Start calculating. Please wait...",
+      timeout: 0,
     });
     // binsResultsDiv.innerHTML = "";
     imagesResultDiv.innerHTML = "";
@@ -74,7 +77,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
       const width = parseFloat(widthInput.value);
       const height = parseFloat(heightInput.value);
       const pics = parseInt(picsInput.value);
-      if (!width || !height || width < 1 || height < 1) {
+      if (!width || !height || width <= 0 || height <= 0) {
         iziToast.error({
           message: "Incorrect artwork sizes",
         });
@@ -128,8 +131,19 @@ document.addEventListener("DOMContentLoaded", (event) => {
       });
       return;
     }
+
+    if (res.status === 500) {
+      iziToast.destroy();
+      iziToast.error({
+        position: "bottomRight",
+        title: "Calculation Error",
+      });
+      return;
+    }
+
     const resJson = await res.json();
     if (res.status !== 200) {
+      iziToast.destroy();
       iziToast.error({
         position: "bottomRight",
         title: "Error",
@@ -169,6 +183,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
       imagesResultDiv.appendChild(imgResultDiv);
     }
+    iziToast.destroy();
     iziToast.success({
       position: "bottomRight",
       title: "Success",

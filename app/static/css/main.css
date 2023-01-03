@@ -186,38 +186,6 @@ a {
   outline: grey 1px solid;
 }
 
-/* input sufix */
-/* prepare wrapper element */
-.input-sufix-block {
-  display: inline-block;
-  position: relative;
-}
-.input-sufix-block input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-/* Firefox */
-.input-sufix-block input[type="number"] {
-  -moz-appearance: textfield;
-}
-
-/* position the unit to the right of the wrapper */
-.input-sufix-block::after {
-  position: absolute;
-  top: 0px;
-  right: 0.5em;
-  transition: all 0.05s ease-in-out;
-}
-
-/* handle Firefox (arrows always shown) */
-@supports (-moz-appearance: none) {
-  .input-sufix-block::after {
-    right: 1.5em;
-  }
-}
-
 .added-bins th,
 .added-rects th {
   padding: 0;
@@ -270,6 +238,34 @@ input::-webkit-inner-spin-button {
   width: 25%;
 }
 
+.hide-sheet-price-blocks > * .sheet-price-block {
+  display: none;
+}
+
+.hide-sheet-price-blocks > * .sheet-moq-block {
+  display: none;
+}
+
+.hide-sheet-price-blocks > * .сontinuous-sheet-row-block {
+  width: 33% !important;
+}
+
+.hide-sheet-price-blocks > * .add-sheet-form {
+  justify-content: space-between;
+}
+
+.hide-sheet-price-blocks > * .sheet-size-inputs-block {
+  width: 75% !important;
+}
+
+.setting-tab-btn:hover {
+  background: lightgray;
+}
+
+.selected-tab-btn {
+  background: lightgray;
+}
+
 @media screen and (min-width: 768px) {
   #navbar {
     display: flex;
@@ -288,6 +284,14 @@ input::-webkit-inner-spin-button {
     width: 100% !important;
   }
   .calculator-r-side {
+    width: 100% !important;
+  }
+
+  .hide-sheet-price-blocks > * .сontinuous-sheet-row-block {
+    width: 100% !important;
+  }
+
+  .hide-sheet-price-blocks > * .sheet-size-inputs-block {
     width: 100% !important;
   }
 }

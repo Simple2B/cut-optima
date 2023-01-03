@@ -1,5 +1,14 @@
 from flask import Blueprint, render_template, request, jsonify
-from rectpack import skyline, guillotine
+from rectpack import (
+    skyline,
+    guillotine,
+    SORT_PERI,
+    SORT_SSIDE,
+    SORT_DIFF,
+    SORT_RATIO,
+    SORT_AREA,
+    SORT_LSIDE,
+)
 
 from config import BaseConfig as conf
 from app.controllers import RectPacker
@@ -146,16 +155,33 @@ def calculate():
         guillotine.GuillotineBafMaxas,
         guillotine.GuillotineBafMinas,
     ]:
-        log(log.INFO, "Generate sesult using [%s] algo", pack_algo)
-        rect_packer.reset(bins_in_row=1, reset_bin_sizes=True)
-        rect_packer.pack(use_sheet_in_row=use_in_row, pack_algo=pack_algo)
-        result = rect_packer.result
-        result["algo"] = str(pack_algo)
+        for sort_algo in [
+            SORT_RATIO,
+            SORT_PERI,
+            SORT_SSIDE,
+            SORT_DIFF,
+            SORT_AREA,
+            SORT_LSIDE,
+        ]:
+            try:
+                log(log.INFO, "Generate sesult using [%s] algo", pack_algo)
+                rect_packer.reset(bins_in_row=1, reset_bin_sizes=True)
+                rect_packer.pack(
+                    use_sheet_in_row=use_in_row,
+                    pack_algo=pack_algo,
+                    sort_algo=sort_algo,
+                )
+                result = rect_packer.result
+                if not result.get("placed_items"):
+                    continue
+                result["algo"] = str(pack_algo)
 
-        used_area = result["used_area"]
-        if not results.get(used_area):
-            results[used_area] = []
-        results[used_area].append(result)
+                used_area = result["used_area"]
+                if not results.get(used_area):
+                    results[used_area] = []
+                results[used_area].append(result)
+            except RecursionError:
+                log(log.EXCEPTION, "RecursionError")
 
     log(log.INFO, "Find the best result")
     min_used_area = min(results.keys())

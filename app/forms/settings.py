@@ -36,7 +36,7 @@ class SettingsForm(FlaskForm):
         choices=[("Sheet", "Sheet"), ("Square", "Square")],
     )
     moq = IntegerField(
-        "Minimum order quantity",
+        "Minimum SQR order quantity",
         render_kw={
             "placeholder": "0",
         },
