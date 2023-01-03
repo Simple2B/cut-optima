@@ -42,25 +42,15 @@ def test_basic_rect_packer_functionality(rect_packer: RectPacker):
     rect_packer.add_bin(1500, 1500)
     rect_packer.validate_rectangles()
 
-    # validate with blade size
-    rect_packer.blade_size = 400
-    with pytest.raises(ValueError):
-        rect_packer.validate_rectangles()
-
-    rect_packer.blade_size = 100
-    rect_packer.validate_rectangles()
-
     rect_packer.pack()
 
     result = rect_packer.result
 
     for bin in result["bins"]:
-        assert "image" in bin
-        assert bin["image"]
         assert "sizes" in bin
         assert bin["sizes"] in rect_packer.bins
-        assert "rectangles" in bin
-        for rect in bin["rectangles"]:
+        assert "placed_items" in bin
+        for rect in bin["placed_items"]:
             assert sorted(rect) in rect_packer.rectangles
 
         bin_area = bin["sizes"][0] * bin["sizes"][1]
@@ -69,9 +59,6 @@ def test_basic_rect_packer_functionality(rect_packer: RectPacker):
         assert bin["used_area"] <= bin_area
         assert "wasted_area" in bin
         assert bin["wasted_area"] <= bin_area
-
-    assert "not_placed_rectangles" in result
-    assert len(result["not_placed_rectangles"]) <= len(rect_packer.rectangles)
 
 
 def test_with_summary_rects_area_larger_than_bin_area(rect_packer: RectPacker):
@@ -92,12 +79,10 @@ def test_with_summary_rects_area_larger_than_bin_area(rect_packer: RectPacker):
     result = rect_packer.result
 
     for bin in result["bins"]:
-        assert "image" in bin
-        assert bin["image"]
         assert "sizes" in bin
         assert bin["sizes"] in rect_packer.bins
-        assert "rectangles" in bin
-        for rect in bin["rectangles"]:
+        assert "placed_items" in bin
+        for rect in bin["placed_items"]:
             assert sorted(rect) in rect_packer.rectangles
 
         bin_area = bin["sizes"][0] * bin["sizes"][1]
@@ -107,5 +92,4 @@ def test_with_summary_rects_area_larger_than_bin_area(rect_packer: RectPacker):
         assert "wasted_area" in bin
         assert bin["wasted_area"] <= bin_area
 
-    assert "not_placed_rectangles" in result
-    assert len(result["not_placed_rectangles"]) <= len(rect_packer.rectangles)
+    assert len(result["bins"]) > 1

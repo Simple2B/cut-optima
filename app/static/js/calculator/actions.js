@@ -30,6 +30,9 @@ document.addEventListener("DOMContentLoaded", (event) => {
   const placedRectsDiv = document.querySelector(".placed-rects");
 
   calculateBtn.addEventListener("click", async () => {
+    iziToast.info({
+      message: "Start calculating. Please wait...",
+    });
     // binsResultsDiv.innerHTML = "";
     imagesResultDiv.innerHTML = "";
     let addedBins = [];
@@ -98,23 +101,33 @@ document.addEventListener("DOMContentLoaded", (event) => {
     console.log("pricePer", pricePer);
     console.log("moqQty", moqQty);
 
-    const res = await fetch(`/calculate`, {
-      credentials: "include",
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        bins: addedBins,
-        rectangles: addedRects,
-        bladeSize: bladeSize,
-        printPrice: printPrice,
-        meticSystem: meticSystem,
-        pricePer: pricePer,
-        moqQty: moqQty,
-        useInRow: useSheetsInRow,
-      }),
-    });
+    let res = undefined;
+    try {
+      res = await fetch(`/calculate`, {
+        credentials: "include",
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          bins: addedBins,
+          rectangles: addedRects,
+          bladeSize: bladeSize,
+          printPrice: printPrice,
+          meticSystem: meticSystem,
+          pricePer: pricePer,
+          moqQty: moqQty,
+          useInRow: useSheetsInRow,
+        }),
+      });
+    } catch (e) {
+      iziToast.error({
+        position: "bottomRight",
+        title: "Error",
+        message: e.message,
+      });
+      return;
+    }
     const resJson = await res.json();
     if (res.status !== 200) {
       iziToast.error({
@@ -156,5 +169,9 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
       imagesResultDiv.appendChild(imgResultDiv);
     }
+    iziToast.success({
+      position: "bottomRight",
+      title: "Success",
+    });
   });
 });

@@ -19,7 +19,7 @@ class SettingsForm(FlaskForm):
         choices=[(choice.name, choice.value) for choice in m.User.MetricSystem],
     )
     print_price = FloatField(
-        "Price",
+        "Price per square",
         render_kw={
             "placeholder": "0.0",
         },

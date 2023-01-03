@@ -8,6 +8,46 @@ document.addEventListener("DOMContentLoaded", (event) => {
   const addSheetBtn = document.querySelector(".add-sheet-size");
   const addedSheetSizesDiv = document.querySelector(".added-sheet-sizes");
 
+  let sheetWidth = sheetWidthInput.value;
+  let sheetHeight = sheetHeightInput.value;
+  let sheetPrice = sheetPriceInput.value;
+  let sheetMoq = sheetMoqInput.value;
+  let useInRow = useInRowInput.checked;
+
+  const getDataFromInputs = () => {
+    sheetWidth = sheetWidthInput.value;
+    sheetHeight = sheetHeightInput.value;
+    sheetPrice = sheetPriceInput.value;
+    sheetMoq = sheetMoqInput.value;
+    useInRow = useInRowInput.checked;
+
+    if (sheetPrice === "" || sheetPrice === "NaN" || sheetPrice <= 0) {
+      sheetPrice = 0;
+      console.log(" sheetPrice = 0;");
+    }
+
+    if (sheetMoq === "" || sheetMoq === "NaN" || sheetMoq <= 0) {
+      sheetMoq = 1;
+      console.log(" sheetMoq = 1;");
+    }
+  };
+
+  const validateDataFromInputs = () => {
+    let isValid = true;
+    if (!sheetWidth || sheetWidth == "NaN" || sheetWidth < 0) {
+      iziToast.error({
+        message: "Invalid new sheet width",
+      });
+    }
+    if (!sheetHeight || sheetHeight == "NaN" || sheetHeight < 0) {
+      iziToast.error({
+        message: "Invalid new sheet height",
+      });
+    }
+
+    return isValid;
+  };
+
   const deleteSheetSize = async (e) => {
     const elementToDelete = e.target.parentNode;
     console.log(elementToDelete.id);
@@ -44,18 +84,14 @@ document.addEventListener("DOMContentLoaded", (event) => {
   });
 
   const addSheetToFront = (id) => {
-    const sheetWidth = sheetWidthInput.value;
-    const sheetHeight = sheetHeightInput.value;
-    const sheetPrice = sheetPriceInput.value;
-    const sheetMoq = sheetMoqInput.value;
-    const useInRow = useInRowInput.checked;
+    getDataFromInputs();
 
     const newSheetDiv = document.createElement("div");
     newSheetDiv.setAttribute("class", "d-flex justify-content-between mb-2");
     newSheetDiv.setAttribute("id", id);
     newSheetDiv.innerHTML = `
-        <div class="input-group add-sheet-input-group">
-          <span class="input-group-text" id="basic-addon3">Allow use in row</span>
+        <div class="input-group add-sheet-input-group w-50">
+          <span class="input-group-text" id="basic-addon3">Continuous sheet/row</span>
           <div class="form-check form-switch d-flex align-items-center pl-50px border border-1 border-start-0 m-0 bg-color-disabled">
             <input
               class="form-check-input border-90 use-in-row-input"
@@ -66,10 +102,10 @@ document.addEventListener("DOMContentLoaded", (event) => {
           </div>
         </div>
 
-        <div class="input-group add-sheet-input-group">
+        <div class="input-group add-sheet-input-group w-50">
           <span class="input-group-text" id="basic-addon3">Price</span>
           <input
-            class="form-control added-sheet-price mr-20px"
+            class="form-control added-sheet-price mr-10px"
             placeholder="Price"
             type="number"
             disabled
@@ -77,10 +113,10 @@ document.addEventListener("DOMContentLoaded", (event) => {
           >
         </div>
 
-        <div class="input-group add-sheet-input-group">
+        <div class="input-group add-sheet-input-group w-33">
           <span class="input-group-text" id="basic-addon3">MOQ</span>
           <input
-            class="form-control added-sheet-moq mr-20px"
+            class="form-control added-sheet-moq mr-10px"
             placeholder="MOQ"
             type="number"
             disabled
@@ -90,7 +126,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
         <div class="d-flex">
           <input
-            class="form-control added-sheet-size-width"
+            class="form-control added-sheet-size-width w-50"
             placeholder="Width"
             type="number"
             disabled
@@ -98,7 +134,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
           >
           <span class="input-group-text">x</span>
           <input
-              class="form-control added-sheet-size-height"
+              class="form-control added-sheet-size-height w-50"
               placeholder="Height"
               type="number"
               disabled
@@ -124,16 +160,10 @@ document.addEventListener("DOMContentLoaded", (event) => {
   };
 
   addSheetBtn.addEventListener("click", async () => {
-    const sheetWidth = sheetWidthInput.value;
-    const sheetHeight = sheetHeightInput.value;
-    const sheetPrice = sheetPriceInput.value;
-    const sheetMoq = sheetMoqInput.value;
-    const useInRow = useInRowInput.checked;
+    getDataFromInputs();
 
-    if (!sheetWidth || !sheetHeight || !sheetPrice || sheetPrice < 0) {
-      iziToast.error({
-        message: "Invalid new sheet data",
-      });
+    isValidData = validateDataFromInputs();
+    if (!isValidData) {
       return;
     }
 

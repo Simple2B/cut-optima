@@ -1,11 +1,11 @@
-import math
-
 from flask import Blueprint, render_template, request, jsonify
+from rectpack import skyline, guillotine
 
 from config import BaseConfig as conf
 from app.controllers import RectPacker
-from app.utils import serve_pil_image
 from app.models import User
+from app.utils import serve_pil_image
+from app.logger import log
 
 blueprint = Blueprint("calculator", __name__)
 
@@ -59,6 +59,8 @@ def calculator():
 def calculate():
     data = request.json
 
+    log(log.INFO, "Validate required data [%s]", data)
+
     if not data.get("bins"):
         return jsonify({"message": "Bin(s) not found"}), 400
     elif not data.get("rectangles"):
@@ -66,26 +68,42 @@ def calculate():
     elif data.get("meticSystem") not in ["cm", "in"]:
         return jsonify({"message": "Invalid metic system"}), 400
 
+    log(log.INFO, "Calculate and validate square_unit")
     metic_system = data.get("meticSystem")
+    square_unit = conf.METRIC_TO_SQR_UNIT_VALUE.get(metic_system)
+    if not square_unit:
+        return jsonify({"message": "Incorrect metric system"}), 400
+
+    print_price = data.get("printPrice") or 0
+    moq = data.get("moqQty") or 0
+
     price_per = data.get("pricePer")
+    blade_size = data["bladeSize"]
 
     first_bin = data["bins"][0]
     is_sizes_equals = first_bin["size"][0] == first_bin["size"][1]
     if is_sizes_equals:
         # to make width as larger side if sizes equals
         first_bin["size"][0] += 1
+
+    log(log.INFO, "Init RectPacker")
     rect_packer = RectPacker(
-        blade_size=data["bladeSize"],
-        is_bin_width_larger=first_bin["size"][0] > first_bin["size"][1],
+        blade_size=blade_size / 2,
         is_sizes_equals=is_sizes_equals,
+        square_unit=square_unit,
+        price_per=price_per,
+        print_price=print_price,
+        moq=moq,
     )
 
+    log(log.INFO, "Add bins to RectPacker instance")
     for bin in data["bins"]:
         for _ in range(bin["pics"]):
             width = bin["size"][0]
             height = bin["size"][1]
             rect_packer.add_bin(width, height)
 
+    log(log.INFO, "Add rects to RectPacker instance")
     for rect in data["rectangles"]:
         for _ in range(rect["pics"]):
             width = rect["size"][0]
@@ -93,74 +111,68 @@ def calculate():
             rect_packer.add_rectangle(width, height)
 
     try:
+        log(log.INFO, "Validate added data to RectPacker instance")
         rect_packer.validate_rectangles()
     except ValueError as e:
         return jsonify({"message": str(e)}), 400
 
     use_in_row = data.get("useInRow")
 
-    rect_packer.pack(use_sheet_in_row=use_in_row)
+    results = {}
+    log(log.INFO, "Start find the best packing algo")
+    for pack_algo in [
+        skyline.SkylineBl,
+        skyline.SkylineBlWm,
+        skyline.SkylineMwf,
+        skyline.SkylineMwfl,
+        skyline.SkylineMwfWm,
+        skyline.SkylineMwflWm,
+        guillotine.GuillotineBssfSas,
+        guillotine.GuillotineBssfLas,
+        guillotine.GuillotineBssfSlas,
+        guillotine.GuillotineBssfLlas,
+        guillotine.GuillotineBssfMaxas,
+        guillotine.GuillotineBssfMinas,
+        guillotine.GuillotineBlsfSas,
+        guillotine.GuillotineBlsfLas,
+        guillotine.GuillotineBlsfSlas,
+        guillotine.GuillotineBlsfLlas,
+        guillotine.GuillotineBlsfMaxas,
+        guillotine.GuillotineBlsfMinas,
+        guillotine.GuillotineBafSas,
+        guillotine.GuillotineBafLas,
+        guillotine.GuillotineBafSlas,
+        guillotine.GuillotineBafLlas,
+        guillotine.GuillotineBafMaxas,
+        guillotine.GuillotineBafMinas,
+    ]:
+        log(log.INFO, "Generate sesult using [%s] algo", pack_algo)
+        rect_packer.reset(bins_in_row=1, reset_bin_sizes=True)
+        rect_packer.pack(use_sheet_in_row=use_in_row, pack_algo=pack_algo)
+        result = rect_packer.result
+        result["algo"] = str(pack_algo)
 
-    print_price = 0
-    if data.get("printPrice"):
-        print_price = data.get("printPrice")
+        used_area = result["used_area"]
+        if not results.get(used_area):
+            results[used_area] = []
+        results[used_area].append(result)
 
-    moq = 0
-    if data.get("moqQty"):
-        moq = data.get("moqQty")
+    log(log.INFO, "Find the best result")
+    min_used_area = min(results.keys())
 
-    moq_price = print_price * moq
-
-    square_unit = conf.METRIC_TO_SQR_UNIT_VALUE.get(metic_system)
-    if not square_unit:
-        return jsonify({"message": "Incorrect metric system"}), 400
-
-    used_bins_count = (
-        rect_packer.result["used_bins"]
-        if len(rect_packer.result["bins"]) == 1
-        else len(rect_packer.result["bins"])
+    best_results = results[min_used_area]
+    best_results = sorted(
+        best_results,
+        key=lambda res: (res["wasted_area"], res["used_bins"]),
     )
 
-    res = {
-        "used_area": 0,
-        "wasted_area": 0,
-        "placed_items": [],
-        "print_price": 0,
-        "bins": [],
-        "used_bins": used_bins_count,
-    }
-    for bin in rect_packer.result["bins"]:
-        if is_sizes_equals:
-            bin["sizes"][0] -= 1
+    result = best_results[0]
+    color_schema = {}
+    log(log.INFO, "Generate images for results")
+    for bin in result["bins"]:
+        image = rect_packer.generate_image_for_bin(bin["bin"], color_schema)
+        bin["image"] = serve_pil_image(image)
+        del bin["bin"]
+    del result["algo"]
 
-        # wasted area calculated by max_y_coordinate * width
-        reduced_height = bin["sizes"][1] - bin["max_y_coordinate"]
-        if reduced_height <= 0:
-            reduced_height = bin["sizes"][1]
-        res["used_area"] += ((bin["sizes"][0] * bin["max_y_coordinate"])) / square_unit
-        if res["used_area"] != 1:
-            res["wasted_area"] += bin["sizes"][0] * reduced_height / square_unit
-        else:
-            res["wasted_area"] += 0
-        res["placed_items"] += bin["rectangles"]
-
-        if price_per == "sqr":
-            res["print_price"] = res["used_area"] * print_price
-        else:
-            res["print_price"] += print_price
-
-        res["bins"].append(
-            {
-                "sizes": bin["sizes"],
-                "used_area": bin["used_area"],
-                "wasted_area": bin["wasted_area"],
-                "placed_items": bin["rectangles"],
-                "print_price": (math.prod(bin["sizes"]) / square_unit) * print_price,
-                "image": serve_pil_image(bin["image"]),
-            }
-        )
-
-    if res["print_price"] < moq_price and moq > 0:
-        res["print_price"] = moq_price
-
-    return jsonify(res)
+    return jsonify(result)
