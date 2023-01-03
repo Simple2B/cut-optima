@@ -74,8 +74,8 @@ def calculate():
     if not square_unit:
         return jsonify({"message": "Incorrect metric system"}), 400
 
-    print_price = data.get("printPrice") if data.get("printPrice") else 0
-    moq = data.get("moqQty") if data.get("moqQty") else 0
+    print_price = data.get("printPrice") or 0
+    moq = data.get("moqQty") or 0
 
     price_per = data.get("pricePer")
     blade_size = data["bladeSize"]
