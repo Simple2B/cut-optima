@@ -8,6 +8,7 @@ from rectpack import (
     SORT_RATIO,
     SORT_AREA,
     SORT_LSIDE,
+    SORT_NONE,
 )
 
 from config import BaseConfig as conf
@@ -156,6 +157,7 @@ def calculate():
         guillotine.GuillotineBafMinas,
     ]:
         for sort_algo in [
+            SORT_NONE,
             SORT_RATIO,
             SORT_PERI,
             SORT_SSIDE,

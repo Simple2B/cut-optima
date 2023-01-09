@@ -306,7 +306,11 @@ class RectPacker:
                 self.bins.append(self.bins[0])
 
             self.reset(self.bins_in_row)
-            self.pack(sort_algo, use_sheet_in_row, pack_algo)
+            self.pack(
+                use_sheet_in_row=use_sheet_in_row,
+                pack_algo=pack_algo,
+                sort_algo=sort_algo,
+            )
 
     def generate_image_for_bin(self, bin: object, color_chema: dict):
         """Generate image using bin data
