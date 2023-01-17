@@ -177,7 +177,7 @@
             <div class="mt-1 w-90">
               <div class="d-flex mb-1">
                 <div class="fw-light mr-10px">Metric:</div>
-                <div class="fw-light metric-res">{{ metric_system.replace("centimeter", "centimetre") }}</div>
+                <div class="fw-light metric-res">{{ metric_system.replace("centimeter", "centimetre") if metric_system else "centimetre" }}</div>
               </div>
               <div class="d-flex mb-1">
                 <div class="fw-light mr-10px">MOQ:</div>
