@@ -136,8 +136,16 @@ a {
   font-size: 30px;
 }
 
+.logo-img {
+  height: 30px;
+}
+
+.navbar-justify-content {
+  justify-content: space-between;
+}
+
 .navbar {
-  padding: 0px 10px;
+  padding: 0px;
 }
 
 .bg-none {
@@ -264,6 +272,17 @@ a {
 
 .selected-tab-btn {
   background: lightgray;
+}
+
+@media screen and (max-width: 450px) {
+  .navbar-justify-content {
+    justify-content: center !important;
+  }
+  .logo-img {
+    width: 100%;
+    height: auto;
+    margin-bottom: 10px;
+  }
 }
 
 @media screen and (min-width: 768px) {
