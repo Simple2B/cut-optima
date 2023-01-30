@@ -68,5 +68,5 @@ class SettingsForm(FlaskForm):
     submit = SubmitField("Save Settings")
 
     def validate_shop_name(form, shop_name):
-        if shop_name.data.isnumeric():
+        if shop_name.data and shop_name.data.isnumeric():
             raise ValidationError("Printshop name cannot be number")
