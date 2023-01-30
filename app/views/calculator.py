@@ -20,8 +20,9 @@ from app.logger import log
 blueprint = Blueprint("calculator", __name__)
 
 
+@blueprint.route("/calculator/<printshop>", methods=["GET"])
 @blueprint.route("/calculator", methods=["GET"])
-def calculator():
+def calculator(printshop: str = None):
     moq = conf.MOQ
     moq_unit = conf.MOQ_UNIT
     cost = conf.COST
@@ -34,7 +35,8 @@ def calculator():
     currency = conf.CURRENCY
     show_settings = True
 
-    printshop = request.args.get("printshop")
+    if not printshop:
+        printshop = request.args.get("printshop")
     if printshop:
         user = User.query.filter(User.shop_name == printshop).first()
         if not user and printshop.isnumeric():
