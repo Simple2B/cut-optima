@@ -32,8 +32,12 @@
       <!-- Navigation -->
       <nav class="navbar navbar-light navbar-expand-md bg-light">
         <div class="container d-flex navbar-justify-content m-0 mw-100">
-
-          <a class="navbar-brand" href="{{ url_for("calculator.calculator", setup_id=current_user.id) }}"
+          {% if not current_user.is_anonymous %}
+            {% set calculator_url = url_for("calculator.calculator", printshop=current_user.shop_name or current_user.id) %}
+          {% else %}
+            {% set calculator_url = url_for("calculator.calculator") %}
+          {% endif %}
+          <a class="navbar-brand" href="{{ calculator_url }}"
             >{{ config.APP_NAME }}</a
           >
 

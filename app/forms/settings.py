@@ -6,6 +6,7 @@ from wtforms import (
     IntegerField,
     BooleanField,
     StringField,
+    ValidationError,
 )
 from wtforms.validators import DataRequired, Length
 
@@ -58,5 +59,14 @@ class SettingsForm(FlaskForm):
         validators=[Length(max=256)],
         render_kw={"placeholder": "e.g. https://your-site.com/buy"},
     )
+    shop_name = StringField(
+        "Printshop name",
+        validators=[Length(max=64)],
+        render_kw={"placeholder": "Amazingtransfers"},
+    )
 
     submit = SubmitField("Save Settings")
+
+    def validate_shop_name(form, shop_name):
+        if shop_name.data.isnumeric():
+            raise ValidationError("Printshop name cannot be number")

@@ -21,9 +21,12 @@ def settings():
         current_user.cut_spacing = form.cut_spacing.data
         current_user.is_enabled_buy_btn = form.is_enabled_buy_btn.data
         current_user.buy_url = form.buy_url.data
+        current_user.shop_name = form.shop_name.data
 
         current_user.save()
         flash("Updated", "success")
+    elif form.is_submitted():
+        flash("Invalid data", "danger")
 
     return render_template("user/settings.html", form=form)
 
