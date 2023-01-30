@@ -134,6 +134,8 @@ a {
 
 .navbar-brand {
   font-size: 30px;
+  flex: 1;
+  padding-left: 40%;
 }
 
 .logo-img {
@@ -283,6 +285,11 @@ a {
     height: auto;
     margin-bottom: 10px;
   }
+  .navbar-brand {
+    padding-left: 0;
+    text-align: left !important;
+    margin-right: 0;
+  }
 }
 
 @media screen and (min-width: 768px) {
@@ -342,6 +349,11 @@ a {
   .result-img-data,
   .result-text-data {
     width: 100%;
+  }
+  .navbar-brand {
+    padding-left: 0;
+    text-align: center;
+    margin-right: 0;
   }
 }
 

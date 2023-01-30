@@ -20,8 +20,9 @@ from app.logger import log
 blueprint = Blueprint("calculator", __name__)
 
 
+@blueprint.route("/calculator/<printshop>", methods=["GET"])
 @blueprint.route("/calculator", methods=["GET"])
-def calculator():
+def calculator(printshop: str = None):
     moq = conf.MOQ
     moq_unit = conf.MOQ_UNIT
     cost = conf.COST
@@ -32,10 +33,15 @@ def calculator():
     metric_system = conf.METRIC_SYSTEM
     sheets = conf.SHEETS
     currency = conf.CURRENCY
+    show_settings = True
 
-    setup_id = request.args.get("setup_id")
-    if setup_id:
-        user: User = User.query.get(request.args.get("setup_id"))
+    if not printshop:
+        printshop = request.args.get("printshop")
+    if printshop:
+        user = User.query.filter(User.shop_name == printshop).first()
+        if not user and printshop.isnumeric():
+            user = User.query.get(printshop)
+
         if user:
             moq = user.moq
             moq_unit = "Sheet" if user.is_price_per_sheet else "SQR"
@@ -47,11 +53,12 @@ def calculator():
             metric_system = user.metric_system.value
             sheets = user.sheets
             currency = conf.CURRENCY_NAME_TO_SYMBOL[user.currency.value]
+            show_settings = False
 
     return render_template(
         "calculator/index.html",
         config=conf,
-        setup_id=setup_id,
+        show_settings=show_settings,
         moq=moq,
         moq_unit=moq_unit,
         cost=cost,

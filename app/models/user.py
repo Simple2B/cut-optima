@@ -46,6 +46,7 @@ class User(db.Model, UserMixin, ModelMixin):
     is_enabled_buy_btn = db.Column(db.Boolean, default=False)
     buy_url = db.Column(db.String(255), nullable=True)
     currency = db.Column(Enum(Currency), default=Currency.dollar)
+    shop_name = db.Column(db.String(64), nullable=True)
 
     sheets = db.relationship("Sheet", viewonly=True)
 

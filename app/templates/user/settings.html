@@ -241,6 +241,14 @@
               <small class="text-danger">{{error}}</small> {% endfor %}
             </div>
 
+            <div class="mb-3">
+              <label for="shop_name" class="form-label">{{form.shop_name.label}}</label>
+              {{form.shop_name(class="form-control", id="shop_name",
+              value=current_user.shop_name if current_user.shop_name else "")}} {% for
+              error in form.errors.shop_name %}
+              <small class="text-danger">{{error}}</small> {% endfor %}
+            </div>
+
             {{ form.submit(class="form-control btn btn-success rounded" ) }}
           </form>
         </div>
