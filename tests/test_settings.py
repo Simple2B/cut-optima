@@ -2,7 +2,7 @@ import app.models as m
 
 
 def test_settings(client, authorize):
-    user = m.User.query.first()
+    user: m.User = m.User.query.first()
 
     assert user
 
@@ -15,6 +15,7 @@ def test_settings(client, authorize):
     assert user.cut_spacing == 0.5
     assert not user.is_enabled_buy_btn
     assert not user.buy_url
+    assert not user.shop_name
 
     new_metric_system = m.User.MetricSystem.inch.value
     new_print_price = 100
@@ -47,6 +48,34 @@ def test_settings(client, authorize):
     assert user.cut_spacing == new_cut_spacing
     assert user.is_enabled_buy_btn
     assert user.buy_url
+    assert not user.shop_name
+
+    response = client.post(
+        "/settings",
+        json={
+            "metric_system": new_metric_system,
+            "currency": new_currency,
+            "is_price_per": "Sheet",
+            "shop_name": "123",
+        },
+        follow_redirects=True,
+    )
+    assert b"Printshop name cannot be number" in response.data
+    assert not user.shop_name
+
+    new_shop_name = "shop-test"
+    response = client.post(
+        "/settings",
+        json={
+            "metric_system": new_metric_system,
+            "currency": new_currency,
+            "is_price_per": "Sheet",
+            "shop_name": new_shop_name,
+        },
+        follow_redirects=True,
+    )
+    assert user.shop_name
+    assert user.shop_name == new_shop_name
 
 
 def test_sheet_create_delete(client, authorize):
