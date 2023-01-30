@@ -32,11 +32,7 @@
       <!-- Navigation -->
       <nav class="navbar navbar-light navbar-expand-md bg-light">
         <div class="container d-flex navbar-justify-content m-0 mw-100">
-          <div class="navbar-logo">
-            <a href="https://amazingtransfers.com/" target="_bland">
-              <img class="logo-img" src="{{ url_for('static', filename='img/logo.avif') }}" alt="logo">
-            </a>
-          </div>
+
           <a class="navbar-brand" href="{{ url_for("calculator.calculator", setup_id=current_user.id) }}"
             >{{ config.APP_NAME }}</a
           >
