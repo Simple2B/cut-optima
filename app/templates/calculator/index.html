@@ -267,7 +267,7 @@
             </p>
           </h6>
           {% if order_enabled %}
-          <div class="d-flex">
+          <div class="d-flex mb-2">
             <a
               href="{{ order_url }}"
               class="btn btn-primary btn-lg rounded"
@@ -278,6 +278,21 @@
             >
           </div>
           {% endif %}
+          <h6
+            class="calculator-block-title border-0 p-1 mb-1 text-decoration-underline text-uppercase fw-bolder"
+          >
+            User information
+          </h6>
+          <div class="d-flex justify-content-center">
+            <div class="mt-1 w-90">
+              <div class="d-flex flex-column mb-1">
+                <div class="fw-light mr-5px">{{current_user.user_name}}</div>
+                <div class="fw-light cost-per mr-10px">{{current_user.user_email}}</div>
+                <div class="fw-light cost-res">{{current_user.user_phone}}</div>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>

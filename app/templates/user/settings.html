@@ -249,6 +249,27 @@
               <small class="text-danger">{{error}}</small> {% endfor %}
             </div>
 
+            <div class="mb-3">
+              <label for="user_name" class="form-label">{{form.user_name.label}}</label>
+              {{form.user_name(class="form-control", id="user_name",
+              value=current_user.user_name if current_user.user_name else "")}} {% for
+              error in form.errors.user_name %}
+              <small class="text-danger">{{error}}</small> {% endfor %}
+            </div>
+            <div class="mb-3">
+              <label for="user_email" class="form-label">{{form.user_email.label}}</label>
+              {{form.user_email(class="form-control", id="user_email",
+              value=current_user.user_email if current_user.user_email else "")}} {% for
+              error in form.errors.user_email %}
+              <small class="text-danger">{{error}}</small> {% endfor %}
+            </div>
+            <div class="mb-3">
+              <label for="user_phone" class="form-label">{{form.user_phone.label}}</label>
+              {{form.user_phone(class="form-control", id="user_phone",
+              value=current_user.user_phone if current_user.user_phone else "")}} {% for
+              error in form.errors.user_phone %}
+              <small class="text-danger">{{error}}</small> {% endfor %}
+            </div>
             {{ form.submit(class="form-control btn btn-success rounded" ) }}
           </form>
         </div>

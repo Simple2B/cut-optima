@@ -8,7 +8,8 @@ from wtforms import (
     StringField,
     ValidationError,
 )
-from wtforms.validators import DataRequired, Length
+from wtforms.validators import DataRequired, Length, Email
+import phonenumbers
 
 import app.models as m
 
@@ -64,9 +65,35 @@ class SettingsForm(FlaskForm):
         validators=[Length(max=64)],
         render_kw={"placeholder": "Amazingtransfers"},
     )
+    user_name = StringField(
+        "User's name",
+        validators=[Length(max=64)],
+        render_kw={"placeholder": "Your name"},
+    )
+    user_email = StringField(
+        "User's email",
+        validators=[Email(message="Wrong email format")],
+        render_kw={"placeholder": "Your email"},
+    )
+    user_phone = StringField(
+        "User's phone",
+        validators=[Length(max=18)],
+        render_kw={"placeholder": "Your phone"},
+    )
 
     submit = SubmitField("Save Settings")
 
     def validate_shop_name(form, shop_name):
         if shop_name.data and shop_name.data.isnumeric():
             raise ValidationError("Printshop name cannot be number")
+
+    def validate_user_phone(self, phone):
+        try:
+            phone = phone.data
+            if phone[0] != "+":
+                phone = "+" + phone
+            phone = phonenumbers.parse(phone)
+            if not phonenumbers.is_possible_number(phone):
+                raise ValueError()
+        except (phonenumbers.phonenumberutil.NumberParseException, ValueError):
+            raise ValidationError("Invalid phone number")
