@@ -278,20 +278,28 @@
             >
           </div>
           {% endif %}
+          {% if user_name or user_email or user_phone%}
           <h6
             class="calculator-block-title border-0 p-1 mb-1 text-decoration-underline text-uppercase fw-bolder"
           >
-            User information
+            Contact information
           </h6>
           <div class="d-flex justify-content-center">
             <div class="mt-1 w-90">
               <div class="d-flex flex-column mb-1">
-                <div class="fw-light mr-5px">{{current_user.user_name}}</div>
-                <div class="fw-light cost-per mr-10px">{{current_user.user_email}}</div>
-                <div class="fw-light cost-res">{{current_user.user_phone}}</div>
+                {% if user_name%}
+                <div class="fw-light mr-5px">{{user_name}}</div>
+                {% endif %}
+                {% if user_email%}
+                <div class="fw-light cost-per mr-10px">{{user_email}}</div>
+                {% endif %}
+                {% if user_email%}
+                <div class="fw-light cost-res">{{user_phone}}</div>
+                {% endif %}
               </div>
             </div>
           </div>
+          {% endif %}
 
         </div>
       </div>

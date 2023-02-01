@@ -8,7 +8,7 @@ from wtforms import (
     StringField,
     ValidationError,
 )
-from wtforms.validators import DataRequired, Length, Email
+from wtforms.validators import DataRequired, Length, Email, Optional
 import phonenumbers
 
 import app.models as m
@@ -72,7 +72,10 @@ class SettingsForm(FlaskForm):
     )
     user_email = StringField(
         "User's email",
-        validators=[Email(message="Wrong email format")],
+        validators=[
+            Optional(),
+            Email(message="Wrong email format", allow_empty_local=True),
+        ],
         render_kw={"placeholder": "Your email"},
     )
     user_phone = StringField(
@@ -88,6 +91,8 @@ class SettingsForm(FlaskForm):
             raise ValidationError("Printshop name cannot be number")
 
     def validate_user_phone(self, phone):
+        if not phone.data:
+            return
         try:
             phone = phone.data
             if phone[0] != "+":
