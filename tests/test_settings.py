@@ -90,7 +90,7 @@ def test_sheet_create_delete(client, authorize):
     assert res["message"] == "Width and height are required"
     assert not m.Sheet.query.all()
 
-    # incorect size
+    # incorrect size
     response = client.post(
         "/settings/sheet/create",
         json=dict(width=0, height=100),

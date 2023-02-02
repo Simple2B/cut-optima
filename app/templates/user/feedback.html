@@ -1,0 +1,64 @@
+{% extends 'base.html' %} {% block content %}
+<div class="pb-100px h-100">
+  <div class="container py-4">
+    <h3 class="text-center">Feedback</h3>
+    <div class="d-flex justify-content-center">
+      <div class="feedback-form p2 w-75">
+        <div class="card-body">
+          <form
+            class="form"
+            role="form"
+            action="{{ url_for('feedback.feedback') }}"
+            method="post"
+          >
+            <div class="mb-3">
+              <label for="feedback_name" class="form-label"
+                >{{form.feedback_name.label}}</label
+              >
+              {{form.feedback_name(class="form-control", id="feedback_name",
+              value=current_user.feedback_name if current_user.feedback_name
+              else "")}} {% for error in form.errors.feedback_name %}
+              <small class="text-danger">{{error}}</small> {% endfor %}
+            </div>
+
+            <div class="mb-3">
+              <label for="feedback_email" class="form-label"
+                >{{form.feedback_email.label}}</label
+              >
+              {{form.feedback_email(class="form-control", id="feedback_email",
+              value=current_user.feedback_email if current_user.feedback_email
+              else "")}} {% for error in form.errors.feedback_email %}
+              <small class="text-danger">{{error}}</small> {% endfor %}
+            </div>
+
+            <div class="mb-3">
+              <label for="feedback_message" class="form-label"
+                >{{form.feedback_message.label}}</label
+              >
+              {{form.feedback_message(class="form-control",
+              id="feedback_message", value=current_user.feedback_message if
+              current_user.feedback_message else "")}} {% for error in
+              form.errors.feedback_message %}
+              <small class="text-danger">{{error}}</small> {% endfor %}
+            </div>
+
+            {{ form.submit(class="form-control btn btn-success rounded" ) }}
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} {% block scripts %}
+
+<script
+  src="{{ url_for('static', filename='js/settings/sheet_sizes.js') }}"
+  type="text/javascript"
+></script>
+
+<script
+  src="{{ url_for('static', filename='js/settings/tabs.js') }}"
+  type="text/javascript"
+></script>
+
+{% endblock %}

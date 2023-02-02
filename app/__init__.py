@@ -39,6 +39,9 @@ def create_app(environment="development"):
     app.register_blueprint(v.main_blueprint)
     app.register_blueprint(v.settings_blueprint)
     app.register_blueprint(v.calculator_blueprint)
+    app.register_blueprint(v.feedback_blueprint)
+    app.register_blueprint(v.privacy_blueprint)
+    app.register_blueprint(v.term_blueprint)
 
     # Set up flask login.
     @login_manager.user_loader
@@ -54,4 +57,5 @@ def create_app(environment="development"):
     def handle_http_error(exc):
         return render_template("error.html", error=exc), exc.code
 
+    # app.jinja_env.globals["get_user_groups"] = get_user_groups
     return app
