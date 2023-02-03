@@ -32,11 +32,10 @@
       <!-- Navigation -->
       <nav class="navbar navbar-light navbar-expand-md bg-light">
         <div class="container d-flex navbar-justify-content m-0 mw-100">
-          {% if not current_user.is_anonymous %}
-            {% set calculator_url = url_for("calculator.calculator", printshop=current_user.shop_name or current_user.id) %}
-          {% else %}
-            {% set calculator_url = url_for("calculator.calculator") %}
-          {% endif %}
+          {% if not current_user.is_anonymous %} {% set calculator_url =
+          url_for("calculator.calculator", printshop=current_user.shop_name or
+          current_user.id) %} {% else %} {% set calculator_url =
+          url_for("calculator.calculator") %} {% endif %}
           <a class="navbar-brand" href="{{ calculator_url }}"
             >{{ config.APP_NAME }}</a
           >
@@ -53,7 +52,9 @@
               <ul class="navbar-nav">
                 {% if not current_user.is_anonymous %}
                 <li class="nav-item">
-                  <a class="nav-link" href="{{ url_for("settings.settings") }}">Settings</a>
+                  <a class="nav-link" href="{{ url_for('settings.settings') }}"
+                    >Settings</a
+                  >
                 </li>
                 {% endif %}
               </ul>
@@ -84,7 +85,9 @@
                 </li>
                 {% else %}
                 <li class="nav-item">
-                  <a class="nav-link" href="{{ url_for('auth.login') }}">Login</a>
+                  <a class="nav-link" href="{{ url_for('auth.login') }}"
+                    >Login</a
+                  >
                 </li>
                 <li class="nav-item">
                   <a class="nav-link" href="{{ url_for('auth.register') }}"
@@ -122,6 +125,7 @@
 
     <!-- Main Content -->
     {% block content %}{% endblock %}
+
     <!-- Footer-->
 
     <!-- scripts -->
@@ -137,5 +141,34 @@
       defer
     ></script>
     {% block scripts %}{% endblock %}
+
+    <footer class="footer">
+      <div class="p-3">
+        <div class="row text-center navbar-justify-content">
+          <div class="col-lg-3">
+            <a class="mb-3 footer-link" href="{{ url_for('privacy.privacy') }}"
+              >Privacy Policy</a
+            >
+          </div>
+          <div class="col-lg-3">
+            <a class="mb-3 footer-link" href="{{ url_for('term.term') }}"
+              >Terms & Conditions</a
+            >
+          </div>
+          <div class="col-lg-3">
+            <a
+              class="mb-3 footer-link"
+              href="{{ url_for('feedback.feedback') }}"
+              >Have Feedback?</a
+            >
+          </div>
+        </div>
+      </div>
+      <div class="text-center w-100 footer-bottom">
+        <div id="current_date">
+          <script src="{{ url_for('static', filename='js/date.js') }}"></script>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

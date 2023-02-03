@@ -28,6 +28,9 @@ def settings():
             img_data = form.logo_img.data.read()
             img_data = base64.b64encode(img_data)
             current_user.logo_img = img_data.decode("utf-8")
+        current_user.contact_name = form.contact_name.data
+        current_user.contact_email = form.contact_email.data
+        current_user.contact_phone = form.contact_phone.data
 
         current_user.save()
         flash("Updated", "success")

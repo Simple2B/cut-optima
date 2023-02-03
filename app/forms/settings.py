@@ -9,7 +9,8 @@ from wtforms import (
     StringField,
     ValidationError,
 )
-from wtforms.validators import DataRequired, Length
+from wtforms.validators import DataRequired, Length, Email, Optional
+import phonenumbers
 
 import app.models as m
 
@@ -68,9 +69,40 @@ class SettingsForm(FlaskForm):
     logo_img = FileField(
         "Logo file",
     )
+    contact_name = StringField(
+        "Contact name",
+        validators=[Length(max=64)],
+        render_kw={"placeholder": "Your name"},
+    )
+    contact_email = StringField(
+        "Contact email",
+        validators=[
+            Optional(),
+            Email(message="Wrong email format", allow_empty_local=True),
+        ],
+        render_kw={"placeholder": "your@email.com"},
+    )
+    contact_phone = StringField(
+        "Contact phone",
+        validators=[Length(max=18)],
+        render_kw={"placeholder": "+61000000000"},
+    )
 
     submit = SubmitField("Save Settings")
 
     def validate_shop_name(form, shop_name):
         if shop_name.data and shop_name.data.isnumeric():
             raise ValidationError("Printshop name cannot be number")
+
+    def validate_contact_phone(self, phone):
+        if not phone.data:
+            return
+        try:
+            phone = phone.data
+            if phone[0] != "+":
+                phone = "+" + phone
+            phone = phonenumbers.parse(phone)
+            if not phonenumbers.is_possible_number(phone):
+                raise ValueError()
+        except (phonenumbers.phonenumberutil.NumberParseException, ValueError):
+            raise ValidationError("Invalid phone number")

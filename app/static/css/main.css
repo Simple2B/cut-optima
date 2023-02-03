@@ -277,6 +277,9 @@ a {
 .selected-tab-btn {
   background: lightgray;
 }
+.footer{background-color: #e7e7e7;}
+.footer-link{letter-spacing: 2px; color:#000}
+.footer-bottom{background-color: rgba(0, 0, 0, 0.2);}
 
 @media screen and (max-width: 450px) {
   .navbar-justify-content {
