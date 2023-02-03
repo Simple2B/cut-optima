@@ -66,22 +66,22 @@ class SettingsForm(FlaskForm):
         render_kw={"placeholder": "Amazingtransfers"},
     )
     contact_name = StringField(
-        "User's name",
+        "Contact name",
         validators=[Length(max=64)],
         render_kw={"placeholder": "Your name"},
     )
     contact_email = StringField(
-        "User's email",
+        "Contact email",
         validators=[
             Optional(),
             Email(message="Wrong email format", allow_empty_local=True),
         ],
-        render_kw={"placeholder": "Your email"},
+        render_kw={"placeholder": "your@email.com"},
     )
     contact_phone = StringField(
-        "User's phone",
+        "Contact phone",
         validators=[Length(max=18)],
-        render_kw={"placeholder": "Your phone"},
+        render_kw={"placeholder": "+61000000000"},
     )
 
     submit = SubmitField("Save Settings")
