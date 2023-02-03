@@ -47,6 +47,7 @@ class User(db.Model, UserMixin, ModelMixin):
     buy_url = db.Column(db.String(255), nullable=True)
     currency = db.Column(Enum(Currency), default=Currency.dollar)
     shop_name = db.Column(db.String(64), nullable=True)
+    logo_img = db.Column(db.Text, nullable=True)
     contact_name = db.Column(db.String(64), nullable=True)
     contact_email = db.Column(db.String(64), nullable=True)
     contact_phone = db.Column(db.String(64), nullable=True)

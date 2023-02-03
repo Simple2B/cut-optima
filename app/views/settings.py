@@ -1,3 +1,5 @@
+import base64
+
 from flask import jsonify, Blueprint, render_template, flash, request
 from flask_login import login_required, current_user
 
@@ -22,6 +24,10 @@ def settings():
         current_user.is_enabled_buy_btn = form.is_enabled_buy_btn.data
         current_user.buy_url = form.buy_url.data
         current_user.shop_name = form.shop_name.data
+        if form.logo_img.data:
+            img_data = form.logo_img.data.read()
+            img_data = base64.b64encode(img_data)
+            current_user.logo_img = img_data.decode("utf-8")
         current_user.contact_name = form.contact_name.data
         current_user.contact_email = form.contact_email.data
         current_user.contact_phone = form.contact_phone.data

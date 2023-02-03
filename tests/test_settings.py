@@ -1,3 +1,5 @@
+from werkzeug.datastructures import FileStorage
+
 import app.models as m
 
 
@@ -31,9 +33,15 @@ def test_settings(client, authorize):
     new_email = "dummy@email.com"
     new_phone = "+380966666666"
 
+    logo_img = FileStorage(
+        stream=open("tests/testing_data/1.jpeg", "rb"),
+        filename="1.jpeg",
+        content_type="img/jpeg",
+    )
+
     client.post(
         "/settings",
-        json={
+        data={
             "metric_system": new_metric_system,
             "print_price": new_print_price,
             "currency": new_currency,
@@ -42,6 +50,7 @@ def test_settings(client, authorize):
             "cut_spacing": new_cut_spacing,
             "is_enabled_buy_btn": new_is_enabled_buy_btn,
             "buy_url": new_buy_url,
+            "logo_img": logo_img,
             "contact_name": new_name,
             "contact_email": new_email,
             "contact_phone": new_phone,
@@ -58,6 +67,7 @@ def test_settings(client, authorize):
     assert user.is_enabled_buy_btn
     assert user.buy_url
     assert not user.shop_name
+    assert user.logo_img
     assert user.contact_name == new_name
     assert user.contact_email == new_email
     assert user.contact_phone == new_phone

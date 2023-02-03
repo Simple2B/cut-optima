@@ -14,6 +14,7 @@
             role="form"
             action="{{ url_for('settings.settings') }}"
             method="post"
+            enctype="multipart/form-data"
           >
             {{form.hidden_tag()}}
             <div class="mb-3">
@@ -250,12 +251,21 @@
             </div>
 
             <div class="mb-3">
+              <label for="logo_img" class="form-label">{{form.logo_img.label}}</label>
+              {{form.logo_img(class="form-control", id="logo_img",
+              value=current_user.logo_img if current_user.logo_img else "")}} {% for
+              error in form.errors.logo_img %}
+              <small class="text-danger">{{error}}</small> {% endfor %}
+            </div>
+
+            <div class="mb-3">
               <label for="contact_name" class="form-label">{{form.contact_name.label}}</label>
               {{form.contact_name(class="form-control", id="contact_name",
               value=current_user.contact_name if current_user.contact_name else "")}} {% for
               error in form.errors.contact_name %}
               <small class="text-danger">{{error}}</small> {% endfor %}
             </div>
+
             <div class="mb-3">
               <label for="contact_email" class="form-label">{{form.contact_email.label}}</label>
               {{form.contact_email(class="form-control", id="contact_email",
@@ -263,6 +273,7 @@
               error in form.errors.contact_email %}
               <small class="text-danger">{{error}}</small> {% endfor %}
             </div>
+
             <div class="mb-3">
               <label for="contact_phone" class="form-label">{{form.contact_phone.label}}</label>
               {{form.contact_phone(class="form-control", id="contact_phone",
@@ -270,8 +281,10 @@
               error in form.errors.contact_phone %}
               <small class="text-danger">{{error}}</small> {% endfor %}
             </div>
+
             {{ form.submit(class="form-control btn btn-success rounded" ) }}
           </form>
+
         </div>
       </div>
     </div>
