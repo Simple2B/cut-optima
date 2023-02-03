@@ -67,7 +67,7 @@ class SettingsForm(FlaskForm):
         render_kw={"placeholder": "Amazingtransfers"},
     )
     logo_img = FileField(
-        "Logo file",
+        "Logo file (max 200x200px)",
     )
     contact_name = StringField(
         "Contact name",
