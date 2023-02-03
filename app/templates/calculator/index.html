@@ -4,9 +4,9 @@
     <div class="w-90">
       {% if img %}
       <div class="mt-3 w-100 p-1">
-        <a 
+        <a
         {% if order_url %}
-        href="{{order_url}}" 
+        href="{{order_url}}"
         target="_blank"
         {% endif %}
         >
@@ -288,7 +288,7 @@
           {% endif %}
 
 
-          {% if user_name or user_email or user_phone %}
+          {% if contact_name or contact_email or contact_phone %}
             <h6
               class="calculator-block-title border-0 p-1 mb-1 text-decoration-underline text-uppercase fw-bolder"
             >
