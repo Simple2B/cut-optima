@@ -1,7 +1,5 @@
 from flask import Blueprint, render_template, flash
-from flask_login import login_required
 from flask_mail import Message
-
 
 from app.forms import FeedbackForm
 from config import BaseConfig as conf
@@ -11,7 +9,6 @@ blueprint = Blueprint("feedback", __name__, url_prefix="/feedback")
 
 
 @blueprint.route("/", methods=["GET", "POST"])
-@login_required
 def feedback():
     form = FeedbackForm()
 
