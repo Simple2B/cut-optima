@@ -249,6 +249,22 @@
               <small class="text-danger">{{error}}</small> {% endfor %}
             </div>
 
+            <div class="mb-3">
+              <label for="logo_img" class="form-label">{{form.logo_img.label}}</label>
+              {{form.logo_img(class="form-control", id="logo_img",
+              value=current_user.logo_img if current_user.logo_img else "")}} {% for
+              error in form.errors.logo_img %}
+              <small class="text-danger">{{error}}</small> {% endfor %}
+            </div>
+
+            <div class="mb-3">
+              <label for="logo_file_name" class="form-label">{{form.logo_file_name.label}}</label>
+              {{form.logo_file_name(class="form-control", id="logo_file_name",
+              value=current_user.logo_file_name if current_user.logo_file_name else "")}} {% for
+              error in form.errors.logo_file_name %}
+              <small class="text-danger">{{error}}</small> {% endfor %}
+            </div>
+
             {{ form.submit(class="form-control btn btn-success rounded" ) }}
           </form>
         </div>

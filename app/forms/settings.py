@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import (
     FloatField,
+    FileField,
     SubmitField,
     SelectField,
     IntegerField,
@@ -63,6 +64,14 @@ class SettingsForm(FlaskForm):
         "Printshop name",
         validators=[Length(max=64)],
         render_kw={"placeholder": "Amazingtransfers"},
+    )
+    logo_img = FileField(
+        "Logo file",
+    )
+    logo_file_name = SelectField(
+        "Logo file name",
+        validators=[Length(max=64)],
+        render_kw={"placeholder": "Logo file name"},
     )
 
     submit = SubmitField("Save Settings")
