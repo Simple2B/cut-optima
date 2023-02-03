@@ -48,7 +48,6 @@ class User(db.Model, UserMixin, ModelMixin):
     currency = db.Column(Enum(Currency), default=Currency.dollar)
     shop_name = db.Column(db.String(64), nullable=True)
     logo_img = db.Column(db.Text, nullable=True)
-    logo_file_name = db.Column(db.String(64), nullable=True)
 
     sheets = db.relationship("Sheet", viewonly=True)
 

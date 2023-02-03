@@ -68,11 +68,6 @@ class SettingsForm(FlaskForm):
     logo_img = FileField(
         "Logo file",
     )
-    logo_file_name = SelectField(
-        "Logo file name",
-        validators=[Length(max=64)],
-        render_kw={"placeholder": "Logo file name"},
-    )
 
     submit = SubmitField("Save Settings")
 
