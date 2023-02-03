@@ -16,6 +16,9 @@ def test_settings(client, authorize):
     assert not user.is_enabled_buy_btn
     assert not user.buy_url
     assert not user.shop_name
+    assert not user.contact_name
+    assert not user.contact_email
+    assert not user.contact_phone
 
     new_metric_system = m.User.MetricSystem.inch.value
     new_print_price = 100
@@ -24,6 +27,9 @@ def test_settings(client, authorize):
     new_cut_spacing = 100
     new_is_enabled_buy_btn = True
     new_buy_url = "https://google.com/"
+    new_name = "Bob"
+    new_email = "dummy@email.com"
+    new_phone = "+380966666666"
 
     client.post(
         "/settings",
@@ -36,6 +42,9 @@ def test_settings(client, authorize):
             "cut_spacing": new_cut_spacing,
             "is_enabled_buy_btn": new_is_enabled_buy_btn,
             "buy_url": new_buy_url,
+            "contact_name": new_name,
+            "contact_email": new_email,
+            "contact_phone": new_phone,
         },
         follow_redirects=True,
     )
@@ -49,6 +58,9 @@ def test_settings(client, authorize):
     assert user.is_enabled_buy_btn
     assert user.buy_url
     assert not user.shop_name
+    assert user.contact_name == new_name
+    assert user.contact_email == new_email
+    assert user.contact_phone == new_phone
 
     response = client.post(
         "/settings",
@@ -57,10 +69,14 @@ def test_settings(client, authorize):
             "currency": new_currency,
             "is_price_per": "Sheet",
             "shop_name": "123",
+            "contact_email": "saintkos.com",
+            "contact_phone": "111111",
         },
         follow_redirects=True,
     )
     assert b"Printshop name cannot be number" in response.data
+    assert b"Wrong email format" in response.data
+    assert b"Invalid phone number" in response.data
     assert not user.shop_name
 
     new_shop_name = "shop-test"
