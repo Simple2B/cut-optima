@@ -11,8 +11,10 @@
         "**/.venv/*/**": true
     },
     "cSpell.words": [
+        "dotenv",
         "sqlalchemy",
-        "werkzeug"
+        "werkzeug",
+        "wsgi"
     ],
     "python.testing.pytestArgs": [
         "tests"

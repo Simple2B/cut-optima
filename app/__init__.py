@@ -39,6 +39,9 @@ def create_app(environment="development"):
     app.register_blueprint(v.main_blueprint)
     app.register_blueprint(v.settings_blueprint)
     app.register_blueprint(v.calculator_blueprint)
+    app.register_blueprint(v.feedback_blueprint)
+    app.register_blueprint(v.privacy_blueprint)
+    app.register_blueprint(v.term_blueprint)
 
     # Set up flask login.
     @login_manager.user_loader

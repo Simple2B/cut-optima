@@ -1,6 +1,9 @@
 import os
+from dotenv import load_dotenv
 
-base_dir = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+PATH_TO_DOT_ENV_FILE = os.path.join(BASE_DIR, ".env")
+load_dotenv(PATH_TO_DOT_ENV_FILE)
 
 
 class BaseConfig(object):
@@ -23,6 +26,7 @@ class BaseConfig(object):
     MAIL_USERNAME = os.getenv("MAIL_USERNAME", "unknown_user_name")
     MAIL_PASSWORD = os.getenv("MAIL_PASSWORD", "no-password")
     MAIL_DEFAULT_SENDER = os.getenv("MAIL_DEFAULT_SENDER", "sender_name")
+    MAIL_FEEDBACK_RECEIVER = os.getenv("MAIL_FEEDBACK_RECEIVER", "john@dtf.com.au")
 
     DEFAULT_BIN_SIZES = [
         {"name": "A0", "width": 841, "height": 1188},
@@ -75,7 +79,7 @@ class DevelopmentConfig(BaseConfig):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = os.environ.get(
         "DEVEL_DATABASE_URL",
-        "sqlite:///" + os.path.join(base_dir, "database-devel.sqlite3"),
+        "sqlite:///" + os.path.join(BASE_DIR, "database-devel.sqlite3"),
     )
 
 
@@ -86,7 +90,7 @@ class TestingConfig(BaseConfig):
     PRESERVE_CONTEXT_ON_EXCEPTION = False
     SQLALCHEMY_DATABASE_URI = os.environ.get(
         "TEST_DATABASE_URL",
-        "sqlite:///" + os.path.join(base_dir, "database-test.sqlite3"),
+        "sqlite:///" + os.path.join(BASE_DIR, "database-test.sqlite3"),
     )
 
 
@@ -94,7 +98,7 @@ class ProductionConfig(BaseConfig):
     """Production configuration."""
 
     SQLALCHEMY_DATABASE_URI = os.environ.get(
-        "DATABASE_URL", "sqlite:///" + os.path.join(base_dir, "database.sqlite3")
+        "DATABASE_URL", "sqlite:///" + os.path.join(BASE_DIR, "database.sqlite3")
     )
     WTF_CSRF_ENABLED = True
 
