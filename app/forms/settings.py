@@ -90,7 +90,7 @@ class SettingsForm(FlaskForm):
         if shop_name.data and shop_name.data.isnumeric():
             raise ValidationError("Printshop name cannot be number")
 
-    def validate_user_phone(self, phone):
+    def validate_contact_phone(self, phone):
         if not phone.data:
             return
         try:

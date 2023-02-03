@@ -57,9 +57,9 @@ def calculator(printshop: str = None):
             sheets = user.sheets
             currency = conf.CURRENCY_NAME_TO_SYMBOL[user.currency.value]
             show_settings = False
-            contact_name = user.user_name
-            contact_email = user.user_email
-            contact_phone = user.user_phone
+            contact_name = user.contact_name
+            contact_email = user.contact_email
+            contact_phone = user.contact_phone
 
     return render_template(
         "calculator/index.html",
