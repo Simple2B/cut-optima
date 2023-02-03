@@ -32,4 +32,4 @@ def feedback():
     elif form.is_submitted():
         flash("Invalid data", "danger")
 
-    return render_template("user/feedback.html", form=form)
+    return render_template("feedback.html", form=form)
