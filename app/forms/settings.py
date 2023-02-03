@@ -65,12 +65,12 @@ class SettingsForm(FlaskForm):
         validators=[Length(max=64)],
         render_kw={"placeholder": "Amazingtransfers"},
     )
-    user_name = StringField(
+    contact_name = StringField(
         "User's name",
         validators=[Length(max=64)],
         render_kw={"placeholder": "Your name"},
     )
-    user_email = StringField(
+    contact_email = StringField(
         "User's email",
         validators=[
             Optional(),
@@ -78,7 +78,7 @@ class SettingsForm(FlaskForm):
         ],
         render_kw={"placeholder": "Your email"},
     )
-    user_phone = StringField(
+    contact_phone = StringField(
         "User's phone",
         validators=[Length(max=18)],
         render_kw={"placeholder": "Your phone"},

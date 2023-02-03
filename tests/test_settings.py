@@ -16,9 +16,9 @@ def test_settings(client, authorize):
     assert not user.is_enabled_buy_btn
     assert not user.buy_url
     assert not user.shop_name
-    assert not user.user_name
-    assert not user.user_email
-    assert not user.user_phone
+    assert not user.contact_name
+    assert not user.contact_email
+    assert not user.contact_phone
 
     new_metric_system = m.User.MetricSystem.inch.value
     new_print_price = 100
@@ -42,9 +42,9 @@ def test_settings(client, authorize):
             "cut_spacing": new_cut_spacing,
             "is_enabled_buy_btn": new_is_enabled_buy_btn,
             "buy_url": new_buy_url,
-            "user_name": new_name,
-            "user_email": new_email,
-            "user_phone": new_phone,
+            "contact_name": new_name,
+            "contact_email": new_email,
+            "contact_phone": new_phone,
         },
         follow_redirects=True,
     )
@@ -58,9 +58,9 @@ def test_settings(client, authorize):
     assert user.is_enabled_buy_btn
     assert user.buy_url
     assert not user.shop_name
-    assert user.user_name == new_name
-    assert user.user_email == new_email
-    assert user.user_phone == new_phone
+    assert user.contact_name == new_name
+    assert user.contact_email == new_email
+    assert user.contact_phone == new_phone
 
     response = client.post(
         "/settings",
@@ -69,8 +69,8 @@ def test_settings(client, authorize):
             "currency": new_currency,
             "is_price_per": "Sheet",
             "shop_name": "123",
-            "user_email": "saintkos.com",
-            "user_phone": "111111",
+            "contact_email": "saintkos.com",
+            "contact_phone": "111111",
         },
         follow_redirects=True,
     )

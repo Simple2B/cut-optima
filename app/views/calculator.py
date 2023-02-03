@@ -34,9 +34,9 @@ def calculator(printshop: str = None):
     sheets = conf.SHEETS
     currency = conf.CURRENCY
     show_settings = True
-    user_name = None
-    user_email = None
-    user_phone = None
+    contact_name = None
+    contact_email = None
+    contact_phone = None
 
     if not printshop:
         printshop = request.args.get("printshop")
@@ -57,9 +57,9 @@ def calculator(printshop: str = None):
             sheets = user.sheets
             currency = conf.CURRENCY_NAME_TO_SYMBOL[user.currency.value]
             show_settings = False
-            user_name = user.user_name
-            user_email = user.user_email
-            user_phone = user.user_phone
+            contact_name = user.user_name
+            contact_email = user.user_email
+            contact_phone = user.user_phone
 
     return render_template(
         "calculator/index.html",
@@ -75,9 +75,9 @@ def calculator(printshop: str = None):
         metric_system=metric_system,
         sheets=sheets,
         currency=currency,
-        user_name=user_name,
-        user_email=user_email,
-        user_phone=user_phone,
+        contact_name=contact_name,
+        contact_email=contact_email,
+        contact_phone=contact_phone,
     )
 
 
