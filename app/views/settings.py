@@ -22,6 +22,9 @@ def settings():
         current_user.is_enabled_buy_btn = form.is_enabled_buy_btn.data
         current_user.buy_url = form.buy_url.data
         current_user.shop_name = form.shop_name.data
+        current_user.contact_name = form.contact_name.data
+        current_user.contact_email = form.contact_email.data
+        current_user.contact_phone = form.contact_phone.data
 
         current_user.save()
         flash("Updated", "success")
