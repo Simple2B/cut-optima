@@ -26,7 +26,3 @@ class FeedbackForm(FlaskForm):
     )
 
     submit = SubmitField("Leave Feedback")
-
-    def validate_shop_name(form, shop_name):
-        if shop_name.data and shop_name.data.isnumeric():
-            raise ValidationError("Printshop name cannot be number")
