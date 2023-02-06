@@ -31,11 +31,23 @@
     <header>
       <!-- Navigation -->
       <nav class="navbar navbar-light navbar-expand-md bg-light">
-        <div class="container d-flex navbar-justify-content m-0 mw-100">
+        <div class="container d-flex justify-content-center align-items-center m-0 mw-100">
           {% if not current_user.is_anonymous %} {% set calculator_url =
           url_for("calculator.calculator", printshop=current_user.shop_name or
           current_user.id) %} {% else %} {% set calculator_url =
           url_for("calculator.calculator") %} {% endif %}
+          {% if img %}
+          <div class="mt-3 p-1 logo-div">
+            <a
+              {% if order_url %}
+              href="{{order_url}}"
+              target="_blank"
+              {% endif %}
+              >
+            <img class="logo-img" src="data:image/jpeg;base64,{{img}}" alt="logo">
+            </a>
+          </div>
+          {% endif %}
           <a class="navbar-brand" href="{{ calculator_url }}"
             >{{ config.APP_NAME }}</a
           >
