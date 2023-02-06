@@ -48,7 +48,13 @@
             </a>
           </div>
           {% endif %}
-          <a class="navbar-brand" href="{{ calculator_url }}"
+          <a
+          {% if img %}
+           class="navbar-brand"
+          {% else %}
+           class="navbar-brand-without-img"
+          {% endif %}
+           href="{{ calculator_url }}"
             >{{ config.APP_NAME }}</a
           >
 

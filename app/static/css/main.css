@@ -137,6 +137,12 @@ a {
   flex: 1;
   padding-left: 40%;
 }
+.navbar-brand-without-img{
+  color:#000;
+  font-size: 30px;
+  flex: 1;
+  padding-left: 45%;
+}
 
 .logo-img {
   max-width: 200px;
