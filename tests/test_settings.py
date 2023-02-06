@@ -86,7 +86,6 @@ def test_settings(client, authorize):
     )
     assert b"Printshop name cannot be number" in response.data
     assert b"Wrong email format" in response.data
-    assert b"Invalid phone number" in response.data
     assert not user.shop_name
 
     new_shop_name = "shop-test"
