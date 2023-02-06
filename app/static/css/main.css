@@ -9,8 +9,7 @@
   box-shadow: none !important;
 }
 
-html{ height: 100%;
-}
+
 
 a {
   text-decoration: none;
@@ -286,6 +285,10 @@ a {
 .footer-bottom {
   border-top: 1px solid rgba(0, 0, 0, 0.2);
 }
+.main-content{
+  min-height:100vh
+}
+
 
 @media screen and (max-width: 450px) {
   .navbar-content {
@@ -414,9 +417,3 @@ a {
   }
 }
 
-@media screen and (min-width: 1401px){
-  body{
-    height:100%
-  }
-  
-}
