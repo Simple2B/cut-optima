@@ -137,8 +137,8 @@ a {
   flex: 1;
   padding-left: 40%;
 }
-.navbar-brand-without-img{
-  color:#000;
+.navbar-brand-without-img {
+  color: #000;
   font-size: 30px;
   flex: 1;
   padding-left: 45%;
@@ -147,11 +147,6 @@ a {
 .logo-img {
   max-width: 200px;
   max-height: 200px;
-
-}
-
-.navbar-justify-content {
-  justify-content: space-between;
 }
 
 .navbar {
@@ -283,13 +278,21 @@ a {
 .selected-tab-btn {
   background: lightgray;
 }
-.footer{background-color: rgba(0, 0, 0, 0.2);}
-.footer-link{letter-spacing: 2px; color:#000}
-.footer-bottom{border-top: 1px solid rgba(0, 0, 0, 0.2);}
+.footer {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+.footer-link {
+  letter-spacing: 2px;
+  color: #000;
+}
+.footer-bottom {
+  border-top: 1px solid rgba(0, 0, 0, 0.2);
+}
 
 @media screen and (max-width: 450px) {
-  .navbar-justify-content {
-    justify-content: center !important;
+  .navbar-content {
+    flex-direction: column;
+    padding-bottom: 10px;
   }
   .logo-img {
     width: 100%;
