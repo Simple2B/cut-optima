@@ -302,8 +302,10 @@ a {
     text-align: left !important;
     margin-right: 0;
   }
-  .body-container{
-    position: relative;
+  .navbar-brand-without-img {
+    padding-left: 0;
+    margin-top: 15px;
+    margin-bottom: 15px;
   }
 }
 
@@ -410,4 +412,11 @@ a {
   .add-sheet-input-group {
     width: 100% !important;
   }
+}
+
+@media screen and (min-width: 1401px){
+  body{
+    height:100%
+  }
+  
 }
