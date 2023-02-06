@@ -9,9 +9,7 @@
   box-shadow: none !important;
 }
 
-html,
-body {
-  height: 100%;
+html{ height: 100%;
 }
 
 a {
@@ -303,6 +301,9 @@ a {
     padding-left: 0;
     text-align: left !important;
     margin-right: 0;
+  }
+  .body-container{
+    position: relative;
   }
 }
 
