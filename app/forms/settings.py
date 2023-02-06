@@ -10,7 +10,6 @@ from wtforms import (
     ValidationError,
 )
 from wtforms.validators import DataRequired, Length, Email, Optional
-import phonenumbers
 
 import app.models as m
 
@@ -93,16 +92,3 @@ class SettingsForm(FlaskForm):
     def validate_shop_name(form, shop_name):
         if shop_name.data and shop_name.data.isnumeric():
             raise ValidationError("Printshop name cannot be number")
-
-    def validate_contact_phone(self, phone):
-        if not phone.data:
-            return
-        try:
-            phone = phone.data
-            if phone[0] != "+":
-                phone = "+" + phone
-            phone = phonenumbers.parse(phone)
-            if not phonenumbers.is_possible_number(phone):
-                raise ValueError()
-        except (phonenumbers.phonenumberutil.NumberParseException, ValueError):
-            raise ValidationError("Invalid phone number")
