@@ -2,18 +2,6 @@
 <div class="calculator-content d-flex h-100">
   <div class="calculator-l-side h-100">
     <div class="w-90">
-      {% if img %}
-      <div class="mt-3 w-100 p-1">
-        <a
-        {% if order_url %}
-        href="{{order_url}}"
-        target="_blank"
-        {% endif %}
-        >
-          <img class="logo-img" src="data:image/jpeg;base64,{{img}}" alt="logo">
-        </a>
-      </div>
-      {% endif %}
       <div class="bin-size mt-4">
         <h5 class="calculator-block-title border-0 p-1 mb-1">
           Sheet Size
@@ -316,8 +304,7 @@
       </div>
     </div>
   </div>
-
-  {% endblock %} {% block scripts %}
+  {% block scripts %}
 
   <script
     src="{{ url_for('static', filename='js/calculator/rects_settings.js') }}"
@@ -338,4 +325,5 @@
   ></script>
 </div>
   {% endblock %}
+  {% endblock %} 
 
