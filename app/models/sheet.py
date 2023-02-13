@@ -1,10 +1,8 @@
-from flask_login import UserMixin, AnonymousUserMixin
-
 from app import db
 from app.models.utils import ModelMixin
 
 
-class Sheet(db.Model, UserMixin, ModelMixin):
+class Sheet(db.Model, ModelMixin):
     __tablename__ = "sheets"
 
     id = db.Column(db.Integer, primary_key=True)
@@ -22,7 +20,3 @@ class Sheet(db.Model, UserMixin, ModelMixin):
 
     def __repr__(self):
         return f"<Sheet: {self.width}x{self.height}>"
-
-
-class AnonymousUser(AnonymousUserMixin):
-    pass
