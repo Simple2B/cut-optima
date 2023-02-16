@@ -304,7 +304,10 @@
       </div>
     </div>
   </div>
-  {% block scripts %}
+</div>
+{% endblock %}
+
+{% block scripts %}
 
   <script
     src="{{ url_for('static', filename='js/calculator/rects_settings.js') }}"
@@ -323,7 +326,5 @@
     type="text/javascript"
     defer
   ></script>
-</div>
-  {% endblock %}
-  {% endblock %} 
+{% endblock %}
 
