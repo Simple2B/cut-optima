@@ -9,8 +9,6 @@
   box-shadow: none !important;
 }
 
-
-
 a {
   text-decoration: none;
 }
@@ -83,6 +81,10 @@ a {
   background-color: #e9ecef;
 }
 
+.text-justify {
+  text-align: justify;
+}
+
 .hit_flash {
   margin: 0;
   padding: 15px 0 0 0 !important;
@@ -122,6 +124,12 @@ a {
 
 .invisible {
   display: none !important;
+}
+
+.text-content p,
+li {
+  font-size: 14px;
+  color: rgba(54, 49, 49, 0.764);
 }
 
 .form-group label {
@@ -285,10 +293,9 @@ a {
 .footer-bottom {
   border-top: 1px solid rgba(0, 0, 0, 0.2);
 }
-.main-content{
-  min-height:100vh
+.main-content {
+  min-height: 100vh;
 }
-
 
 @media screen and (max-width: 450px) {
   .navbar-content {
@@ -416,4 +423,3 @@ a {
     width: 100% !important;
   }
 }
-
