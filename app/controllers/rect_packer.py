@@ -219,7 +219,8 @@ class RectPacker:
         log(log.INFO, "Prepare to pack rectangles")
 
         not_placed_rectangles = [
-            sorted([float(rect[0]), float(rect[1])]) for rect in self.rectangles
+            sorted([round(float(rect[0]), 3), round(float(rect[1]), 3)])
+            for rect in self.rectangles
         ]
 
         log(log.INFO, "Init new packer instance")
@@ -280,8 +281,8 @@ class RectPacker:
                     )
                 rect = sorted(
                     [
-                        rect.width - self.blade_size * 2,
-                        rect.height - self.blade_size * 2,
+                        round(rect.width - self.blade_size * 2, 3),
+                        round(rect.height - self.blade_size * 2, 3),
                     ]
                 )
                 bin_result["rectangles"].append(rect)
