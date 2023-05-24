@@ -1,3 +1,4 @@
+from flask_login import current_user
 from flask_wtf import FlaskForm
 from wtforms import (
     FloatField,
@@ -92,3 +93,11 @@ class SettingsForm(FlaskForm):
     def validate_shop_name(form, shop_name):
         if shop_name.data and shop_name.data.isnumeric():
             raise ValidationError("Printshop name cannot be number")
+
+        user = (
+            m.User.query.filter_by(shop_name=shop_name.data)
+            .filter(m.User.id != current_user.id)
+            .all()
+        )
+        if user:
+            raise ValidationError(f"Printshop {shop_name.data} already exists")

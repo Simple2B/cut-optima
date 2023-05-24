@@ -46,7 +46,7 @@ class User(db.Model, UserMixin, ModelMixin):
     is_enabled_buy_btn = db.Column(db.Boolean, default=False)
     buy_url = db.Column(db.String(255), nullable=True)
     currency = db.Column(Enum(Currency), default=Currency.dollar)
-    shop_name = db.Column(db.String(64), nullable=True)
+    shop_name = db.Column(db.String(64), nullable=True, unique=True)
     logo_img = db.Column(db.Text, nullable=True)
     contact_name = db.Column(db.String(64), nullable=True)
     contact_email = db.Column(db.String(64), nullable=True)
