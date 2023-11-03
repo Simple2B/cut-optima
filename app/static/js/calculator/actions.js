@@ -36,6 +36,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
       message: "Start calculating. Please wait...",
       timeout: 0,
     });
+    calculateBtn.classList.add("disabledButton");
     // binsResultsDiv.innerHTML = "";
     imagesResultDiv.innerHTML = "";
     let addedBins = [];
@@ -59,6 +60,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
       iziToast.error({
         message: "Incorrect sheet sizes",
       });
+      calculateBtn.classList.remove("disabledButton");
       return;
     }
 
@@ -81,6 +83,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
         iziToast.error({
           message: "Incorrect artwork sizes",
         });
+        calculateBtn.classList.remove("disabledButton");
         return;
       }
       addedRects.push({
@@ -129,6 +132,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
         title: "Error",
         message: e.message,
       });
+      calculateBtn.classList.remove("disabledButton");
       return;
     }
 
@@ -138,6 +142,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
         position: "bottomRight",
         title: "Calculation Error",
       });
+      calculateBtn.classList.remove("disabledButton");
       return;
     }
 
@@ -149,6 +154,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
         title: "Error",
         message: resJson.message,
       });
+      calculateBtn.classList.remove("disabledButton");
       return;
     }
     usageResQtyDiv.innerHTML = resJson.used_area.toFixed(2);
@@ -188,5 +194,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
       position: "bottomRight",
       title: "Success",
     });
+    calculateBtn.classList.remove("disabledButton");
   });
 });

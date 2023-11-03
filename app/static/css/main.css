@@ -423,3 +423,8 @@ li {
     width: 100% !important;
   }
 }
+
+.disabledButton {
+  pointer-events: none;
+  opacity: 0.4;
+}
