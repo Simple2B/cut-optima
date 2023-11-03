@@ -54,6 +54,8 @@ class User(db.Model, UserMixin, ModelMixin):
 
     sheets = db.relationship("Sheet", viewonly=True)
 
+    calculation_enabled = db.Column(db.Boolean, default=True)
+
     @hybrid_property
     def password(self):
         return self.password_hash

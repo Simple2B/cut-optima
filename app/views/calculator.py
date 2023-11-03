@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, request, jsonify
+from flask_login import current_user
 from rectpack import (
     skyline,
     guillotine,
@@ -88,7 +89,15 @@ def calculator(printshop: str = None):
 def calculate():
     data = request.json
 
+    anon_u = User.query.filter_by(username="anonymous_user_one_calc").first()
+
     log(log.INFO, "Validate required data [%s]", data)
+
+    if current_user.is_anonymous:
+        if not anon_u.calculation_enabled:
+            return jsonify({"message": "Calculator is busy right now. Login/register or try it later"}), 400
+        anon_u.calculation_enabled = False
+        anon_u.save()
 
     if not data.get("bins"):
         return jsonify({"message": "Bin(s) not found"}), 400
@@ -221,5 +230,9 @@ def calculate():
         bin["image"] = serve_pil_image(image)
         del bin["bin"]
     del result["algo"]
+
+    if current_user.is_anonymous:
+        anon_u.calculation_enabled = True
+        anon_u.save()
 
     return jsonify(result)

@@ -17,5 +17,16 @@ def example_command():
     print("Hello World!!!")
 
 
+@app.cli.command()
+def create_anonymous_user():
+    """Create anonymous user."""
+    user = models.User(
+        username="anonymous_user_one_calc",
+        email="anonymous_user_one_calc@anonymous_user_one_calc.com",
+    )
+    user.save()
+    print("Anonymous user created.")
+
+
 if __name__ == "__main__":
     app.run()
