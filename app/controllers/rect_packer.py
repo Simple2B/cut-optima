@@ -67,6 +67,7 @@ class RectPacker:
             "bins": [],
             "used_bins": used_bins_count,
         }
+
         for bin in self._result["bins"]:
             if self.is_sizes_equals:
                 bin["sizes"][0] -= 1
@@ -142,7 +143,7 @@ class RectPacker:
         self.rectangles.append(sorted([width, height]))
 
     def validate_rectangles(self):
-        """Check if addded rectangles is valid and can be placed on bin area
+        """Check if added rectangles is valid and can be placed on bin area
 
         Raises:
             ValueError: if bins are not added
@@ -178,7 +179,7 @@ class RectPacker:
                 "Found invalid rectangle(s): %s"
                 % ", ".join([str(rect) for rect in invalid_rectangles]),
             )
-        log(log.INFO, "Validation succeess")
+        log(log.INFO, "Validation success")
 
     def pack(
         self,

@@ -149,7 +149,7 @@ def calculate():
 
     results = {}
     log(log.INFO, "Start find the best packing algo")
-    for pack_algo in [
+    for pack_algo in (
         skyline.SkylineBl,
         skyline.SkylineBlWm,
         skyline.SkylineMwf,
@@ -174,8 +174,8 @@ def calculate():
         guillotine.GuillotineBafLlas,
         guillotine.GuillotineBafMaxas,
         guillotine.GuillotineBafMinas,
-    ]:
-        for sort_algo in [
+    ):
+        for sort_algo in (
             SORT_NONE,
             SORT_RATIO,
             SORT_PERI,
@@ -183,9 +183,9 @@ def calculate():
             SORT_DIFF,
             SORT_AREA,
             SORT_LSIDE,
-        ]:
+        ):
             try:
-                log(log.INFO, "Generate sesult using [%s] algo", pack_algo)
+                log(log.INFO, "Generate result using [%s] algo", pack_algo)
                 rect_packer.reset(bins_in_row=1, reset_bin_sizes=True)
                 rect_packer.pack(
                     use_sheet_in_row=use_in_row,
