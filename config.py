@@ -67,6 +67,13 @@ class BaseConfig(object):
     SHEETS = None
     CURRENCY = CURRENCY_NAME_TO_SYMBOL["dollar"]
 
+    SQLALCHEMY_ENGINE_OPTIONS = {
+        "pool_size": 20,
+        "max_overflow": 40,
+        "pool_timeout": 60,
+        "pool_recycle": 1800,
+    }
+
     @staticmethod
     def configure(app):
         # Implement this method to do further configuration on your app.
